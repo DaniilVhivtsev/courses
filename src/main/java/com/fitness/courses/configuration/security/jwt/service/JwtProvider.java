@@ -6,6 +6,7 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
+import java.util.Map;
 
 import javax.crypto.SecretKey;
 import javax.validation.constraints.NotNull;
@@ -30,7 +31,6 @@ import io.jsonwebtoken.security.Keys;
 public class JwtProvider
 {
     private static final @NotNull Logger LOG = LoggerFactory.getLogger(JwtProvider.class);
-    private static final @NotNull ZoneId MOSCOW_ZONE_ID = ZoneId.of("Europe/Moscow");
 
     private final SecretKey jwtAccessSecret;
     private final SecretKey jwtRefreshSecret;
@@ -46,9 +46,7 @@ public class JwtProvider
         this.jwtAccessSecret = Keys.hmacShaKeyFor(Decoders.BASE64.decode(jwtAccessSecret));
         this.jwtRefreshSecret = Keys.hmacShaKeyFor(Decoders.BASE64.decode(jwtRefreshSecret));
 
-        System.out.println(jwtAccessLifetime);
         this.jwtAccessLifetime = jwtAccessLifetime;
-        System.out.println(jwtRefreshLifetime);
         this.jwtRefreshLifetime = jwtRefreshLifetime;
     }
 
@@ -62,7 +60,7 @@ public class JwtProvider
     {
         final LocalDateTime now = LocalDateTime.now();
         final Instant accessExpirationInstant = now.plusSeconds(jwtAccessLifetime.getSeconds())
-                .atZone(MOSCOW_ZONE_ID)
+                .atZone(ZoneId.systemDefault())
                 .toInstant();
         final Date accessExpiration = Date.from(accessExpirationInstant);
         return Jwts.builder()
@@ -70,6 +68,7 @@ public class JwtProvider
                 .setExpiration(accessExpiration)
                 .signWith(jwtAccessSecret)
                 .claim("roles", user.getRoles())// можно добавить id
+                .addClaims(Map.of("id", user.getId().toString()))
                 .compact();
     }
 
@@ -83,7 +82,7 @@ public class JwtProvider
     {
         final LocalDateTime now = LocalDateTime.now();
         final Instant refreshExpirationInstant = now.plusSeconds(jwtRefreshLifetime.getSeconds())
-                .atZone(MOSCOW_ZONE_ID)
+                .atZone(ZoneId.systemDefault())
                 .toInstant();
         final Date refreshExpiration = Date.from(refreshExpirationInstant);
         return Jwts.builder()

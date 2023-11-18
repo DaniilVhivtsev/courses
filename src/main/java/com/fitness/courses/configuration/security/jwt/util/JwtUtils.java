@@ -23,6 +23,11 @@ public final class JwtUtils
         return new UsernamePasswordAuthenticationToken(claims.getSubject(), null, getRoles(claims));
     }
 
+    public static String getUsername(Claims claims)
+    {
+        return claims.getSubject();
+    }
+
     private static Set<Role> getRoles(Claims claims)
     {
         final List<String> roles = claims.get(CLAIMS_ROLE_KEY, List.class);

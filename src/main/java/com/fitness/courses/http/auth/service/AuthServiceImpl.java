@@ -1,21 +1,24 @@
 package com.fitness.courses.http.auth.service;
 
 import java.util.HashMap;
+
 import net.bytebuddy.utility.RandomString;
+
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
 import javax.validation.constraints.NotNull;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.fitness.courses.global.exceptions.BadRequestException;
+import com.fitness.courses.global.exceptions.ValidationException;
 import com.fitness.courses.http.html.service.VerificationCodeHTMLService;
 import com.fitness.courses.http.auth.dto.JwtResponse;
 import com.fitness.courses.http.auth.dto.LoginRequest;
@@ -32,63 +35,63 @@ import jakarta.mail.MessagingException;
 @Service
 public class AuthServiceImpl implements AuthService
 {
+    private static final @NotNull Logger LOG = LoggerFactory.getLogger(AuthServiceImpl.class);
+
     private static final Map<String, String> refreshStorage = new HashMap<>();
 
     private final UserService userService;
     private final PasswordEncoder passwordEncoder;
     private final JwtProvider jwtProvider;
-    private final AuthenticationManager authenticationManager;
     private final VerificationCodeHTMLService verificationCodeHTMLService;
+    private final AuthValidationService authValidationService;
 
     @Autowired
     public AuthServiceImpl(UserService userService,
-            PasswordEncoder passwordEncoder, JwtProvider jwtProvider,
-            AuthenticationManager authenticationManager,
-            VerificationCodeHTMLService verificationCodeHTMLService)
+            PasswordEncoder passwordEncoder,
+            JwtProvider jwtProvider,
+            VerificationCodeHTMLService verificationCodeHTMLService,
+            AuthValidationService authValidationService)
     {
         this.userService = userService;
         this.passwordEncoder = passwordEncoder;
         this.jwtProvider = jwtProvider;
-        this.authenticationManager = authenticationManager;
         this.verificationCodeHTMLService = verificationCodeHTMLService;
+        this.authValidationService = authValidationService;
     }
 
     @Override
-    public @NotNull JwtResponse login(@NotNull LoginRequest loginRequest) throws MessagingException
+    public @NotNull JwtResponse login(@NotNull LoginRequest loginRequest)
     {
-        Authentication authentication = authenticationManager
-                .authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getLogin(), loginRequest.getPassword()));
+        authValidationService.validateUserExistByEmail(loginRequest.getLogin());
+        authValidationService.validateUserLoginCredentials(loginRequest);
+        authValidationService.validateUserEmailIsConfirmed(loginRequest.getLogin());
 
-        if (authentication.isAuthenticated())
-        {
-            final User user = userService.findByEmail(loginRequest.getLogin()).orElseThrow();
-            if (!user.isConfirmed())
-            {
-                sendVerificationEmailCode(user.getId());
-                throw new RuntimeException("Please confirm email");
-            }
-            final String accessToken = jwtProvider.generateAccessToken(user);
-            final String refreshToken = jwtProvider.generateRefreshToken(user);
-            refreshStorage.put(user.getEmail(), refreshToken);
+        final User user = userService.findByEmail(loginRequest.getLogin()).get();
+        final String accessToken = jwtProvider.generateAccessToken(user);
+        final String refreshToken = jwtProvider.generateRefreshToken(user);
+        refreshStorage.put(user.getEmail(), refreshToken);
 
-            return new JwtResponse()
-                    .setAccessToken(accessToken)
-                    .setRefreshToken(refreshToken);
-        }
-        else
-        {
-            throw new RuntimeException();
-        }
+        return new JwtResponse()
+                .setAccessToken(accessToken)
+                .setRefreshToken(refreshToken);
     }
 
     @Override
-    public @NotNull JwtResponse refresh(@NotNull RefreshTokenDto refreshTokenDto)
+    public @NotNull JwtResponse refresh(@NotNull String refreshToken)
     {
-        if (jwtProvider.validateRefreshToken(refreshTokenDto.getRefreshToken())) {
-            final Claims claims = jwtProvider.getRefreshClaims(refreshTokenDto.getRefreshToken());
+        if (jwtProvider.validateRefreshToken(refreshToken))
+        {
+            final Claims claims = jwtProvider.getRefreshClaims(refreshToken);
             final String login = claims.getSubject();
+            if (!refreshStorage.containsKey(login))
+            {
+                final String message = "Can't find refresh token by login %s".formatted(login);
+                LOG.error(message);
+                throw new BadRequestException(message);
+            }
             final String saveRefreshToken = refreshStorage.get(login);
-            if (saveRefreshToken != null && saveRefreshToken.equals(refreshTokenDto.getRefreshToken())) {
+            if (saveRefreshToken.equals(refreshToken))
+            {
                 final User user = userService.findByEmail(login).orElseThrow();
                 final String accessToken = jwtProvider.generateAccessToken(user);
                 final String newRefreshToken = jwtProvider.generateRefreshToken(user);
@@ -97,23 +100,26 @@ public class AuthServiceImpl implements AuthService
                         .setAccessToken(accessToken)
                         .setRefreshToken(newRefreshToken);
             }
+            else
+            {
+                final String message = "Refresh token isn't current.";
+                LOG.error(message);
+                throw new ValidationException(message);
+            }
         }
 
-        // throw exception
-        return new JwtResponse();
+        final String message = "Refresh token isn't valid";
+        LOG.error(message);
+        throw new ValidationException(message);
     }
 
     @Override
     @Transactional
-    public void registration(@NotNull RegistrationUserInfoDto registrationUserInfoDto) throws MessagingException
+    public void registration(@NotNull RegistrationUserInfoDto registrationUserInfoDto)
     {
-        final Optional<User> userOptional = userService.findByEmail(registrationUserInfoDto.getEmail());
+        authValidationService.validateUserIsNotExistByEmail(registrationUserInfoDto.getEmail());
 
-        if (userOptional.isPresent())
-        {
-            throw new RuntimeException();
-        }
-
+        // TODO add mapper
         User newUser = new User();
         newUser.setEmail(registrationUserInfoDto.getEmail());
         newUser.setPassword(passwordEncoder.encode(registrationUserInfoDto.getPassword()));
@@ -145,7 +151,7 @@ public class AuthServiceImpl implements AuthService
         }
     }
 
-    private void sendVerificationEmailCode(Long userId) throws MessagingException
+    private void sendVerificationEmailCode(Long userId)
     {
         final Optional<User> userOptional = userService.findById(userId);
 
@@ -160,6 +166,13 @@ public class AuthServiceImpl implements AuthService
         user.setLastVerificationEmailCode(randomCode);
         user.setConfirmed(false);
 
-        verificationCodeHTMLService.sendVerificationEmailCode(user.getEmail(), randomCode, user.getId());
+        try
+        {
+            verificationCodeHTMLService.sendVerificationEmailCode(user.getEmail(), randomCode, user.getId());
+        }
+        catch (MessagingException e)
+        {
+            e.printStackTrace();
+        }
     }
 }

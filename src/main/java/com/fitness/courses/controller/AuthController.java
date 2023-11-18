@@ -9,13 +9,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.fitness.courses.global.exceptions.ResponseErrorException;
 import com.fitness.courses.http.auth.dto.JwtResponse;
 import com.fitness.courses.http.auth.dto.LoginRequest;
 import com.fitness.courses.http.auth.dto.RefreshTokenDto;
 import com.fitness.courses.http.auth.dto.RegistrationUserInfoDto;
 import com.fitness.courses.http.auth.service.AuthService;
-
-import jakarta.mail.MessagingException;
 
 @RestController
 @RequestMapping(
@@ -33,29 +32,57 @@ public class AuthController
     }
 
     @PostMapping(value = "", consumes = "application/json")
-    public ResponseEntity<JwtResponse> authentication(@RequestBody LoginRequest loginRequest) throws MessagingException
+    public ResponseEntity<?> authentication(@RequestBody LoginRequest loginRequest)
     {
-        return new ResponseEntity<>(authService.login(loginRequest), HttpStatus.OK);
+        try
+        {
+            return new ResponseEntity<JwtResponse>(authService.login(loginRequest), HttpStatus.OK);
+        }
+        catch (ResponseErrorException e)
+        {
+            return new ResponseEntity<String>(e.getMessage(), HttpStatus.valueOf(e.getHttpStatusCode()));
+        }
     }
 
-    @PostMapping(value = "/registration", consumes = "application/json")
-    public ResponseEntity<Void> registration(@RequestBody RegistrationUserInfoDto registrationUserInfoDto)
-            throws MessagingException
+    @PostMapping(value = "/registration")
+    public ResponseEntity<?> registration(@RequestBody RegistrationUserInfoDto registrationUserInfoDto)
     {
-        authService.registration(registrationUserInfoDto);
-        return new ResponseEntity<>(null, HttpStatus.OK);
+        try
+        {
+            authService.registration(registrationUserInfoDto);
+            return new ResponseEntity<Void>(HttpStatus.OK);
+        }
+        catch (ResponseErrorException e)
+        {
+            return new ResponseEntity<String>(e.getMessage(), HttpStatus.valueOf(e.getHttpStatusCode()));
+        }
     }
 
     @PostMapping(value = "/refreshtoken", consumes = "application/json")
-    public ResponseEntity<JwtResponse> refreshToken(@RequestBody RefreshTokenDto refreshTokenDto)
+    public ResponseEntity<?> refreshToken(@RequestBody String refreshToken)
     {
-        return new ResponseEntity<>(authService.refresh(refreshTokenDto), HttpStatus.OK);
+        try
+        {
+            return new ResponseEntity<JwtResponse>(authService.refresh(refreshToken), HttpStatus.OK);
+        }
+        catch (ResponseErrorException e)
+        {
+            return new ResponseEntity<String>(e.getMessage(), HttpStatus.valueOf(e.getHttpStatusCode()));
+        }
     }
 
     @PostMapping("/verifyEmail")
     public ResponseEntity<?> verificationEmail(@RequestParam String code, @RequestParam String secondeCode)
     {
-        authService.confirmEmailByCode(secondeCode, code);
-        return new ResponseEntity<>(HttpStatus.OK);
+        try
+        {
+            authService.confirmEmailByCode(secondeCode, code);
+            return new ResponseEntity<Void>(HttpStatus.OK);
+        }
+        catch (ResponseErrorException e)
+        {
+            return new ResponseEntity<String>(e.getMessage(), HttpStatus.valueOf(e.getHttpStatusCode()));
+        }
+
     }
 }

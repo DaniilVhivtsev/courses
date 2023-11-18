@@ -11,11 +11,11 @@ import jakarta.mail.MessagingException;
 
 public interface AuthService
 {
-    @NotNull JwtResponse login(@NotNull LoginRequest loginRequest) throws MessagingException;
+    @NotNull JwtResponse login(@NotNull LoginRequest loginRequest);
 
-    @NotNull JwtResponse refresh(@NotNull RefreshTokenDto refreshTokenDto);
+    @NotNull JwtResponse refresh(@NotNull String refreshToken);
 
-    void registration(@NotNull RegistrationUserInfoDto registrationUserInfoDto) throws MessagingException;
+    void registration(@NotNull RegistrationUserInfoDto registrationUserInfoDto);
 
     void confirmEmailByCode(String userIdString, String confirmCode);
 }

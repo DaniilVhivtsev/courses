@@ -2,13 +2,13 @@ package com.fitness.courses.http.auth.dto;
 
 public class JwtResponse
 {
-    private final String type = "Bearer";
+    private static final String TYPE = "Bearer";
     private String accessToken;
     private String refreshToken;
 
-    public String getType()
+    public static String getType()
     {
-        return type;
+        return TYPE;
     }
 
     public String getAccessToken()
