@@ -46,7 +46,9 @@ public class JwtProvider
         this.jwtAccessSecret = Keys.hmacShaKeyFor(Decoders.BASE64.decode(jwtAccessSecret));
         this.jwtRefreshSecret = Keys.hmacShaKeyFor(Decoders.BASE64.decode(jwtRefreshSecret));
 
+        System.out.println(jwtAccessLifetime);
         this.jwtAccessLifetime = jwtAccessLifetime;
+        System.out.println(jwtRefreshLifetime);
         this.jwtRefreshLifetime = jwtRefreshLifetime;
     }
 

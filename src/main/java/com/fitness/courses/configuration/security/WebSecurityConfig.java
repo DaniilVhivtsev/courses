@@ -75,10 +75,11 @@ public class WebSecurityConfig
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authorize -> authorize
-//                        .requestMatchers(toH2Console()).permitAll()
-//                        .requestMatchers(mvcRequestMatcher.pattern("/auth/**")).permitAll()
-                        .requestMatchers(mvcRequestMatcher.pattern("/auth/**"), toH2Console()).permitAll()
-                        .anyRequest().authenticated())
+                        .requestMatchers(
+                                mvcRequestMatcher.pattern("/auth/**"),
+                                mvcRequestMatcher.pattern("/swagger-ui/**"),
+                                toH2Console()).permitAll()
+                        .anyRequest().permitAll())
                 .exceptionHandling(exception -> exception
                         .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED))
                         .accessDeniedHandler(new AccessDeniedHandlerImpl()))

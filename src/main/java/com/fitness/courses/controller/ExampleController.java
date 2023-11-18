@@ -9,10 +9,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.fitness.courses.http.user.model.User;
 
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+
 @RestController
 @RequestMapping("/")
 public class ExampleController
 {
+    @SecurityRequirement(name = "JWT")
     @PostMapping("/example/authenticated/request")
     public ResponseEntity<?> examplePostMethod(Authentication authentication)
     {
