@@ -4,15 +4,15 @@ import javax.validation.constraints.NotNull;
 
 import com.fitness.courses.global.exceptions.ConflictException;
 import com.fitness.courses.global.exceptions.ValidationException;
-import com.fitness.courses.http.auth.dto.LoginRequest;
+import com.fitness.courses.http.auth.dto.LoginRequestDto;
 
 public interface AuthValidationService
 {
-    void validateUserLoginCredentials(@NotNull LoginRequest loginRequest) throws ValidationException;
+    void validateUserLoginCredentials(@NotNull LoginRequestDto loginRequestDto) throws ValidationException;
 
     void validateUserExistByEmail(String email) throws ValidationException;
 
-    void validateUserIsNotExistByEmail(String email) throws ConflictException;
+    void validateUserIsNotExistByEmail(String email) throws ValidationException;
 
     void validateUserEmailIsConfirmed(String email) throws ValidationException;
 }

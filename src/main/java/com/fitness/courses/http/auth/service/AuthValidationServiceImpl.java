@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 
 import com.fitness.courses.global.exceptions.ConflictException;
 import com.fitness.courses.global.exceptions.ValidationException;
-import com.fitness.courses.http.auth.dto.LoginRequest;
+import com.fitness.courses.http.auth.dto.LoginRequestDto;
 import com.fitness.courses.http.user.model.User;
 import com.fitness.courses.http.user.service.UserService;
 
@@ -35,14 +35,14 @@ public class AuthValidationServiceImpl implements AuthValidationService
     }
 
     @Override
-    public void validateUserLoginCredentials(@NotNull LoginRequest loginRequest) throws ValidationException
+    public void validateUserLoginCredentials(@NotNull LoginRequestDto loginRequestDto) throws ValidationException
     {
         Authentication authentication = null;
         try
         {
             authentication = authenticationManager
-                    .authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getLogin(),
-                            loginRequest.getPassword()));
+                    .authenticate(new UsernamePasswordAuthenticationToken(loginRequestDto.getLogin(),
+                            loginRequestDto.getPassword()));
         }
         catch (AuthenticationException e)
         {
@@ -51,7 +51,7 @@ public class AuthValidationServiceImpl implements AuthValidationService
 
         if (authentication == null || !authentication.isAuthenticated())
         {
-            final String message = "Can't find user with login or password is incorrect";
+            final String message = "Can't find user by login or password is incorrect";
             LOG.error(message);
             throw new ValidationException(message);
         }
@@ -62,20 +62,22 @@ public class AuthValidationServiceImpl implements AuthValidationService
     {
         if (userService.findByEmail(email).isEmpty())
         {
-            final String message = "User with email %s doesn't exist".formatted(email);
-            LOG.error(message);
+            final String message = "User with email doesn't exist";
+            final String messageForLog = "User with email %s doesn't exist".formatted(email);
+            LOG.error(messageForLog);
             throw new ValidationException(message);
         }
     }
 
     @Override // TODO to userValidationService
-    public void validateUserIsNotExistByEmail(String email) throws ConflictException
+    public void validateUserIsNotExistByEmail(String email) throws ValidationException
     {
         if (userService.findByEmail(email).isPresent())
         {
-            final String message = "User with email %s is already exist".formatted(email);
-            LOG.error(message);
-            throw new ConflictException(message);
+            final String message = "User with email is already exist";
+            final String messageForLog = "User with email %s is already exist".formatted(email);
+            LOG.error(messageForLog);
+            throw new ValidationException(message);
         }
     }
 

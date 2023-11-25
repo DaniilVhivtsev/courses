@@ -24,7 +24,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fitness.courses.CoursesApplication;
 import com.fitness.courses.http.auth.dto.JwtResponse;
-import com.fitness.courses.http.auth.dto.LoginRequest;
+import com.fitness.courses.http.auth.dto.LoginRequestDto;
 import com.fitness.courses.http.auth.dto.RegistrationUserInfoDto;
 import com.fitness.courses.http.example.DSLExample;
 import com.fitness.courses.http.user.model.User;
@@ -101,8 +101,8 @@ class AuthorizationControllerTest
         Assertions.assertTrue(newUserFromDBOptional.isPresent());
 
         DSLResponse<?> responseVoid = dslAuthorization.registration(newUserInfo);
-        Assertions.assertEquals(HttpStatus.CONFLICT.value(), responseVoid.statusCode());
-        Assertions.assertEquals("User with email %s is already exist".formatted(USER_EMAIL),
+        Assertions.assertEquals(HttpStatus.BAD_REQUEST.value(), responseVoid.statusCode());
+        Assertions.assertEquals("User with email is already exist",
                 Objects.requireNonNull(responseVoid.responseEntity().getBody()).toString());
     }
 
@@ -117,22 +117,22 @@ class AuthorizationControllerTest
 
         dslAuthorization.registration(newUserInfo).getBodyIfStatusOk();
 
-        LoginRequest badLoginCredentials = new LoginRequest();
+        LoginRequestDto badLoginCredentials = new LoginRequestDto();
         badLoginCredentials.setLogin(USER_EMAIL);
         badLoginCredentials.setPassword(USER_PASSWORD + "1");
 
         DSLResponse<?> responseAuthentication = dslAuthorization.authenticate(badLoginCredentials);
         Assertions.assertEquals(HttpStatus.BAD_REQUEST.value(), responseAuthentication.statusCode());
-        Assertions.assertEquals("Can't find user with login or password is incorrect",
+        Assertions.assertEquals("Can't find user by login or password is incorrect",
                 Objects.requireNonNull(responseAuthentication.responseEntity().getBody()).toString());
 
         badLoginCredentials.setLogin("1");
         responseAuthentication = dslAuthorization.authenticate(badLoginCredentials);
         Assertions.assertEquals(HttpStatus.BAD_REQUEST.value(), responseAuthentication.statusCode());
-        Assertions.assertEquals("User with email 1 doesn't exist",
+        Assertions.assertEquals("User with email doesn't exist",
                 Objects.requireNonNull(responseAuthentication.responseEntity().getBody()).toString());
 
-        LoginRequest correctLoginCredentials = new LoginRequest();
+        LoginRequestDto correctLoginCredentials = new LoginRequestDto();
         correctLoginCredentials.setLogin(USER_EMAIL);
         correctLoginCredentials.setPassword(USER_PASSWORD);
         responseAuthentication = dslAuthorization.authenticate(correctLoginCredentials);

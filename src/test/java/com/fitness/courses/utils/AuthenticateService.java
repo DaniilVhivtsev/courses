@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fitness.courses.http.auth.dto.JwtResponse;
-import com.fitness.courses.http.auth.dto.LoginRequest;
+import com.fitness.courses.http.auth.dto.LoginRequestDto;
 import com.fitness.courses.http.auth.dto.RegistrationUserInfoDto;
 import com.fitness.courses.http.authorization.DSLAuthorization;
 import com.fitness.courses.http.user.model.User;
@@ -42,7 +42,7 @@ public class AuthenticateService
         userFromDB.setConfirmed(true);
         userService.save(userFromDB);
 
-        LoginRequest correctLoginCredentials = new LoginRequest();
+        LoginRequestDto correctLoginCredentials = new LoginRequestDto();
         correctLoginCredentials.setLogin(USER_EMAIL);
         correctLoginCredentials.setPassword(USER_PASSWORD);
         return (JwtResponse)dslAuthorization.authenticate(correctLoginCredentials).getBodyIfStatusOk();

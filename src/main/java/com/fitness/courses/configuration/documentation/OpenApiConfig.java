@@ -6,11 +6,14 @@ import io.swagger.v3.oas.annotations.info.Contact;
 import io.swagger.v3.oas.annotations.info.Info;
 import io.swagger.v3.oas.annotations.security.SecurityScheme;
 
+/**
+ * Класс конфигурации Open API документации проекта.
+ */
 @OpenAPIDefinition(
         info = @Info(
                 title = "Fitness Courses Platform Api",
                 description = "Fitness Courses Platform Api",
-                version = "0.0.1",
+                version = "0.0.2",
                 contact = @Contact(
                         name = "Vshivtsev Daniil",
                         email = "danya.vshivtsev@mail.ru"

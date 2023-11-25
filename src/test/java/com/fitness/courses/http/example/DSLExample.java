@@ -30,7 +30,7 @@ public class DSLExample
     {
         final HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.add("content-type", "application/json");
-        httpHeaders.add("Authorization", String.format("%s %s", JwtResponse.getType(), jwtResponse.getAccessToken()));
+        httpHeaders.add("Authorization", String.format("%s %s", JwtResponse.TYPE, jwtResponse.getAccessToken()));
 
         final HttpEntity<String> entity = new HttpEntity<>(null, httpHeaders);
         final String url = baseUrl + "/example/authenticated/request";

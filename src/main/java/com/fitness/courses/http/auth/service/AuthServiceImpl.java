@@ -21,10 +21,9 @@ import com.fitness.courses.global.exceptions.BadRequestException;
 import com.fitness.courses.global.exceptions.ValidationException;
 import com.fitness.courses.http.html.service.VerificationCodeHTMLService;
 import com.fitness.courses.http.auth.dto.JwtResponse;
-import com.fitness.courses.http.auth.dto.LoginRequest;
-import com.fitness.courses.http.auth.dto.RefreshTokenDto;
+import com.fitness.courses.http.auth.dto.LoginRequestDto;
 import com.fitness.courses.http.auth.dto.RegistrationUserInfoDto;
-import com.fitness.courses.configuration.security.jwt.service.JwtProvider;
+import com.fitness.courses.configuration.security.jwt.JwtProvider;
 import com.fitness.courses.http.user.model.Role;
 import com.fitness.courses.http.user.model.User;
 import com.fitness.courses.http.user.service.UserService;
@@ -60,13 +59,13 @@ public class AuthServiceImpl implements AuthService
     }
 
     @Override
-    public @NotNull JwtResponse login(@NotNull LoginRequest loginRequest)
+    public @NotNull JwtResponse login(@NotNull LoginRequestDto loginRequestDto)
     {
-        authValidationService.validateUserExistByEmail(loginRequest.getLogin());
-        authValidationService.validateUserLoginCredentials(loginRequest);
-        authValidationService.validateUserEmailIsConfirmed(loginRequest.getLogin());
+        authValidationService.validateUserExistByEmail(loginRequestDto.getLogin());
+        authValidationService.validateUserLoginCredentials(loginRequestDto);
+        authValidationService.validateUserEmailIsConfirmed(loginRequestDto.getLogin());
 
-        final User user = userService.findByEmail(loginRequest.getLogin()).get();
+        final User user = userService.findByEmail(loginRequestDto.getLogin()).get();
         final String accessToken = jwtProvider.generateAccessToken(user);
         final String refreshToken = jwtProvider.generateRefreshToken(user);
         refreshStorage.put(user.getEmail(), refreshToken);
@@ -85,8 +84,9 @@ public class AuthServiceImpl implements AuthService
             final String login = claims.getSubject();
             if (!refreshStorage.containsKey(login))
             {
-                final String message = "Can't find refresh token by login %s".formatted(login);
-                LOG.error(message);
+                final String message = "Can't find refresh token by login";
+                final String messageForLog = "Can't find refresh token by login %s".formatted(login);
+                LOG.error(messageForLog);
                 throw new BadRequestException(message);
             }
             final String saveRefreshToken = refreshStorage.get(login);

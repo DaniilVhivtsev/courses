@@ -1,4 +1,4 @@
-package com.fitness.courses.configuration.security.jwt.service;
+package com.fitness.courses.configuration.security.jwt;
 
 import java.io.IOException;
 import java.util.List;
@@ -21,6 +21,9 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
+/**
+ * Фильтр запроса для установки текущего пользователя по переданному access токену.
+ */
 @Component
 public class JwtRequestFilter extends OncePerRequestFilter
 {
@@ -42,7 +45,7 @@ public class JwtRequestFilter extends OncePerRequestFilter
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException
     {
-        final Optional<String> tokenOptional = getTokenFromRequest(request);
+        final Optional<String> tokenOptional = getAccessTokenFromRequest(request);
 
         if (tokenOptional.isPresent() && jwtProvider.validateAccessToken(tokenOptional.get()))
         {
@@ -63,7 +66,13 @@ public class JwtRequestFilter extends OncePerRequestFilter
         filterChain.doFilter(request, response);
     }
 
-    private static Optional<String> getTokenFromRequest(HttpServletRequest request)
+    /**
+     * Получение токена из запроса по заголовку "Authorization".
+     *
+     * @param request запрос.
+     * @return access токен, иначе пустой Optional.
+     */
+    private static Optional<String> getAccessTokenFromRequest(HttpServletRequest request)
     {
         final String bearer = request.getHeader(AUTHORIZATION);
         if (StringUtils.hasText(bearer) && bearer.startsWith(JWT_PREFIX))

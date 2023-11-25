@@ -10,7 +10,7 @@ import org.springframework.http.ResponseEntity;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fitness.courses.http.auth.dto.JwtResponse;
-import com.fitness.courses.http.auth.dto.LoginRequest;
+import com.fitness.courses.http.auth.dto.LoginRequestDto;
 import com.fitness.courses.http.auth.dto.RegistrationUserInfoDto;
 import com.fitness.courses.utils.DSLResponse;
 
@@ -45,12 +45,12 @@ public class DSLAuthorization
         return new DSLResponse<>(response.getBody(), response);
     }
 
-    public DSLResponse<?> authenticate(LoginRequest loginRequest) throws JsonProcessingException
+    public DSLResponse<?> authenticate(LoginRequestDto loginRequestDto) throws JsonProcessingException
     {
         final HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.add("content-type", "application/json");
 
-        final HttpEntity<LoginRequest> entity = new HttpEntity<>(loginRequest, httpHeaders);
+        final HttpEntity<LoginRequestDto> entity = new HttpEntity<>(loginRequestDto, httpHeaders);
         final String url = baseUrl + "/auth";
         ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.POST, entity, String.class);
 

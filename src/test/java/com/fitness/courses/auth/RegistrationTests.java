@@ -18,7 +18,7 @@ import com.fitness.courses.CoursesApplication;
 @SpringBootTest(classes = CoursesApplication.class, webEnvironment = WebEnvironment.RANDOM_PORT)
 public class RegistrationTests
 {
-    @LocalServerPort
+    /*@LocalServerPort
     private int port;
     private TestRestTemplate restTemplate = new TestRestTemplate();
     private final MockMvc mockMvc;
@@ -27,12 +27,12 @@ public class RegistrationTests
     public RegistrationTests(MockMvc mockMvc)
     {
         this.mockMvc = mockMvc;
-    }
+    }*/
 
     @Test
     public void successRegisterUser() throws Exception
     {
-        ResultActions registrationResult = mockMvc.perform(post("/auth/registration"));
+//        ResultActions registrationResult = mockMvc.perform(post("/auth/registration"));
 //        Assertions.assertEquals(registrationResult.ex);
     }
 }

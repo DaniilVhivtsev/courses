@@ -1,4 +1,4 @@
-package com.fitness.courses.configuration.security.jwt.service;
+package com.fitness.courses.configuration.security.jwt;
 
 import java.security.Key;
 import java.time.Duration;
@@ -27,6 +27,9 @@ import io.jsonwebtoken.UnsupportedJwtException;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 
+/**
+ * JWT провайдер.
+ */
 @Component
 public class JwtProvider
 {
@@ -67,7 +70,7 @@ public class JwtProvider
                 .setSubject(user.getEmail())
                 .setExpiration(accessExpiration)
                 .signWith(jwtAccessSecret)
-                .claim("roles", user.getRoles())// можно добавить id
+                .claim("roles", user.getRoles())
                 .addClaims(Map.of("id", user.getId().toString()))
                 .compact();
     }
@@ -114,6 +117,13 @@ public class JwtProvider
         return validateToken(refreshToken, jwtRefreshSecret);
     }
 
+    /**
+     * Проверить валидность переданного токена с помощью переданного ключа.
+     *
+     * @param token токен;
+     * @param secret ключ.
+     * @return true - если ключ валиден, иначе - false.
+     */
     private boolean validateToken(@NotNull String token, @NotNull Key secret)
     {
         try
@@ -175,6 +185,13 @@ public class JwtProvider
         return getClaims(refreshToken, jwtRefreshSecret);
     }
 
+    /**
+     * Получить полезную нагрузку из переданного токена и его ключу.
+     *
+     * @param token токен;
+     * @param secret ключ.
+     * @return полезная нагрузка JWT.
+     */
     private Claims getClaims(@NotNull String token, @NotNull Key secret)
     {
         return Jwts.parserBuilder()
