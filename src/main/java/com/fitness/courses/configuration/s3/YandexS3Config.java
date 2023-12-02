@@ -25,6 +25,15 @@ public class YandexS3Config
     @Value("${yandex.cloud.s3.signingRegion}")
     private String signingRegion;
 
+    // TODO в будущем скрыть в YandexBucketProvider
+    @Value("${yandex.cloud.s3.mainBucketName}")
+    private String mainBucketName;
+
+    public String getMainBucketName()
+    {
+        return mainBucketName;
+    }
+
     @Bean
     public AmazonS3 yandexS3Client()
     {

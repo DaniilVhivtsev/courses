@@ -1,4 +1,9 @@
-package com.fitness.courses.http.coach.card.dto;
+package com.fitness.courses.http.coach.card.model.dto;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.springframework.web.multipart.MultipartFile;
 
 public class NewCardDto
 {
@@ -6,6 +11,8 @@ public class NewCardDto
     private String description;
     private String muscleGroupsDescription;
     private String inventoryDescription;
+    private List<MultipartFile> images = new ArrayList<>();
+    private MultipartFile video;
 
     public String getTitle()
     {
@@ -45,5 +52,25 @@ public class NewCardDto
     public void setInventoryDescription(String inventoryDescription)
     {
         this.inventoryDescription = inventoryDescription;
+    }
+
+    public List<MultipartFile> getImages()
+    {
+        return images;
+    }
+
+    public void setImages(List<MultipartFile> images)
+    {
+        this.images = images;
+    }
+
+    public MultipartFile getVideo()
+    {
+        return video;
+    }
+
+    public void setVideo(MultipartFile video)
+    {
+        this.video = video;
     }
 }
