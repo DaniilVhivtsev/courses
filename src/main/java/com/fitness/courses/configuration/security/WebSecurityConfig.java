@@ -88,6 +88,7 @@ public class WebSecurityConfig
                                 mvcRequestMatcher.pattern("/auth/**"),
                                 mvcRequestMatcher.pattern("/swagger-ui/**"),
                                 mvcRequestMatcher.pattern("/v3/**"),
+                                mvcRequestMatcher.pattern("/attachment/**"),
                                 toH2Console()).permitAll()
                         .anyRequest().authenticated())
                 .exceptionHandling(exception -> exception

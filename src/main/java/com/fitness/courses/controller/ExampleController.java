@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.fitness.courses.http.user.model.User;
+
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
@@ -60,8 +62,8 @@ public class ExampleController
     )
     @SecurityRequirement(name = "JWT")
     @PostMapping("/example/authenticated/request")
-    public ResponseEntity<?> examplePostMethod(@AuthenticationPrincipal UserDetails userDetails)
+    public ResponseEntity<?> examplePostMethod(@AuthenticationPrincipal User user)
     {
-        return new ResponseEntity<>("Current user with email " + userDetails.getUsername(), HttpStatus.OK);
+        return new ResponseEntity<>("Current user with email " + user.getUsername(), HttpStatus.OK);
     }
 }

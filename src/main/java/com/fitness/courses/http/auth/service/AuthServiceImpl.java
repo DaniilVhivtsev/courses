@@ -13,11 +13,16 @@ import javax.validation.constraints.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.fitness.courses.global.exceptions.BadRequestException;
+import com.fitness.courses.global.exceptions.AuthorizedException;
 import com.fitness.courses.global.exceptions.ValidationException;
 import com.fitness.courses.http.html.service.VerificationCodeHTMLService;
 import com.fitness.courses.http.auth.dto.JwtResponse;
@@ -149,6 +154,22 @@ public class AuthServiceImpl implements AuthService
         {
             throw new RuntimeException();
         }
+    }
+
+    @Override
+    public User getCurrentUserOrThrow() throws AuthorizedException
+    {
+        SecurityContext context = SecurityContextHolder.getContext();
+        Authentication authentication = context.getAuthentication();
+
+        if (authentication instanceof AnonymousAuthenticationToken)
+        {
+            final String message = "User is not authorized";
+            LOG.error(message);
+            throw new AuthorizedException(message);
+        }
+
+        return (User) authentication.getPrincipal();
     }
 
     private void sendVerificationEmailCode(Long userId)

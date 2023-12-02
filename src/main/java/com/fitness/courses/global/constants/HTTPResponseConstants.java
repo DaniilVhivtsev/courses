@@ -16,6 +16,11 @@ public final class HTTPResponseConstants {
     public static final int BAD_REQUEST = 400;
 
     /**
+     * Код HTTP-ответа для случая, если пользователь не авторизован
+     */
+    public static final int UNAUTHORIZED = 401;
+
+    /**
      * Код HTTP-ответа для случая, если доступ к ресурсу запрещен
      */
     public static final int FORBIDDEN = 403;

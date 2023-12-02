@@ -1,4 +1,4 @@
-package com.fitness.courses.http.course.dto;
+package com.fitness.courses.http.coach.course.dto;
 
 import com.fitness.courses.http.user.dto.AttachmentDto;
 
