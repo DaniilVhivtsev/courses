@@ -1,5 +1,7 @@
 package com.fitness.courses.http.coach.course.content.model.entity;
 
+import java.util.Objects;
+
 import com.fitness.courses.http.coach.course.model.entity.CourseEntity;
 
 import jakarta.persistence.Column;
@@ -78,5 +80,30 @@ public class ModuleEntity
     public void setCourse(CourseEntity course)
     {
         this.course = course;
+    }
+
+    @Override
+    public boolean equals(Object o)
+    {
+        if (this == o)
+        {
+            return true;
+        }
+
+        if (o == null || getClass() != o.getClass())
+        {
+            return false;
+        }
+
+        ModuleEntity that = (ModuleEntity)o;
+        return serialNumber == that.serialNumber && Objects.equals(id, that.id) && Objects.equals(title,
+                that.title) && Objects.equals(description, that.description) && Objects.equals(course,
+                that.course);
+    }
+
+    @Override
+    public int hashCode()
+    {
+        return Objects.hash(id, title, serialNumber, description, course);
     }
 }

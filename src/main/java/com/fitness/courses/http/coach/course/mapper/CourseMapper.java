@@ -1,11 +1,15 @@
 package com.fitness.courses.http.coach.course.mapper;
 
+import java.util.List;
+
 import javax.validation.constraints.NotNull;
 
 import org.dozer.DozerBeanMapper;
 import org.dozer.loader.api.BeanMappingBuilder;
 import org.springframework.lang.NonNull;
 
+import com.fitness.courses.http.coach.course.content.mapper.ModuleMapper;
+import com.fitness.courses.http.coach.course.content.model.info.ModuleWithLessonsInfo;
 import com.fitness.courses.http.coach.course.model.dto.CourseAuthorContentInfo;
 import com.fitness.courses.http.coach.course.model.dto.CourseAuthorGeneralInfoDto;
 import com.fitness.courses.http.coach.course.model.dto.EditCourseAuthorGeneralInfo;
@@ -95,5 +99,14 @@ public class CourseMapper
         return dto;
     }
 
-    public static @NotNull CourseAuthorContentInfo ()
+    public static @NotNull CourseAuthorContentInfo toCourseAuthorContentInfo(
+            List<ModuleWithLessonsInfo> moduleWithLessonsInfos)
+    {
+        CourseAuthorContentInfo courseAuthorContentInfo = new CourseAuthorContentInfo();
+        courseAuthorContentInfo.setModules(moduleWithLessonsInfos.stream()
+                .map(moduleWithLessonsInfo -> ModuleMapper.toCourseAuthorModuleInfo(moduleWithLessonsInfo.module(),
+                        moduleWithLessonsInfo.lessons())).toList());
+
+        return courseAuthorContentInfo;
+    }
 }
