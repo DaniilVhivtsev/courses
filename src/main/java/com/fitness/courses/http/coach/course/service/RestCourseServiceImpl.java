@@ -2,11 +2,15 @@ package com.fitness.courses.http.coach.course.service;
 
 import java.util.List;
 
+import javax.validation.constraints.NotNull;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.fitness.courses.http.coach.course.content.service.module.ModuleService;
+import com.fitness.courses.http.coach.course.model.dto.CourseAuthorContentInfo;
 import com.fitness.courses.http.coach.course.model.dto.CourseAuthorGeneralInfoDto;
 import com.fitness.courses.http.coach.course.model.dto.EditCourseAuthorGeneralInfo;
 import com.fitness.courses.http.coach.course.model.dto.ListCourseInfoDto;
@@ -21,14 +25,17 @@ public class RestCourseServiceImpl implements RestCourseService
 {
     private final CourseService courseService;
     private final CourseValidator courseValidator;
+    private final ModuleService moduleService;
 
     @Autowired
     public RestCourseServiceImpl(
             CourseService courseService,
-            CourseValidator courseValidator)
+            CourseValidator courseValidator,
+            ModuleService moduleService)
     {
         this.courseService = courseService;
         this.courseValidator = courseValidator;
+        this.moduleService = moduleService;
     }
 
     @Override
@@ -79,4 +86,14 @@ public class RestCourseServiceImpl implements RestCourseService
                 .map(UserMapper::toUserGeneralInfoDto)
                 .toList();
     }
+
+    @Override
+    public CourseAuthorContentInfo getAuthorCourseContent(@NotNull Long courseId)
+    {
+        courseValidator.validateCourseExist(courseId);
+        courseValidator.validateCurrentUserHasPermission(courseId);
+
+        return moduleService.findAllModulesWithLessonsByCourse(courseService.getCourseOrThrow(courseId));
+    }
+
 }

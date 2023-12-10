@@ -6,6 +6,7 @@ import org.dozer.DozerBeanMapper;
 import org.dozer.loader.api.BeanMappingBuilder;
 import org.springframework.lang.NonNull;
 
+import com.fitness.courses.http.coach.course.model.dto.CourseAuthorContentInfo;
 import com.fitness.courses.http.coach.course.model.dto.CourseAuthorGeneralInfoDto;
 import com.fitness.courses.http.coach.course.model.dto.EditCourseAuthorGeneralInfo;
 import com.fitness.courses.http.coach.course.model.dto.ListCourseInfoDto;
@@ -93,4 +94,6 @@ public class CourseMapper
         dto.setLogo(null);
         return dto;
     }
+
+    public static @NotNull CourseAuthorContentInfo ()
 }

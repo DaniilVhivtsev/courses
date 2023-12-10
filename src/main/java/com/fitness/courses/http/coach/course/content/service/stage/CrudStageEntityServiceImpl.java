@@ -1,4 +1,4 @@
-package com.fitness.courses.http.coach.course.content.service;
+package com.fitness.courses.http.coach.course.content.service.stage;
 
 import java.util.List;
 import java.util.Optional;

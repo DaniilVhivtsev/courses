@@ -118,6 +118,22 @@ public class CoachCourseController
         }
     }
 
+    @PutMapping(value = "/course/author/{id}/info/content")
+    public ResponseEntity<?> getAuthorCourseContent(@PathVariable Long id)
+    {
+        try
+        {
+            return new ResponseEntity<List<UserGeneralInfoDto>>(
+                    restCourseService.getAuthorCourseContent(id),
+                    HttpStatus.OK
+            );
+        }
+        catch (ResponseErrorException e)
+        {
+            return new ResponseEntity<String>(e.getMessage(), HttpStatus.valueOf(e.getHttpStatusCode()));
+        }
+    }
+
     @PostMapping(value = "/card/create", consumes = "multipart/form-data")
     public ResponseEntity<?> createCard(@ModelAttribute NewCardDto newCardDto)
     {

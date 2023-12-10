@@ -1,6 +1,5 @@
 package com.fitness.courses.configuration;
 
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,9 +14,7 @@ import com.fitness.courses.http.coach.course.content.model.entity.stage.ImgStage
 import com.fitness.courses.http.coach.course.content.model.entity.stage.exercise.AbstractExerciseContent;
 import com.fitness.courses.http.coach.course.content.model.entity.stage.exercise.RepeatExerciseContent;
 import com.fitness.courses.http.coach.course.content.model.entity.stage.exercise.set.ExerciseRepeatSetContent;
-import com.fitness.courses.http.coach.course.content.service.CrudStageEntityService;
-import com.fitness.courses.http.objectStorage.model.entity.FileExtensionEnum;
-import com.fitness.courses.http.objectStorage.model.entity.LocalStorageFileEntity;
+import com.fitness.courses.http.coach.course.content.service.stage.CrudStageEntityService;
 import com.fitness.courses.http.objectStorage.service.LocalStorageFileService;
 
 @Configuration
