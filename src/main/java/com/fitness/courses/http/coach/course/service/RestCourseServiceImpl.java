@@ -11,18 +11,20 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.fitness.courses.http.coach.course.content.model.dto.NewCourseAuthorLessonDto;
 import com.fitness.courses.http.coach.course.content.model.dto.NewCourseAuthorModuleDto;
+import com.fitness.courses.http.coach.course.content.model.dto.UpdateCourseAuthorLessonDto;
 import com.fitness.courses.http.coach.course.content.model.dto.UpdateCourseAuthorModuleDto;
+import com.fitness.courses.http.coach.course.content.model.entity.LessonEntity;
 import com.fitness.courses.http.coach.course.content.model.entity.ModuleEntity;
 import com.fitness.courses.http.coach.course.content.service.lesson.LessonService;
 import com.fitness.courses.http.coach.course.content.service.lesson.LessonValidator;
 import com.fitness.courses.http.coach.course.content.service.module.ModuleService;
 import com.fitness.courses.http.coach.course.content.service.module.ModuleValidator;
+import com.fitness.courses.http.coach.course.mapper.CourseMapper;
 import com.fitness.courses.http.coach.course.model.dto.CourseAuthorContentInfo;
 import com.fitness.courses.http.coach.course.model.dto.CourseAuthorGeneralInfoDto;
 import com.fitness.courses.http.coach.course.model.dto.EditCourseAuthorGeneralInfo;
 import com.fitness.courses.http.coach.course.model.dto.ListCourseInfoDto;
 import com.fitness.courses.http.coach.course.model.dto.NewCourseDto;
-import com.fitness.courses.http.coach.course.mapper.CourseMapper;
 import com.fitness.courses.http.coach.course.model.entity.CourseEntity;
 import com.fitness.courses.http.user.dto.UserGeneralInfoDto;
 import com.fitness.courses.http.user.mapper.UserMapper;
@@ -135,6 +137,7 @@ public class RestCourseServiceImpl implements RestCourseService
         CourseEntity courseEntityFromDb = courseService.getCourseOrThrow(courseId);
 
         moduleValidator.validateExist(moduleId);
+        moduleValidator.validateModuleBelongsToCourse(courseId, moduleId);
 
         ModuleEntity moduleEntityFromDb = moduleService.getOrThrow(moduleId);
         if (updateModuleDto.getTitle() != null)
@@ -168,16 +171,85 @@ public class RestCourseServiceImpl implements RestCourseService
     }
 
     @Override
+    public void deleteModule(@NotNull Long courseId, @NotNull Long moduleId)
+    {
+        courseValidator.validateCourseExist(courseId);
+        courseValidator.validateCurrentUserHasPermission(courseId);
+        CourseEntity courseEntityFromDb = courseService.getCourseOrThrow(courseId);
+
+        moduleValidator.validateExist(moduleId);
+        moduleValidator.validateModuleBelongsToCourse(courseId, moduleId);
+        moduleValidator.validateNoLessonsInModule(moduleId);
+
+        moduleService.delete(courseEntityFromDb, moduleId);
+    }
+
+    @Override
     public void addLesson(@NotNull Long courseId, @NotNull Long moduleId,
             @NotNull NewCourseAuthorLessonDto newLessonDto)
     {
         courseValidator.validateCourseExist(courseId);
         courseValidator.validateCurrentUserHasPermission(courseId);
 
+        moduleValidator.validateExist(moduleId);
         moduleValidator.validateModuleBelongsToCourse(courseId, moduleId);
 
         lessonValidator.validateTitle(newLessonDto.getTitle());
 
         lessonService.add(moduleService.getOrThrow(moduleId), newLessonDto);
+    }
+
+    @Override
+    public void editLesson(@NotNull Long courseId, @NotNull Long moduleId, @NotNull Long lessonId,
+            @NotNull UpdateCourseAuthorLessonDto updateLessonDto)
+    {
+        courseValidator.validateCourseExist(courseId);
+        courseValidator.validateCurrentUserHasPermission(courseId);
+
+        moduleValidator.validateExist(moduleId);
+        moduleValidator.validateModuleBelongsToCourse(courseId, moduleId);
+        ModuleEntity moduleEntityFromDb = moduleService.getOrThrow(moduleId);
+
+        lessonValidator.validateExist(lessonId);
+        lessonValidator.validateLessonBelongsToModule(moduleId, lessonId);
+        LessonEntity lessonEntityFromDb = lessonService.getOrThrow(moduleId);
+
+
+        if (updateLessonDto.getTitle() != null)
+        {
+            lessonValidator.validateTitle(updateLessonDto.getTitle());
+        }
+        else
+        {
+            updateLessonDto.setTitle(lessonEntityFromDb.getTitle());
+        }
+
+        if (updateLessonDto.getSerialNumber() != null)
+        {
+            lessonValidator.validateSerialNumber(moduleEntityFromDb, updateLessonDto.getSerialNumber());
+        }
+        else
+        {
+            updateLessonDto.setSerialNumber(lessonEntityFromDb.getSerialNumber());
+        }
+
+        lessonService.update(moduleEntityFromDb, lessonId, updateLessonDto);
+    }
+
+    @Override
+    public void deleteLesson(@NotNull Long courseId, @NotNull Long moduleId, @NotNull Long lessonId)
+    {
+        courseValidator.validateCourseExist(courseId);
+        courseValidator.validateCurrentUserHasPermission(courseId);
+
+        moduleValidator.validateExist(moduleId);
+        moduleValidator.validateModuleBelongsToCourse(courseId, moduleId);
+        ModuleEntity moduleEntityFromDb = moduleService.getOrThrow(moduleId);
+
+        lessonValidator.validateExist(lessonId);
+        lessonValidator.validateLessonBelongsToModule(moduleId, lessonId);
+        lessonValidator.validateNoStagesInLesson(lessonId);
+
+        lessonService.delete(moduleEntityFromDb, lessonId);
     }
 }

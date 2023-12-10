@@ -8,6 +8,7 @@ import org.springframework.lang.NonNull;
 
 import com.fitness.courses.http.coach.course.content.model.dto.NewCourseAuthorLessonDto;
 import com.fitness.courses.http.coach.course.content.model.dto.NewCourseAuthorModuleDto;
+import com.fitness.courses.http.coach.course.content.model.dto.UpdateCourseAuthorLessonDto;
 import com.fitness.courses.http.coach.course.content.model.dto.UpdateCourseAuthorModuleDto;
 import com.fitness.courses.http.coach.course.model.dto.CourseAuthorContentInfo;
 import com.fitness.courses.http.coach.course.model.dto.CourseAuthorGeneralInfoDto;
@@ -36,5 +37,12 @@ public interface RestCourseService
     void editModule(@NotNull Long courseId, @NotNull Long moduleId,
             @NotNull UpdateCourseAuthorModuleDto updateModuleDto);
 
+    void deleteModule(@NotNull Long courseId, @NotNull Long moduleId);
+
     void addLesson(@NotNull Long courseId, @NotNull Long moduleId, @NotNull NewCourseAuthorLessonDto newLessonDto);
+
+    void editLesson(@NotNull Long courseId, @NotNull Long moduleId, @NotNull Long lessonId,
+            @NotNull UpdateCourseAuthorLessonDto updateLessonDto);
+
+    void deleteLesson(@NotNull Long courseId, @NotNull Long moduleId, @NotNull Long lessonId);
 }

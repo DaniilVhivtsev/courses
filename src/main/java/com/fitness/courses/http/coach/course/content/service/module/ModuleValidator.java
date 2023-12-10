@@ -17,4 +17,6 @@ public interface ModuleValidator
 
     void validateSerialNumber(@NotNull CourseEntity courseEntity, @NotNull Integer serialNumber)
             throws ValidationException;
+
+    void validateNoLessonsInModule(@NotNull Long moduleId) throws ValidationException;
 }

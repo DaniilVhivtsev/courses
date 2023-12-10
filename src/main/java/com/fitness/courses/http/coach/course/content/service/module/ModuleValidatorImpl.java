@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import com.fitness.courses.global.exceptions.ValidationException;
 import com.fitness.courses.http.coach.course.content.model.entity.ModuleEntity;
+import com.fitness.courses.http.coach.course.content.service.lesson.LessonService;
 import com.fitness.courses.http.coach.course.model.entity.CourseEntity;
 
 @Service
@@ -22,11 +23,15 @@ public class ModuleValidatorImpl implements ModuleValidator
     private static final int MAX_DESCRIPTION_STRING_LENGTH = 256;
 
     private final ModuleService moduleService;
+    private final LessonService lessonService;
 
     @Autowired
-    public ModuleValidatorImpl(ModuleService moduleService)
+    public ModuleValidatorImpl(
+            ModuleService moduleService,
+            LessonService lessonService)
     {
         this.moduleService = moduleService;
+        this.lessonService = lessonService;
     }
 
     @Override
@@ -110,5 +115,18 @@ public class ModuleValidatorImpl implements ModuleValidator
                 throw new ValidationException(message);
             }
         });
+    }
+
+    @Override
+    public void validateNoLessonsInModule(final @NotNull Long moduleId) throws ValidationException
+    {
+        final ModuleEntity moduleEntityFromDb = moduleService.getOrThrow(moduleId);
+        if (!lessonService.findAllByModuleAndSortAscBySerialNumber(moduleEntityFromDb).isEmpty())
+        {
+            final String message = "There are lessons in the module. "
+                    + "You cannot delete a module if it contains lessons.";
+            LOG.error(message);
+            throw new ValidationException(message);
+        }
     }
 }

@@ -91,21 +91,17 @@ public class ModuleServiceImpl implements ModuleService
     }
 
     @Override
-    public void update(@NotNull CourseEntity courseEntityFromDb, @NotNull Long moduleId,
+    public void update(@NotNull CourseEntity courseEntity, @NotNull Long moduleId,
             @NotNull UpdateCourseAuthorModuleDto updateModuleDto)
     {
         ModuleEntity moduleEntityFromDb = getOrThrow(moduleId);
         if (moduleEntityFromDb.getSerialNumber() != updateModuleDto.getSerialNumber())
         {
-            List<ModuleEntity> courseModules = findAllByCourseAndSortAscBySerialNumber(courseEntityFromDb);
+            List<ModuleEntity> courseModules = findAllByCourseAndSortAscBySerialNumber(courseEntity);
             ModuleEntity moduleEntityFromList = courseModules.stream()
                     .filter(module -> module.getId().equals(moduleId))
                     .findFirst()
                     .orElseThrow();
-
-            moduleEntityFromList.setSerialNumber(updateModuleDto.getSerialNumber());
-            moduleEntityFromList.setTitle(updateModuleDto.getTitle());
-            moduleEntityFromList.setDescription(updateModuleDto.getDescription());
 
             int newSerialNumber = updateModuleDto.getSerialNumber();
 
@@ -125,11 +121,36 @@ public class ModuleServiceImpl implements ModuleService
                 }
             }
 
+            moduleEntityFromList.setSerialNumber(updateModuleDto.getSerialNumber());
+            moduleEntityFromList.setTitle(updateModuleDto.getTitle());
+            moduleEntityFromList.setDescription(updateModuleDto.getDescription());
+
             courseModules.forEach(crudModuleEntityService::update);
         }
 
         moduleEntityFromDb.setTitle(updateModuleDto.getTitle());
         moduleEntityFromDb.setDescription(updateModuleDto.getDescription());
         crudModuleEntityService.update(moduleEntityFromDb);
+    }
+
+    @Override
+    public void delete(@NotNull CourseEntity courseEntity, @NotNull Long moduleId)
+    {
+        List<ModuleEntity> courseModules = findAllByCourseAndSortAscBySerialNumber(courseEntity);
+        ModuleEntity moduleEntityFromList = courseModules.stream()
+                .filter(module -> module.getId().equals(moduleId))
+                .findFirst()
+                .orElseThrow();
+        courseModules.remove(moduleEntityFromList);
+
+        int removedSerialNumber = moduleEntityFromList.getSerialNumber();
+        for (ModuleEntity module : courseModules) {
+            if (module.getSerialNumber() > removedSerialNumber) {
+                module.setSerialNumber(module.getSerialNumber() - 1);
+                crudModuleEntityService.update(module);
+            }
+        }
+
+        crudModuleEntityService.deleteById(moduleId);
     }
 }

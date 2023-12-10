@@ -26,4 +26,7 @@ public interface CrudModuleEntityService
 
     @Transactional(readOnly = true)
     List<ModuleEntity> findAllByCourseIdAndSortAscBySerialNumber(@NotNull Long courseId);
+
+    @Transactional
+    void deleteById(@NotNull Long id);
 }

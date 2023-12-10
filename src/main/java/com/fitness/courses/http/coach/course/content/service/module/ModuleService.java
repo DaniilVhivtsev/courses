@@ -23,6 +23,8 @@ public interface ModuleService
 
     ModuleEntity getOrThrow(@NotNull Long id);
 
-    void update(@NotNull CourseEntity courseEntityFromDb, @NotNull Long moduleId,
+    void update(@NotNull CourseEntity courseEntity, @NotNull Long moduleId,
             @NotNull UpdateCourseAuthorModuleDto updateModuleDto);
+
+    void delete(@NotNull CourseEntity courseEntity, @NotNull Long moduleId);
 }

@@ -59,4 +59,11 @@ public class CrudLessonEntityServiceImpl implements CrudLessonEntityService
     {
         return lessonEntityRepository.findAllByModuleIdOrderBySerialNumberAsc(moduleId);
     }
+
+    @Override
+    @Transactional
+    public void deleteById(@NotNull Long id)
+    {
+        lessonEntityRepository.deleteById(id);
+    }
 }

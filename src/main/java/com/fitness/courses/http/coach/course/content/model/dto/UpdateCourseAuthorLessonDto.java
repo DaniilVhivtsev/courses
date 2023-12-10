@@ -4,7 +4,7 @@ public class UpdateCourseAuthorLessonDto
 {
     private String title;
 
-    private int serialNumber;
+    private Integer serialNumber;
 
     public String getTitle()
     {
@@ -16,12 +16,12 @@ public class UpdateCourseAuthorLessonDto
         this.title = title;
     }
 
-    public int getSerialNumber()
+    public Integer getSerialNumber()
     {
         return serialNumber;
     }
 
-    public void setSerialNumber(int serialNumber)
+    public void setSerialNumber(Integer serialNumber)
     {
         this.serialNumber = serialNumber;
     }
