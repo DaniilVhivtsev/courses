@@ -14,6 +14,7 @@ public class FileExtensionUtils
         return switch (fileExtension)
                 {
                     case JPG, PNG -> ContentTypeEnum.IMG;
+                    case MOV, AVI, MP4 -> ContentTypeEnum.VIDEO;
                 };
     }
 }

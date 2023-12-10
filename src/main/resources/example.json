@@ -1,0 +1,79 @@
+{ // 3 Запроса: курс с модулем и занятиями, блоки, контент блока
+  "id": 36,
+  "title": "test_eabb71fad4d2",
+  "serialNumber": 35,
+  "lesson": {
+    "id": 14,
+    "title": "test_c90587ea6ad9",
+    "module": {
+      "id": 62,
+      "title": "test_38cd645bf9eb",
+      "description": "test_b35400c2b88c"
+    }
+  },
+  "stageContent": [
+    {
+      "attachmentUrl": "https://....",
+      "uuid": "test_ce3ebb79ecd5",
+      "type": "IMG"
+    },
+    {
+      "textContent": "test_02fe462d2ea6",
+      "uuid": "test_50f4c19b597e",
+      "type": "TEXT"
+    },
+    {
+      "attachmentUrl": "https://....",
+      "uuid": "test_a0614e7cacaf",
+      "type": "VIDEO"
+    },
+    {
+      "exercises": [
+        {
+          "uuid": "test_70c97242ed44",
+          "cardId": 12,
+          "cardImgUrl": ...,
+          cardTitle
+          "sets": [
+            {
+              "repeatCount": 0,
+              "uuid": "test_fa3ac66b0e52",
+              "countOfKilograms": 99.94,
+              "pauseAfter": "2015-04-01 15:41:46",
+              "type": "REPEAT"
+            },
+            {
+              "repeatCount": 21,
+              "uuid": "test_f9483789a687",
+              "countOfKilograms": 51.21,
+              "pauseAfter": "2015-05-05 17:30:58",
+              "type": "REPEAT"
+            },
+          ],
+          "type": "REPEAT"
+        },
+        {
+          "uuid": "test_ee762730750b",
+          "cardId": 74,
+          "sets": [
+            {
+              "executionTime": "04:35",
+              "uuid": "test_b0223e75e5fa",
+              "countOfKilograms": 74.15,
+              "pauseAfter": "2015-01-02 17:54:53",
+              "type": "EXECUTION"
+            },
+            {
+              "executionTime": "01:29",
+              "uuid": "test_0c0dceabfec6",
+              "countOfKilograms": 25.23,
+              "pauseAfter": "2031-03-16 05:34:46",
+              "type": "EXECUTION"
+            }
+          ]
+        }
+      ],
+      "uuid": "test_c32777374b42"
+    }
+  ]
+}

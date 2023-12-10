@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.fitness.courses.global.exceptions.NotFoundException;
-import com.fitness.courses.http.coach.course.model.CourseEntity;
+import com.fitness.courses.http.coach.course.model.entity.CourseEntity;
 import com.fitness.courses.http.coach.course.repository.CourseEntityRepository;
 
 @Service
@@ -50,7 +50,7 @@ public class CrudCourseEntityServiceImpl implements CrudCourseEntityService
     @Transactional(readOnly = true)
     public CourseEntity findByIdOrThrow(@NotNull Long id) throws NotFoundException
     {
-        return this.findById(id).orElseThrow(() -> new NotFoundException("Can't find user by id %s".formatted(id)));
+        return this.findById(id).orElseThrow(() -> new NotFoundException("Can't find course by id %s".formatted(id)));
     }
 
     @Override

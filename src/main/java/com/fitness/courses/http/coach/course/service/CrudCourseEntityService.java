@@ -6,7 +6,7 @@ import java.util.Optional;
 import javax.validation.constraints.NotNull;
 
 import com.fitness.courses.global.exceptions.NotFoundException;
-import com.fitness.courses.http.coach.course.model.CourseEntity;
+import com.fitness.courses.http.coach.course.model.entity.CourseEntity;
 
 public interface CrudCourseEntityService
 {

@@ -14,7 +14,6 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
@@ -42,7 +41,7 @@ public class CardEntity
 
     @ManyToOne
     @JoinColumn(name = "author_id", nullable = false)
-    private User user;
+    private User author;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<AttachmentEntity> images = new ArrayList<>();
@@ -101,14 +100,14 @@ public class CardEntity
         this.inventoryDescription = inventoryDescription;
     }
 
-    public User getUser()
+    public User getAuthor()
     {
-        return user;
+        return author;
     }
 
-    public void setUser(User user)
+    public void setAuthor(User author)
     {
-        this.user = user;
+        this.author = author;
     }
 
     public List<AttachmentEntity> getImages()

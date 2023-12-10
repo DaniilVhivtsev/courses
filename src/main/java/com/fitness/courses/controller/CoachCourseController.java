@@ -1,19 +1,31 @@
 package com.fitness.courses.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fitness.courses.global.exceptions.ResponseErrorException;
+import com.fitness.courses.http.coach.card.model.dto.CardInfoDto;
+import com.fitness.courses.http.coach.card.model.dto.ListCardInfoDto;
 import com.fitness.courses.http.coach.card.model.dto.NewCardDto;
 import com.fitness.courses.http.coach.card.service.RestCardService;
-import com.fitness.courses.http.coach.course.dto.NewCourseDto;
+import com.fitness.courses.http.coach.course.model.dto.CourseAuthorGeneralInfoDto;
+import com.fitness.courses.http.coach.course.model.dto.EditCourseAuthorGeneralInfo;
+import com.fitness.courses.http.coach.course.model.dto.ListCourseInfoDto;
+import com.fitness.courses.http.coach.course.model.dto.NewCourseDto;
 import com.fitness.courses.http.coach.course.service.RestCourseService;
+import com.fitness.courses.http.user.dto.UserGeneralInfoDto;
 
 @RestController
 @RequestMapping(path = "/coach")
@@ -44,6 +56,68 @@ public class CoachCourseController
         }
     }
 
+    @GetMapping(value = "/course/author/get/all")
+    public ResponseEntity<?> getAllAuthorCourses()
+    {
+        try
+        {
+            return new ResponseEntity<List<ListCourseInfoDto>>(restCourseService.getAuthorCourses(), HttpStatus.OK);
+        }
+        catch (ResponseErrorException e)
+        {
+            return new ResponseEntity<String>(e.getMessage(), HttpStatus.valueOf(e.getHttpStatusCode()));
+        }
+    }
+
+    @GetMapping(value = "/course/author/{id}/info")
+    public ResponseEntity<?> getAuthorCourseGeneralInfo(@PathVariable Long id)
+    {
+        try
+        {
+            return new ResponseEntity<CourseAuthorGeneralInfoDto>(
+                    restCourseService.getAuthorCourseGeneralInfo(id),
+                    HttpStatus.OK
+            );
+        }
+        catch (ResponseErrorException e)
+        {
+            return new ResponseEntity<String>(e.getMessage(), HttpStatus.valueOf(e.getHttpStatusCode()));
+        }
+    }
+
+    @PutMapping(value = "/course/author/{id}/info")
+    public ResponseEntity<?> editAuthorCourseGeneralInfo(@PathVariable Long id,
+            @ModelAttribute EditCourseAuthorGeneralInfo editCourseAuthorGeneralInfo)
+    {
+        try
+        {
+            return new ResponseEntity<CourseAuthorGeneralInfoDto>(
+                    restCourseService.editAuthCourseGeneralInfo(id, editCourseAuthorGeneralInfo),
+                    HttpStatus.OK
+            );
+        }
+        catch (ResponseErrorException e)
+        {
+            return new ResponseEntity<String>(e.getMessage(), HttpStatus.valueOf(e.getHttpStatusCode()));
+        }
+    }
+
+    @GetMapping(value = "/course/author/{id}/students")
+    public ResponseEntity<?> getAuthorCourseStudentsInfo(@PathVariable Long id)
+    {
+        try
+        {
+            return new ResponseEntity<List<UserGeneralInfoDto>>(
+                    restCourseService.getAuthorCourseStudents(id),
+                    HttpStatus.OK
+            );
+        }
+        catch (ResponseErrorException e)
+        {
+            return new ResponseEntity<String>(e.getMessage(), HttpStatus.valueOf(e.getHttpStatusCode()));
+        }
+    }
+
     @PostMapping(value = "/card/create", consumes = "multipart/form-data")
     public ResponseEntity<?> createCard(@ModelAttribute NewCardDto newCardDto)
     {
@@ -57,4 +131,32 @@ public class CoachCourseController
             return new ResponseEntity<String>(e.getMessage(), HttpStatus.valueOf(e.getHttpStatusCode()));
         }
     }
+
+    @GetMapping(value = "/card")
+    public ResponseEntity<?> getCard(@RequestParam Long id)
+    {
+        try
+        {
+            return new ResponseEntity<CardInfoDto>(restCardService.getCard(id), HttpStatus.OK);
+        }
+        catch (ResponseErrorException e)
+        {
+            return new ResponseEntity<String>(e.getMessage(), HttpStatus.valueOf(e.getHttpStatusCode()));
+        }
+    }
+
+    @GetMapping(value = "/card/user/get/all")
+    public ResponseEntity<?> getAllCurrentUserCards()
+    {
+        try
+        {
+            return new ResponseEntity<List<ListCardInfoDto>>(restCardService.getUserCards(), HttpStatus.OK);
+        }
+        catch (ResponseErrorException e)
+        {
+            return new ResponseEntity<String>(e.getMessage(), HttpStatus.valueOf(e.getHttpStatusCode()));
+        }
+    }
+
+    // TODO getAttachment
 }

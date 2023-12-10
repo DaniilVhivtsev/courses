@@ -1,4 +1,4 @@
-package com.fitness.courses.http.coach.course.dto;
+package com.fitness.courses.http.coach.course.model.dto;
 
 public class NewCourseDto
 {

@@ -9,6 +9,7 @@ import java.util.Date;
 import java.util.Map;
 
 import javax.crypto.SecretKey;
+import javax.crypto.SecretKeyFactory;
 import javax.validation.constraints.NotNull;
 
 import org.slf4j.Logger;
@@ -51,6 +52,10 @@ public class JwtProvider
 
         this.jwtAccessLifetime = jwtAccessLifetime;
         this.jwtRefreshLifetime = jwtRefreshLifetime;
+
+//        String asd = "asdd";
+
+//        SecretKeyFactory.
     }
 
     /**

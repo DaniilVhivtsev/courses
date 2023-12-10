@@ -5,7 +5,10 @@ import com.fitness.courses.global.exceptions.ValidationException;
 public enum FileExtensionEnum
 {
     PNG("png"),
-    JPG("jpg");
+    JPG("jpg"),
+    MOV("mov"),
+    AVI("avi"),
+    MP4("mp4");
 
     private final String value;
 

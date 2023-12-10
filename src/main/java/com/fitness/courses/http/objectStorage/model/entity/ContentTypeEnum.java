@@ -2,8 +2,8 @@ package com.fitness.courses.http.objectStorage.model.entity;
 
 public enum ContentTypeEnum
 {
-    IMG("IMG")
-    ;
+    IMG("IMG"),
+    VIDEO("VIDEO");
 
     private final String value;
 
