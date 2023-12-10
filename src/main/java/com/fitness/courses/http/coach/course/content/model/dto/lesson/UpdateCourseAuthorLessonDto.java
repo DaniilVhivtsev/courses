@@ -1,4 +1,4 @@
-package com.fitness.courses.http.coach.course.content.model.dto;
+package com.fitness.courses.http.coach.course.content.model.dto.lesson;
 
 public class UpdateCourseAuthorLessonDto
 {

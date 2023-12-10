@@ -1,8 +1,8 @@
-package com.fitness.courses.http.coach.course.content.model.entity.stage.exercise;
+package com.fitness.courses.http.coach.course.content.model.entity.stage.content.exercise;
 
 import java.util.List;
 
-import com.fitness.courses.http.coach.course.content.model.entity.stage.exercise.set.ExerciseTimeSetContent;
+import com.fitness.courses.http.coach.course.content.model.entity.stage.content.exercise.set.ExerciseTimeSetContent;
 
 public class TimeExerciseContent extends AbstractExerciseContent<ExerciseTimeSetContent>
 {

@@ -1,12 +1,10 @@
-package com.fitness.courses.http.coach.course.content.model.dto;
+package com.fitness.courses.http.coach.course.content.model.dto.module;
 
-public class UpdateCourseAuthorModuleDto
+public class NewCourseAuthorModuleDto
 {
     private String title;
 
     private String description;
-
-    private Integer serialNumber;
 
     public String getTitle()
     {
@@ -26,15 +24,5 @@ public class UpdateCourseAuthorModuleDto
     public void setDescription(String description)
     {
         this.description = description;
-    }
-
-    public Integer getSerialNumber()
-    {
-        return serialNumber;
-    }
-
-    public void setSerialNumber(Integer serialNumber)
-    {
-        this.serialNumber = serialNumber;
     }
 }

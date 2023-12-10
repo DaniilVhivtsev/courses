@@ -10,8 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.fitness.courses.global.exceptions.NotFoundException;
-import com.fitness.courses.http.coach.course.content.model.dto.NewCourseAuthorModuleDto;
-import com.fitness.courses.http.coach.course.content.model.dto.UpdateCourseAuthorModuleDto;
+import com.fitness.courses.http.coach.course.content.model.dto.module.NewCourseAuthorModuleDto;
+import com.fitness.courses.http.coach.course.content.model.dto.module.UpdateCourseAuthorModuleDto;
 import com.fitness.courses.http.coach.course.content.model.entity.ModuleEntity;
 import com.fitness.courses.http.coach.course.content.model.info.ModuleWithLessonsInfo;
 import com.fitness.courses.http.coach.course.content.service.lesson.LessonService;

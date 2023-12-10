@@ -6,10 +6,11 @@ import javax.validation.constraints.NotNull;
 
 import org.springframework.lang.NonNull;
 
-import com.fitness.courses.http.coach.course.content.model.dto.NewCourseAuthorLessonDto;
-import com.fitness.courses.http.coach.course.content.model.dto.NewCourseAuthorModuleDto;
-import com.fitness.courses.http.coach.course.content.model.dto.UpdateCourseAuthorLessonDto;
-import com.fitness.courses.http.coach.course.content.model.dto.UpdateCourseAuthorModuleDto;
+import com.fitness.courses.http.coach.course.content.model.dto.lesson.NewCourseAuthorLessonDto;
+import com.fitness.courses.http.coach.course.content.model.dto.module.NewCourseAuthorModuleDto;
+import com.fitness.courses.http.coach.course.content.model.dto.lesson.UpdateCourseAuthorLessonDto;
+import com.fitness.courses.http.coach.course.content.model.dto.module.UpdateCourseAuthorModuleDto;
+import com.fitness.courses.http.coach.course.content.model.dto.stage.CourseAuthorStageWithContentInfoDto;
 import com.fitness.courses.http.coach.course.model.dto.CourseAuthorContentInfo;
 import com.fitness.courses.http.coach.course.model.dto.CourseAuthorGeneralInfoDto;
 import com.fitness.courses.http.coach.course.model.dto.EditCourseAuthorGeneralInfo;
@@ -45,4 +46,8 @@ public interface RestCourseService
             @NotNull UpdateCourseAuthorLessonDto updateLessonDto);
 
     void deleteLesson(@NotNull Long courseId, @NotNull Long moduleId, @NotNull Long lessonId);
+
+    void addStage(@NotNull Long courseId, @NotNull Long lessonId);
+
+    List<CourseAuthorStageWithContentInfoDto> getStages(@NotNull Long courseId, @NotNull Long lessonId);
 }

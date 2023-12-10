@@ -3,7 +3,7 @@ package com.fitness.courses.http.coach.course.content.mapper;
 import org.dozer.DozerBeanMapper;
 import org.dozer.loader.api.BeanMappingBuilder;
 
-import com.fitness.courses.http.coach.course.content.model.dto.CourseAuthorLessonInfo;
+import com.fitness.courses.http.coach.course.content.model.dto.lesson.CourseAuthorLessonInfo;
 import com.fitness.courses.http.coach.course.content.model.entity.LessonEntity;
 
 public class LessonMapper

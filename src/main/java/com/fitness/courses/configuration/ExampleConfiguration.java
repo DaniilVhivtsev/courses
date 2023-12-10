@@ -7,13 +7,15 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import com.fitness.courses.http.coach.course.content.model.entity.StageEntity;
-import com.fitness.courses.http.coach.course.content.model.entity.stage.AbstractStageContent;
-import com.fitness.courses.http.coach.course.content.model.entity.stage.ExercisesStageContent;
-import com.fitness.courses.http.coach.course.content.model.entity.stage.ImgStageContent;
-import com.fitness.courses.http.coach.course.content.model.entity.stage.exercise.AbstractExerciseContent;
-import com.fitness.courses.http.coach.course.content.model.entity.stage.exercise.RepeatExerciseContent;
-import com.fitness.courses.http.coach.course.content.model.entity.stage.exercise.set.ExerciseRepeatSetContent;
+import com.fitness.courses.http.coach.course.content.mapper.StageMapper;
+import com.fitness.courses.http.coach.course.content.model.dto.stage.CourseAuthorStageWithContentInfoDto;
+import com.fitness.courses.http.coach.course.content.model.entity.stage.StageEntity;
+import com.fitness.courses.http.coach.course.content.model.entity.stage.content.AbstractStageContent;
+import com.fitness.courses.http.coach.course.content.model.entity.stage.content.ExercisesStageContent;
+import com.fitness.courses.http.coach.course.content.model.entity.stage.content.ImgStageContent;
+import com.fitness.courses.http.coach.course.content.model.entity.stage.content.exercise.AbstractExerciseContent;
+import com.fitness.courses.http.coach.course.content.model.entity.stage.content.exercise.RepeatExerciseContent;
+import com.fitness.courses.http.coach.course.content.model.entity.stage.content.exercise.set.ExerciseRepeatSetContent;
 import com.fitness.courses.http.coach.course.content.service.stage.CrudStageEntityService;
 import com.fitness.courses.http.objectStorage.service.LocalStorageFileService;
 
@@ -22,7 +24,7 @@ public class ExampleConfiguration
 {
     @Bean
     public CommandLineRunner testS3BucketLoader(LocalStorageFileService localStorageFileService,
-            CrudStageEntityService crudStageEntityService)
+            CrudStageEntityService crudStageEntityService, StageMapper stageMapper)
     {
         return args ->
         {
@@ -36,7 +38,7 @@ public class ExampleConfiguration
 
             StageEntity stageEntity = new StageEntity();
             stageEntity.setSerialNumber(1);
-            stageEntity.setTitle("titleExample");
+//            stageEntity.setTitle("titleExample");
 
             List<AbstractStageContent> stageContentList = new ArrayList<>();
             stageEntity.setStageContent(stageContentList);
@@ -81,6 +83,8 @@ public class ExampleConfiguration
 
             StageEntity stageEntityFromDb = crudStageEntityService.save(stageEntity);
             System.out.println(stageEntityFromDb);
+            CourseAuthorStageWithContentInfoDto stageInfoDto = stageMapper.toInfoDto(stageEntityFromDb);
+            System.out.println(stageInfoDto);
         };
     }
 }

@@ -9,16 +9,19 @@ import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.fitness.courses.http.coach.course.content.model.dto.NewCourseAuthorLessonDto;
-import com.fitness.courses.http.coach.course.content.model.dto.NewCourseAuthorModuleDto;
-import com.fitness.courses.http.coach.course.content.model.dto.UpdateCourseAuthorLessonDto;
-import com.fitness.courses.http.coach.course.content.model.dto.UpdateCourseAuthorModuleDto;
+import com.fitness.courses.http.coach.course.content.mapper.StageMapper;
+import com.fitness.courses.http.coach.course.content.model.dto.lesson.NewCourseAuthorLessonDto;
+import com.fitness.courses.http.coach.course.content.model.dto.module.NewCourseAuthorModuleDto;
+import com.fitness.courses.http.coach.course.content.model.dto.lesson.UpdateCourseAuthorLessonDto;
+import com.fitness.courses.http.coach.course.content.model.dto.module.UpdateCourseAuthorModuleDto;
+import com.fitness.courses.http.coach.course.content.model.dto.stage.CourseAuthorStageWithContentInfoDto;
 import com.fitness.courses.http.coach.course.content.model.entity.LessonEntity;
 import com.fitness.courses.http.coach.course.content.model.entity.ModuleEntity;
 import com.fitness.courses.http.coach.course.content.service.lesson.LessonService;
 import com.fitness.courses.http.coach.course.content.service.lesson.LessonValidator;
 import com.fitness.courses.http.coach.course.content.service.module.ModuleService;
 import com.fitness.courses.http.coach.course.content.service.module.ModuleValidator;
+import com.fitness.courses.http.coach.course.content.service.stage.StageService;
 import com.fitness.courses.http.coach.course.mapper.CourseMapper;
 import com.fitness.courses.http.coach.course.model.dto.CourseAuthorContentInfo;
 import com.fitness.courses.http.coach.course.model.dto.CourseAuthorGeneralInfoDto;
@@ -38,6 +41,8 @@ public class RestCourseServiceImpl implements RestCourseService
     private final ModuleValidator moduleValidator;
     private final LessonValidator lessonValidator;
     private final LessonService lessonService;
+    private final StageService stageService;
+    private final StageMapper stageMapper;
 
     @Autowired
     public RestCourseServiceImpl(
@@ -46,7 +51,9 @@ public class RestCourseServiceImpl implements RestCourseService
             ModuleService moduleService,
             ModuleValidator moduleValidator,
             LessonValidator lessonValidator,
-            LessonService lessonService)
+            LessonService lessonService,
+            StageService stageService,
+            StageMapper stageMapper)
     {
         this.courseService = courseService;
         this.courseValidator = courseValidator;
@@ -54,6 +61,8 @@ public class RestCourseServiceImpl implements RestCourseService
         this.moduleValidator = moduleValidator;
         this.lessonValidator = lessonValidator;
         this.lessonService = lessonService;
+        this.stageService = stageService;
+        this.stageMapper = stageMapper;
     }
 
     @Override
@@ -251,5 +260,29 @@ public class RestCourseServiceImpl implements RestCourseService
         lessonValidator.validateNoStagesInLesson(lessonId);
 
         lessonService.delete(moduleEntityFromDb, lessonId);
+    }
+
+    @Override
+    public void addStage(@NotNull Long courseId, @NotNull Long lessonId)
+    {
+        courseValidator.validateCourseExist(courseId);
+        courseValidator.validateCurrentUserHasPermission(courseId);
+
+        lessonValidator.validateExist(lessonId);
+
+        stageService.add(lessonService.getOrThrow(lessonId));
+    }
+
+    @Override
+    public List<CourseAuthorStageWithContentInfoDto> getStages(@NotNull Long courseId, @NotNull Long lessonId)
+    {
+        courseValidator.validateCourseExist(courseId);
+        courseValidator.validateCurrentUserHasPermission(courseId);
+
+        lessonValidator.validateExist(lessonId);
+
+        return stageService.findAllByLessonAndSortAscBySerialNumber(lessonService.getOrThrow(lessonId)).stream()
+                .map(stageMapper::toInfoDto)
+                .toList();
     }
 }

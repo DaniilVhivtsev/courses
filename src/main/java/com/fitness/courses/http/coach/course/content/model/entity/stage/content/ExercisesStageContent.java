@@ -1,8 +1,8 @@
-package com.fitness.courses.http.coach.course.content.model.entity.stage;
+package com.fitness.courses.http.coach.course.content.model.entity.stage.content;
 
 import java.util.List;
 
-import com.fitness.courses.http.coach.course.content.model.entity.stage.exercise.AbstractExerciseContent;
+import com.fitness.courses.http.coach.course.content.model.entity.stage.content.exercise.AbstractExerciseContent;
 
 public class ExercisesStageContent extends AbstractStageContent
 {

@@ -1,11 +1,12 @@
-package com.fitness.courses.http.coach.course.content.model.entity;
+package com.fitness.courses.http.coach.course.content.model.entity.stage;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import org.hibernate.annotations.Type;
 
-import com.fitness.courses.http.coach.course.content.model.entity.stage.AbstractStageContent;
+import com.fitness.courses.http.coach.course.content.model.entity.LessonEntity;
+import com.fitness.courses.http.coach.course.content.model.entity.stage.content.AbstractStageContent;
 
 import io.hypersistence.utils.hibernate.type.json.JsonType;
 import jakarta.persistence.Column;
@@ -25,8 +26,6 @@ public class StageEntity
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String title;
-
     private int serialNumber;
 
     @ManyToOne(optional = true)
@@ -45,16 +44,6 @@ public class StageEntity
     public void setId(Long id)
     {
         this.id = id;
-    }
-
-    public String getTitle()
-    {
-        return title;
-    }
-
-    public void setTitle(String title)
-    {
-        this.title = title;
     }
 
     public int getSerialNumber()

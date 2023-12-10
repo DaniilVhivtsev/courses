@@ -1,4 +1,4 @@
-package com.fitness.courses.http.coach.course.content.model.entity.stage.exercise;
+package com.fitness.courses.http.coach.course.content.model.entity.stage.content.exercise;
 
 import java.util.List;
 import java.util.Objects;
@@ -6,6 +6,7 @@ import java.util.Objects;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.annotation.JsonTypeInfo.Id;
+import com.fitness.courses.http.coach.course.content.model.entity.stage.content.exercise.set.AbstractExerciseSetContent;
 
 @JsonTypeInfo(
         use = JsonTypeInfo.Id.NAME,
@@ -22,7 +23,7 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo.Id;
                 value = TimeExerciseContent.class
         ),
 })
-public abstract class AbstractExerciseContent<T>
+public abstract class AbstractExerciseContent<T extends AbstractExerciseSetContent>
 {
     private String uuid;
 

@@ -1,4 +1,4 @@
-package com.fitness.courses.http.coach.course.content.model.entity.stage;
+package com.fitness.courses.http.coach.course.content.model.entity.stage.content;
 
 public class TextStageContent extends AbstractStageContent
 {

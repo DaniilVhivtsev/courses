@@ -1,4 +1,4 @@
-package com.fitness.courses.http.coach.course.content.model.entity.stage.exercise.set;
+package com.fitness.courses.http.coach.course.content.model.entity.stage.content.exercise.set;
 
 import java.time.LocalDateTime;
 

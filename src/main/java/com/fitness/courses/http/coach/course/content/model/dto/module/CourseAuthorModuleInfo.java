@@ -1,7 +1,9 @@
-package com.fitness.courses.http.coach.course.content.model.dto;
+package com.fitness.courses.http.coach.course.content.model.dto.module;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import com.fitness.courses.http.coach.course.content.model.dto.lesson.CourseAuthorLessonInfo;
 
 public class CourseAuthorModuleInfo
 {

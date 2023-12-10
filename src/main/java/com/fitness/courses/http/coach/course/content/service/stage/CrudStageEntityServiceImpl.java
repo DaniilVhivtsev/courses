@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.fitness.courses.global.exceptions.NotFoundException;
-import com.fitness.courses.http.coach.course.content.model.entity.StageEntity;
+import com.fitness.courses.http.coach.course.content.model.entity.stage.StageEntity;
 import com.fitness.courses.http.coach.course.content.repository.StageEntityRepository;
 
 @Service

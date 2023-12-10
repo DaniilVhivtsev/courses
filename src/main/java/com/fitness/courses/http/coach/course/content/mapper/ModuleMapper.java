@@ -5,7 +5,7 @@ import java.util.List;
 import org.dozer.DozerBeanMapper;
 import org.dozer.loader.api.BeanMappingBuilder;
 
-import com.fitness.courses.http.coach.course.content.model.dto.CourseAuthorModuleInfo;
+import com.fitness.courses.http.coach.course.content.model.dto.module.CourseAuthorModuleInfo;
 import com.fitness.courses.http.coach.course.content.model.entity.LessonEntity;
 import com.fitness.courses.http.coach.course.content.model.entity.ModuleEntity;
 

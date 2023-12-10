@@ -5,8 +5,8 @@ import java.util.Optional;
 
 import javax.validation.constraints.NotNull;
 
-import com.fitness.courses.http.coach.course.content.model.dto.NewCourseAuthorModuleDto;
-import com.fitness.courses.http.coach.course.content.model.dto.UpdateCourseAuthorModuleDto;
+import com.fitness.courses.http.coach.course.content.model.dto.module.NewCourseAuthorModuleDto;
+import com.fitness.courses.http.coach.course.content.model.dto.module.UpdateCourseAuthorModuleDto;
 import com.fitness.courses.http.coach.course.content.model.entity.ModuleEntity;
 import com.fitness.courses.http.coach.course.content.model.info.ModuleWithLessonsInfo;
 import com.fitness.courses.http.coach.course.model.entity.CourseEntity;

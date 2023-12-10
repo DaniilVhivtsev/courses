@@ -22,10 +22,11 @@ import com.fitness.courses.http.coach.card.model.dto.CardInfoDto;
 import com.fitness.courses.http.coach.card.model.dto.ListCardInfoDto;
 import com.fitness.courses.http.coach.card.model.dto.NewCardDto;
 import com.fitness.courses.http.coach.card.service.RestCardService;
-import com.fitness.courses.http.coach.course.content.model.dto.NewCourseAuthorLessonDto;
-import com.fitness.courses.http.coach.course.content.model.dto.NewCourseAuthorModuleDto;
-import com.fitness.courses.http.coach.course.content.model.dto.UpdateCourseAuthorLessonDto;
-import com.fitness.courses.http.coach.course.content.model.dto.UpdateCourseAuthorModuleDto;
+import com.fitness.courses.http.coach.course.content.model.dto.lesson.NewCourseAuthorLessonDto;
+import com.fitness.courses.http.coach.course.content.model.dto.module.NewCourseAuthorModuleDto;
+import com.fitness.courses.http.coach.course.content.model.dto.lesson.UpdateCourseAuthorLessonDto;
+import com.fitness.courses.http.coach.course.content.model.dto.module.UpdateCourseAuthorModuleDto;
+import com.fitness.courses.http.coach.course.content.model.dto.stage.CourseAuthorStageWithContentInfoDto;
 import com.fitness.courses.http.coach.course.model.dto.CourseAuthorContentInfo;
 import com.fitness.courses.http.coach.course.model.dto.CourseAuthorGeneralInfoDto;
 import com.fitness.courses.http.coach.course.model.dto.EditCourseAuthorGeneralInfo;
@@ -226,6 +227,38 @@ public class CoachCourseController
         {
             restCourseService.deleteLesson(id, moduleId, lessonId);
             return new ResponseEntity<Void>(HttpStatus.OK);
+        }
+        catch (ResponseErrorException e)
+        {
+            return new ResponseEntity<String>(e.getMessage(), HttpStatus.valueOf(e.getHttpStatusCode()));
+        }
+    }
+
+    @PostMapping(value = "/course/author/{id}/info/content/lesson/{lessonId}/stage")
+    public ResponseEntity<?> addStageToAuthorCourseContent(@PathVariable Long id,
+            @PathVariable Long lessonId)
+    {
+        try
+        {
+            restCourseService.addStage(id, lessonId);
+            return new ResponseEntity<Void>(HttpStatus.OK);
+        }
+        catch (ResponseErrorException e)
+        {
+            return new ResponseEntity<String>(e.getMessage(), HttpStatus.valueOf(e.getHttpStatusCode()));
+        }
+    }
+
+    @GetMapping(value = "/course/author/{id}/info/content/lesson/{lessonId}/stages")
+    public ResponseEntity<?> getStagesToAuthorCourseContent(@PathVariable Long id,
+            @PathVariable Long lessonId)
+    {
+        try
+        {
+            return new ResponseEntity<List<CourseAuthorStageWithContentInfoDto>>(
+                    restCourseService.getStages(id, lessonId),
+                    HttpStatus.OK
+            );
         }
         catch (ResponseErrorException e)
         {
