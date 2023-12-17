@@ -21,6 +21,10 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo.Id;
                 name = "stage.time.exercise.set.content",
                 value = ExerciseTimeSetContent.class
         ),
+        @JsonSubTypes.Type(
+                name = "stage.distance.exercise.set.content",
+                value = ExerciseDistanceSetContent.class
+        ),
 })
 public abstract class AbstractExerciseSetContent
 {

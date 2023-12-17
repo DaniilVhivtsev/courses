@@ -18,6 +18,7 @@ import com.fitness.courses.global.exceptions.NotFoundException;
 import com.fitness.courses.http.attachment.model.info.MultipartFileWithExtension;
 import com.fitness.courses.http.attachment.service.AttachmentService;
 import com.fitness.courses.http.auth.service.AuthService;
+import com.fitness.courses.http.coach.course.content.service.module.ModuleService;
 import com.fitness.courses.http.coach.course.model.entity.CourseEntity;
 import com.fitness.courses.http.objectStorage.model.entity.FileExtensionEnum;
 
@@ -27,16 +28,19 @@ public class CourseServiceImpl implements CourseService
     private final CrudCourseEntityService crudCourseEntityService;
     private final AuthService authService;
     private final AttachmentService attachmentService;
+    private final ModuleService moduleService;
 
     @Autowired
     public CourseServiceImpl(
             CrudCourseEntityService crudCourseEntityService,
             AuthService authService,
-            AttachmentService attachmentService)
+            AttachmentService attachmentService,
+            ModuleService moduleService)
     {
         this.crudCourseEntityService = crudCourseEntityService;
         this.authService = authService;
         this.attachmentService = attachmentService;
+        this.moduleService = moduleService;
     }
 
     @Override
@@ -45,6 +49,15 @@ public class CourseServiceImpl implements CourseService
         newCourseEntity.setAuthor(authService.getCurrentUserOrThrow());
         newCourseEntity.setDateTimeCreated(LocalDateTime.now(ZoneId.systemDefault()));
         crudCourseEntityService.save(newCourseEntity);
+    }
+
+    @Override
+    public void delete(Long courseId)
+    {
+        CourseEntity courseEntityFromDb = getCourseOrThrow(courseId);
+
+        moduleService.deleteAllByCourse(courseEntityFromDb);
+        crudCourseEntityService.deleteById(courseId);
     }
 
     @Override

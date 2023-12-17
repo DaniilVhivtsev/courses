@@ -4,14 +4,14 @@ public class ExerciseRepeatSetContent extends AbstractExerciseSetContent
 {
     private static final String DISCRIMINATOR = "stage.repeat.exercise.set.content";
 
-    private int repeatCount;
+    private Integer repeatCount;
 
-    public int getRepeatCount()
+    public Integer getRepeatCount()
     {
         return repeatCount;
     }
 
-    public ExerciseRepeatSetContent setRepeatCount(int repeatCount)
+    public ExerciseRepeatSetContent setRepeatCount(Integer repeatCount)
     {
         this.repeatCount = repeatCount;
         return this;

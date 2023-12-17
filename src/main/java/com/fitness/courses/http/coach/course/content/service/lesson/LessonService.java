@@ -15,6 +15,8 @@ public interface LessonService
 {
     void add(@NotNull ModuleEntity moduleEntity, @NotNull NewCourseAuthorLessonDto newLessonDto);
 
+    void deleteAllByModule(@NotNull ModuleEntity moduleEntity);
+
     List<LessonEntity> findAllByModuleAndSortAscBySerialNumber(@NotNull ModuleEntity module);
 
     List<LessonWithStagesInfo> findAllLessonsWithStagesByModule(@NotNull ModuleEntity module);

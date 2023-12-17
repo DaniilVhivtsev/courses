@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import com.fitness.courses.global.exceptions.BadRequestException;
+import com.fitness.courses.http.coach.course.content.model.dto.stage.CourseAuthorStageInfoDto;
 import com.fitness.courses.http.coach.course.content.model.dto.stage.CourseAuthorStageWithContentInfoDto;
 import com.fitness.courses.http.coach.course.content.model.dto.stage.content.AbstractStageContentInfoDto;
 import com.fitness.courses.http.coach.course.content.model.dto.stage.content.ExercisesStageContentInfoDto;
@@ -15,9 +16,11 @@ import com.fitness.courses.http.coach.course.content.model.dto.stage.content.Img
 import com.fitness.courses.http.coach.course.content.model.dto.stage.content.TextStageContentInfoDto;
 import com.fitness.courses.http.coach.course.content.model.dto.stage.content.VideoStageContentInfoDto;
 import com.fitness.courses.http.coach.course.content.model.dto.stage.content.exercise.AbstractExerciseContentInfoDto;
+import com.fitness.courses.http.coach.course.content.model.dto.stage.content.exercise.DistanceExerciseContentInfoDto;
 import com.fitness.courses.http.coach.course.content.model.dto.stage.content.exercise.RepeatExerciseContentInfoDto;
 import com.fitness.courses.http.coach.course.content.model.dto.stage.content.exercise.TimeExerciseContentInfoDto;
 import com.fitness.courses.http.coach.course.content.model.dto.stage.content.exercise.set.AbstractExerciseSetContentInfoDto;
+import com.fitness.courses.http.coach.course.content.model.dto.stage.content.exercise.set.ExerciseDistanceSetContentInfoDto;
 import com.fitness.courses.http.coach.course.content.model.dto.stage.content.exercise.set.ExerciseRepeatSetContentInfoDto;
 import com.fitness.courses.http.coach.course.content.model.dto.stage.content.exercise.set.ExerciseTimeSetContentInfoDto;
 import com.fitness.courses.http.coach.course.content.model.entity.stage.StageEntity;
@@ -27,9 +30,11 @@ import com.fitness.courses.http.coach.course.content.model.entity.stage.content.
 import com.fitness.courses.http.coach.course.content.model.entity.stage.content.TextStageContent;
 import com.fitness.courses.http.coach.course.content.model.entity.stage.content.VideoStageContent;
 import com.fitness.courses.http.coach.course.content.model.entity.stage.content.exercise.AbstractExerciseContent;
+import com.fitness.courses.http.coach.course.content.model.entity.stage.content.exercise.DistanceExerciseContent;
 import com.fitness.courses.http.coach.course.content.model.entity.stage.content.exercise.RepeatExerciseContent;
 import com.fitness.courses.http.coach.course.content.model.entity.stage.content.exercise.TimeExerciseContent;
 import com.fitness.courses.http.coach.course.content.model.entity.stage.content.exercise.set.AbstractExerciseSetContent;
+import com.fitness.courses.http.coach.course.content.model.entity.stage.content.exercise.set.ExerciseDistanceSetContent;
 import com.fitness.courses.http.coach.course.content.model.entity.stage.content.exercise.set.ExerciseRepeatSetContent;
 import com.fitness.courses.http.coach.course.content.model.entity.stage.content.exercise.set.ExerciseTimeSetContent;
 
@@ -55,7 +60,16 @@ public class StageMapper
         MAPPER.addMapping(courseAuthorLessonInfoBuilder);*/
     }
 
-    public CourseAuthorStageWithContentInfoDto toInfoDto(@NotNull StageEntity entity)
+    public CourseAuthorStageInfoDto toInfoDto(@NotNull StageEntity entity)
+    {
+        CourseAuthorStageInfoDto infoDto = new CourseAuthorStageInfoDto();
+        infoDto.setId(entity.getId());
+        infoDto.setSerialNumber(entity.getSerialNumber());
+
+        return infoDto;
+    }
+
+    public CourseAuthorStageWithContentInfoDto toInfoDtoWithContent(@NotNull StageEntity entity)
     {
         CourseAuthorStageWithContentInfoDto infoDto = new CourseAuthorStageWithContentInfoDto();
         infoDto.setId(entity.getId());
@@ -135,6 +149,18 @@ public class StageMapper
             return dto;
         }
 
+        if (exerciseContent instanceof DistanceExerciseContent distanceExerciseContent)
+        {
+            DistanceExerciseContentInfoDto dto = new DistanceExerciseContentInfoDto();
+            dto.setUuid(distanceExerciseContent.getUuid());
+            dto.setCardId(distanceExerciseContent.getCardId());
+            dto.setSets(distanceExerciseContent.getSets().stream()
+                    .map(set -> (ExerciseDistanceSetContentInfoDto)toExerciseSetContentInfoDto(set))
+                    .toList());
+
+            return dto;
+        }
+
         final String message = "Can't map exercise content to dto";
         LOG.error(message);
         throw new BadRequestException(message);
@@ -160,6 +186,28 @@ public class StageMapper
             dto.setCountOfKilograms(exerciseTimeSetContent.getCountOfKilograms());
             dto.setExecutionTime(exerciseTimeSetContent.getExecutionTime());
             dto.setPauseAfter(exerciseTimeSetContent.getPauseAfter());
+
+            return dto;
+        }
+
+        if (exerciseSetContent instanceof ExerciseRepeatSetContent exerciseRepeatSetContent)
+        {
+            ExerciseRepeatSetContentInfoDto dto = new ExerciseRepeatSetContentInfoDto();
+            dto.setUuid(exerciseRepeatSetContent.getUuid());
+            dto.setCountOfKilograms(exerciseRepeatSetContent.getCountOfKilograms());
+            dto.setRepeatCount(exerciseRepeatSetContent.getRepeatCount());
+            dto.setPauseAfter(exerciseRepeatSetContent.getPauseAfter());
+
+            return dto;
+        }
+
+        if (exerciseSetContent instanceof ExerciseDistanceSetContent distanceSetContent)
+        {
+            ExerciseDistanceSetContentInfoDto dto = new ExerciseDistanceSetContentInfoDto();
+            dto.setUuid(distanceSetContent.getUuid());
+            dto.setCountOfKilograms(distanceSetContent.getCountOfKilograms());
+            dto.setDistanceKilometers(distanceSetContent.getDistanceKilometers());
+            dto.setPauseAfter(distanceSetContent.getPauseAfter());
 
             return dto;
         }

@@ -14,14 +14,18 @@ import com.fitness.courses.http.coach.course.content.model.dto.lesson.NewCourseA
 import com.fitness.courses.http.coach.course.content.model.dto.module.NewCourseAuthorModuleDto;
 import com.fitness.courses.http.coach.course.content.model.dto.lesson.UpdateCourseAuthorLessonDto;
 import com.fitness.courses.http.coach.course.content.model.dto.module.UpdateCourseAuthorModuleDto;
+import com.fitness.courses.http.coach.course.content.model.dto.stage.CourseAuthorStageInfoDto;
 import com.fitness.courses.http.coach.course.content.model.dto.stage.CourseAuthorStageWithContentInfoDto;
+import com.fitness.courses.http.coach.course.content.model.dto.stage.UpdateCourseAuthorStageDto;
 import com.fitness.courses.http.coach.course.content.model.entity.LessonEntity;
 import com.fitness.courses.http.coach.course.content.model.entity.ModuleEntity;
+import com.fitness.courses.http.coach.course.content.model.entity.stage.StageEntity;
 import com.fitness.courses.http.coach.course.content.service.lesson.LessonService;
 import com.fitness.courses.http.coach.course.content.service.lesson.LessonValidator;
 import com.fitness.courses.http.coach.course.content.service.module.ModuleService;
 import com.fitness.courses.http.coach.course.content.service.module.ModuleValidator;
 import com.fitness.courses.http.coach.course.content.service.stage.StageService;
+import com.fitness.courses.http.coach.course.content.service.stage.StageValidator;
 import com.fitness.courses.http.coach.course.mapper.CourseMapper;
 import com.fitness.courses.http.coach.course.model.dto.CourseAuthorContentInfo;
 import com.fitness.courses.http.coach.course.model.dto.CourseAuthorGeneralInfoDto;
@@ -43,6 +47,7 @@ public class RestCourseServiceImpl implements RestCourseService
     private final LessonService lessonService;
     private final StageService stageService;
     private final StageMapper stageMapper;
+    private final StageValidator stageValidator;
 
     @Autowired
     public RestCourseServiceImpl(
@@ -53,7 +58,8 @@ public class RestCourseServiceImpl implements RestCourseService
             LessonValidator lessonValidator,
             LessonService lessonService,
             StageService stageService,
-            StageMapper stageMapper)
+            StageMapper stageMapper,
+            StageValidator stageValidator)
     {
         this.courseService = courseService;
         this.courseValidator = courseValidator;
@@ -63,6 +69,7 @@ public class RestCourseServiceImpl implements RestCourseService
         this.lessonService = lessonService;
         this.stageService = stageService;
         this.stageMapper = stageMapper;
+        this.stageValidator = stageValidator;
     }
 
     @Override
@@ -71,6 +78,15 @@ public class RestCourseServiceImpl implements RestCourseService
         courseValidator.validateCourseTitle(newCourseDto.getTitle());
 
         courseService.createCourse(CourseMapper.toEntity(newCourseDto));
+    }
+
+    @Override
+    public void deleteCourse(Long courseId)
+    {
+        courseValidator.validateCourseExist(courseId);
+        courseValidator.validateCurrentUserHasPermission(courseId);
+
+        courseService.delete(courseId);
     }
 
     @Override
@@ -269,20 +285,96 @@ public class RestCourseServiceImpl implements RestCourseService
         courseValidator.validateCurrentUserHasPermission(courseId);
 
         lessonValidator.validateExist(lessonId);
+        lessonValidator.validateLessonBelongsToCourse(courseId, lessonId);
 
         stageService.add(lessonService.getOrThrow(lessonId));
     }
 
     @Override
-    public List<CourseAuthorStageWithContentInfoDto> getStages(@NotNull Long courseId, @NotNull Long lessonId)
+    public List<CourseAuthorStageInfoDto> getStages(@NotNull Long courseId, @NotNull Long lessonId)
     {
         courseValidator.validateCourseExist(courseId);
         courseValidator.validateCurrentUserHasPermission(courseId);
 
         lessonValidator.validateExist(lessonId);
+        lessonValidator.validateLessonBelongsToCourse(courseId, lessonId);
 
         return stageService.findAllByLessonAndSortAscBySerialNumber(lessonService.getOrThrow(lessonId)).stream()
                 .map(stageMapper::toInfoDto)
                 .toList();
+    }
+
+    @Override
+    public List<CourseAuthorStageWithContentInfoDto> getStagesWithContent(@NotNull Long courseId, @NotNull Long lessonId)
+    {
+        courseValidator.validateCourseExist(courseId);
+        courseValidator.validateCurrentUserHasPermission(courseId);
+
+        lessonValidator.validateExist(lessonId);
+        lessonValidator.validateLessonBelongsToCourse(courseId, lessonId);
+
+        return stageService.findAllByLessonAndSortAscBySerialNumber(lessonService.getOrThrow(lessonId)).stream()
+                .map(stageMapper::toInfoDtoWithContent)
+                .toList();
+    }
+
+    @Override
+    public CourseAuthorStageWithContentInfoDto getStage(@NotNull Long courseId, @NotNull Long lessonId,
+            @NotNull Long stageId)
+    {
+        courseValidator.validateCourseExist(courseId);
+        courseValidator.validateCurrentUserHasPermission(courseId);
+
+        lessonValidator.validateExist(lessonId);
+        lessonValidator.validateLessonBelongsToCourse(courseId, lessonId);
+
+        stageValidator.validateExist(stageId);
+        stageValidator.validateStageBelongsToLesson(lessonId, stageId);
+
+        return stageMapper.toInfoDtoWithContent(stageService.getOrThrow(stageId));
+    }
+
+    @Override
+    public void editStage(@NotNull Long courseId, @NotNull Long lessonId, @NotNull Long stageId,
+            @NotNull UpdateCourseAuthorStageDto updateStageDto)
+    {
+        courseValidator.validateCourseExist(courseId);
+        courseValidator.validateCurrentUserHasPermission(courseId);
+
+        lessonValidator.validateExist(lessonId);
+        lessonValidator.validateLessonBelongsToCourse(courseId, lessonId);
+        final LessonEntity lessonEntityFromDb = lessonService.getOrThrow(lessonId);
+
+        stageValidator.validateExist(stageId);
+        stageValidator.validateStageBelongsToLesson(lessonId, stageId);
+
+        final StageEntity stageEntityFromDb = stageService.getOrThrow(stageId);
+
+        if (updateStageDto.getSerialNumber() != null)
+        {
+            stageValidator.validateSerialNumber(lessonEntityFromDb, updateStageDto.getSerialNumber());
+        }
+        else
+        {
+            updateStageDto.setSerialNumber(stageEntityFromDb.getSerialNumber());
+        }
+
+        stageService.update(lessonEntityFromDb, stageId, updateStageDto);
+    }
+
+    @Override
+    public void deleteStage(@NotNull Long courseId, @NotNull Long lessonId, @NotNull Long stageId)
+    {
+        courseValidator.validateCourseExist(courseId);
+        courseValidator.validateCurrentUserHasPermission(courseId);
+
+        lessonValidator.validateExist(lessonId);
+        lessonValidator.validateLessonBelongsToCourse(courseId, lessonId);
+        final LessonEntity lessonEntityFromDb = lessonService.getOrThrow(lessonId);
+
+        stageValidator.validateExist(stageId);
+        stageValidator.validateStageBelongsToLesson(lessonId, stageId);
+
+        stageService.delete(lessonEntityFromDb, stageId);
     }
 }

@@ -10,7 +10,9 @@ import com.fitness.courses.http.coach.course.content.model.dto.lesson.NewCourseA
 import com.fitness.courses.http.coach.course.content.model.dto.module.NewCourseAuthorModuleDto;
 import com.fitness.courses.http.coach.course.content.model.dto.lesson.UpdateCourseAuthorLessonDto;
 import com.fitness.courses.http.coach.course.content.model.dto.module.UpdateCourseAuthorModuleDto;
+import com.fitness.courses.http.coach.course.content.model.dto.stage.CourseAuthorStageInfoDto;
 import com.fitness.courses.http.coach.course.content.model.dto.stage.CourseAuthorStageWithContentInfoDto;
+import com.fitness.courses.http.coach.course.content.model.dto.stage.UpdateCourseAuthorStageDto;
 import com.fitness.courses.http.coach.course.model.dto.CourseAuthorContentInfo;
 import com.fitness.courses.http.coach.course.model.dto.CourseAuthorGeneralInfoDto;
 import com.fitness.courses.http.coach.course.model.dto.EditCourseAuthorGeneralInfo;
@@ -21,6 +23,8 @@ import com.fitness.courses.http.user.dto.UserGeneralInfoDto;
 public interface RestCourseService
 {
     void createCourse(@NonNull NewCourseDto newCourseDto);
+
+    void deleteCourse(@NonNull Long courseId);
 
     List<ListCourseInfoDto> getAuthorCourses();
 
@@ -49,5 +53,15 @@ public interface RestCourseService
 
     void addStage(@NotNull Long courseId, @NotNull Long lessonId);
 
-    List<CourseAuthorStageWithContentInfoDto> getStages(@NotNull Long courseId, @NotNull Long lessonId);
+    List<CourseAuthorStageInfoDto> getStages(@NotNull Long courseId, @NotNull Long lessonId);
+
+    List<CourseAuthorStageWithContentInfoDto> getStagesWithContent(@NotNull Long courseId, @NotNull Long lessonId);
+
+    CourseAuthorStageWithContentInfoDto getStage(@NotNull Long courseId, @NotNull Long lessonId,
+            @NotNull Long stageId);
+
+    void editStage(@NotNull Long courseId, @NotNull Long lessonId, @NotNull Long stageId,
+            @NotNull UpdateCourseAuthorStageDto updateStageDto);
+
+    void deleteStage(@NotNull Long courseId, @NotNull Long lessonId, @NotNull Long stageId);
 }

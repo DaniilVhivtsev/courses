@@ -22,6 +22,10 @@ import com.fitness.courses.http.coach.course.content.model.entity.stage.content.
                 name = "stage.time.exercise.content",
                 value = TimeExerciseContent.class
         ),
+        @JsonSubTypes.Type(
+                name = "stage.distance.exercise.content",
+                value = DistanceExerciseContent.class
+        ),
 })
 public abstract class AbstractExerciseContent<T extends AbstractExerciseSetContent>
 {

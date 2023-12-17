@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import com.fitness.courses.global.exceptions.ValidationException;
 import com.fitness.courses.http.coach.course.content.model.entity.LessonEntity;
 import com.fitness.courses.http.coach.course.content.model.entity.ModuleEntity;
+import com.fitness.courses.http.coach.course.content.service.module.ModuleService;
 import com.fitness.courses.http.coach.course.content.service.stage.StageService;
 import com.fitness.courses.http.coach.course.service.CourseValidatorImpl;
 
@@ -21,14 +22,17 @@ public class LessonValidatorImpl implements LessonValidator
 {
     private static final @NotNull Logger LOG = LoggerFactory.getLogger(CourseValidatorImpl.class);
 
+    private final ModuleService moduleService;
     private final LessonService lessonService;
     private final StageService stageService;
 
     @Autowired
     public LessonValidatorImpl(
+            ModuleService moduleService,
             LessonService lessonService,
             StageService stageService)
     {
+        this.moduleService = moduleService;
         this.lessonService = lessonService;
         this.stageService = stageService;
     }
@@ -64,6 +68,21 @@ public class LessonValidatorImpl implements LessonValidator
         {
             final String message = "Lesson with id %d doesn't belong to module with id %d".formatted(lessonId,
                     moduleId);
+            LOG.error(message);
+            throw new ValidationException(message);
+        }
+    }
+
+    @Override
+    public void validateLessonBelongsToCourse(@NotNull Long courseId, @NotNull Long lessonId) throws ValidationException
+    {
+        final LessonEntity lessonEntityFromDb = lessonService.getOrThrow(lessonId);
+        final ModuleEntity moduleEntity = lessonEntityFromDb.getModule();
+
+        if (!moduleEntity.getCourse().getId().equals(courseId))
+        {
+            final String message = "Lesson with id %d doesn't belong to course with id %d".formatted(lessonId,
+                    courseId);
             LOG.error(message);
             throw new ValidationException(message);
         }

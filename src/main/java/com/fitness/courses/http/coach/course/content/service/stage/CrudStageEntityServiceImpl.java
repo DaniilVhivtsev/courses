@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.fitness.courses.global.exceptions.NotFoundException;
+import com.fitness.courses.http.coach.course.content.model.entity.LessonEntity;
 import com.fitness.courses.http.coach.course.content.model.entity.stage.StageEntity;
 import com.fitness.courses.http.coach.course.content.repository.StageEntityRepository;
 
@@ -23,6 +24,13 @@ public class CrudStageEntityServiceImpl implements CrudStageEntityService
             StageEntityRepository stageEntityRepository)
     {
         this.stageEntityRepository = stageEntityRepository;
+    }
+
+    @Override
+    @Transactional
+    public void deleteByLessonEntity(@NotNull LessonEntity lesson)
+    {
+        stageEntityRepository.deleteAllByLesson(lesson);
     }
 
     @Override
@@ -58,5 +66,12 @@ public class CrudStageEntityServiceImpl implements CrudStageEntityService
     public List<StageEntity> findAllByLessonIdAndSortAscBySerialNumber(@NotNull Long lessonId)
     {
         return stageEntityRepository.findAllByLessonIdOrderBySerialNumberAsc(lessonId);
+    }
+
+    @Override
+    @Transactional
+    public void deleteById(@NotNull Long id)
+    {
+        stageEntityRepository.deleteById(id);
     }
 }

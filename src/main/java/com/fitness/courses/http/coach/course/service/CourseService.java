@@ -14,6 +14,8 @@ public interface CourseService
 {
     void createCourse(@NonNull CourseEntity newCourseEntity);
 
+    void delete(@NonNull Long courseId);
+
     CourseEntity editCourseGeneralInfo(Long courseId, CourseEntity editCourseInfo, MultipartFile logo);
 
     Optional<CourseEntity> getCourseOptional(@NotNull Long id);

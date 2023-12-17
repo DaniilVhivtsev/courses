@@ -26,7 +26,9 @@ import com.fitness.courses.http.coach.course.content.model.dto.lesson.NewCourseA
 import com.fitness.courses.http.coach.course.content.model.dto.module.NewCourseAuthorModuleDto;
 import com.fitness.courses.http.coach.course.content.model.dto.lesson.UpdateCourseAuthorLessonDto;
 import com.fitness.courses.http.coach.course.content.model.dto.module.UpdateCourseAuthorModuleDto;
+import com.fitness.courses.http.coach.course.content.model.dto.stage.CourseAuthorStageInfoDto;
 import com.fitness.courses.http.coach.course.content.model.dto.stage.CourseAuthorStageWithContentInfoDto;
+import com.fitness.courses.http.coach.course.content.model.dto.stage.UpdateCourseAuthorStageDto;
 import com.fitness.courses.http.coach.course.model.dto.CourseAuthorContentInfo;
 import com.fitness.courses.http.coach.course.model.dto.CourseAuthorGeneralInfoDto;
 import com.fitness.courses.http.coach.course.model.dto.EditCourseAuthorGeneralInfo;
@@ -56,6 +58,20 @@ public class CoachCourseController
         try
         {
             restCourseService.createCourse(newCourseDto);
+            return new ResponseEntity<Void>(HttpStatus.OK);
+        }
+        catch (ResponseErrorException e)
+        {
+            return new ResponseEntity<String>(e.getMessage(), HttpStatus.valueOf(e.getHttpStatusCode()));
+        }
+    }
+
+    @DeleteMapping(value = "/course/author/{id}")
+    public ResponseEntity<?> deleteAuthorCourseGeneralInfo(@PathVariable Long id)
+    {
+        try
+        {
+            restCourseService.deleteCourse(id);
             return new ResponseEntity<Void>(HttpStatus.OK);
         }
         catch (ResponseErrorException e)
@@ -255,10 +271,77 @@ public class CoachCourseController
     {
         try
         {
-            return new ResponseEntity<List<CourseAuthorStageWithContentInfoDto>>(
+            return new ResponseEntity<List<CourseAuthorStageInfoDto>>(
                     restCourseService.getStages(id, lessonId),
                     HttpStatus.OK
             );
+        }
+        catch (ResponseErrorException e)
+        {
+            return new ResponseEntity<String>(e.getMessage(), HttpStatus.valueOf(e.getHttpStatusCode()));
+        }
+    }
+
+    @GetMapping(value = "/course/author/{id}/info/content/lesson/{lessonId}/stages/{stageId}/content")
+    public ResponseEntity<?> getStageWithContentToAuthorCourseContent(@PathVariable Long id,
+            @PathVariable Long lessonId, @PathVariable Long stageId)
+    {
+        try
+        {
+            return new ResponseEntity<CourseAuthorStageWithContentInfoDto>(
+                    restCourseService.getStage(id, lessonId, stageId),
+                    HttpStatus.OK
+            );
+        }
+        catch (ResponseErrorException e)
+        {
+            return new ResponseEntity<String>(e.getMessage(), HttpStatus.valueOf(e.getHttpStatusCode()));
+        }
+    }
+
+    @GetMapping(value = "/course/author/{id}/info/content/lesson/{lessonId}/stages/content")
+    public ResponseEntity<?> getStagesWithContentToAuthorCourseContent(@PathVariable Long id,
+            @PathVariable Long lessonId)
+    {
+        try
+        {
+            return new ResponseEntity<List<CourseAuthorStageWithContentInfoDto>>(
+                    restCourseService.getStagesWithContent(id, lessonId),
+                    HttpStatus.OK
+            );
+        }
+        catch (ResponseErrorException e)
+        {
+            return new ResponseEntity<String>(e.getMessage(), HttpStatus.valueOf(e.getHttpStatusCode()));
+        }
+    }
+
+    @PatchMapping(
+            value = "/course/author/{id}/info/content/lesson/{lessonId}/stages/{stageId}",
+            consumes = "application/json"
+    )
+    public ResponseEntity<?> editStageToAuthorCourseContent(@PathVariable Long id, @PathVariable Long lessonId,
+            @PathVariable Long stageId, @RequestBody UpdateCourseAuthorStageDto updateStageDto)
+    {
+        try
+        {
+            restCourseService.editStage(id, lessonId, stageId, updateStageDto);
+            return new ResponseEntity<Void>(HttpStatus.OK);
+        }
+        catch (ResponseErrorException e)
+        {
+            return new ResponseEntity<String>(e.getMessage(), HttpStatus.valueOf(e.getHttpStatusCode()));
+        }
+    }
+
+    @DeleteMapping(value = "/course/author/{id}/info/content/lesson/{lessonId}/stages/{stageId}")
+    public ResponseEntity<?> deleteStageToAuthorCourseContent(@PathVariable Long id, @PathVariable Long lessonId,
+            @PathVariable Long stageId)
+    {
+        try
+        {
+            restCourseService.deleteStage(id, lessonId, stageId);
+            return new ResponseEntity<Void>(HttpStatus.OK);
         }
         catch (ResponseErrorException e)
         {

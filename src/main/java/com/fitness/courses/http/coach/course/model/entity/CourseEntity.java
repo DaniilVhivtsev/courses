@@ -63,7 +63,7 @@ public class CourseEntity
 
     private CourseStatus status;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(fetch = FetchType.LAZY)
     private List<User> students = new ArrayList<>();
 
     public Long getId()

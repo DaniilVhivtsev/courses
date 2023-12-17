@@ -27,6 +27,13 @@ public class CrudCourseEntityServiceImpl implements CrudCourseEntityService
 
     @Override
     @Transactional
+    public void deleteById(@NotNull Long courseId)
+    {
+        courseEntityRepository.deleteById(courseId);
+    }
+
+    @Override
+    @Transactional
     public CourseEntity save(@NotNull CourseEntity courseEntity)
     {
         return courseEntityRepository.save(courseEntity);

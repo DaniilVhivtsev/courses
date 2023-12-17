@@ -44,6 +44,16 @@ public class LessonServiceImpl implements LessonService
     }
 
     @Override
+    public void deleteAllByModule(ModuleEntity moduleEntity)
+    {
+        findAllByModuleAndSortAscBySerialNumber(moduleEntity)
+                .forEach(lesson -> {
+                    stageService.deleteAllByLesson(lesson);
+                    crudLessonEntityService.deleteById(lesson.getId());
+                });
+    }
+
+    @Override
     public List<LessonEntity> findAllByModuleAndSortAscBySerialNumber(@NotNull ModuleEntity module)
     {
         return crudLessonEntityService.findAllByModuleIdAndSortAscBySerialNumber(module.getId());
@@ -99,7 +109,7 @@ public class LessonServiceImpl implements LessonService
         {
             List<LessonEntity> moduleLessons = findAllByModuleAndSortAscBySerialNumber(moduleEntity);
             LessonEntity lessonEntityFromList = moduleLessons.stream()
-                    .filter(module -> module.getId().equals(lessonId))
+                    .filter(lesson -> lesson.getId().equals(lessonId))
                     .findFirst()
                     .orElseThrow();
 
@@ -136,7 +146,7 @@ public class LessonServiceImpl implements LessonService
     {
         List<LessonEntity> moduleLessons = findAllByModuleAndSortAscBySerialNumber(moduleEntity);
         LessonEntity lessonEntityFromList = moduleLessons.stream()
-                .filter(module -> module.getId().equals(lessonId))
+                .filter(lesson -> lesson.getId().equals(lessonId))
                 .findFirst()
                 .orElseThrow();
         moduleLessons.remove(lessonEntityFromList);
@@ -149,6 +159,7 @@ public class LessonServiceImpl implements LessonService
             }
         }
 
+        stageService.deleteAllByLesson(lessonEntityFromList);
         crudLessonEntityService.deleteById(lessonId);
     }
 }

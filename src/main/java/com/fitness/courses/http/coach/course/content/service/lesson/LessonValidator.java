@@ -13,6 +13,8 @@ public interface LessonValidator
 
     void validateLessonBelongsToModule(@NotNull Long moduleId, @NotNull Long lessonId) throws ValidationException;
 
+    void validateLessonBelongsToCourse(@NotNull Long courseId, @NotNull Long lessonId) throws ValidationException;
+
     void validateSerialNumber(@NotNull ModuleEntity moduleEntity, @NotNull Integer serialNumber)
             throws ValidationException;
 

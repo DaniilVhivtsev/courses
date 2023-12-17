@@ -10,6 +10,8 @@ import com.fitness.courses.http.coach.course.model.entity.CourseEntity;
 
 public interface CrudCourseEntityService
 {
+    void deleteById(@NotNull Long courseId);
+
     CourseEntity save(@NotNull CourseEntity courseEntity);
 
     CourseEntity update(@NotNull CourseEntity courseEntity);

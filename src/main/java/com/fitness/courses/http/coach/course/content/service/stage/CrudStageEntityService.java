@@ -8,10 +8,14 @@ import javax.validation.constraints.NotNull;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.fitness.courses.global.exceptions.NotFoundException;
+import com.fitness.courses.http.coach.course.content.model.entity.LessonEntity;
 import com.fitness.courses.http.coach.course.content.model.entity.stage.StageEntity;
 
 public interface CrudStageEntityService
 {
+    @Transactional
+    void deleteByLessonEntity(@NotNull LessonEntity lesson);
+
     @Transactional
     StageEntity save(@NotNull StageEntity entity);
 
@@ -26,4 +30,7 @@ public interface CrudStageEntityService
 
     @Transactional(readOnly = true)
     List<StageEntity> findAllByLessonIdAndSortAscBySerialNumber(@NotNull Long lessonId);
+
+    @Transactional
+    void deleteById(@NotNull Long id);
 }

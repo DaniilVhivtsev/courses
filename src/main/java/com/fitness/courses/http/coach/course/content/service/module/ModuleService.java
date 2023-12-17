@@ -13,7 +13,9 @@ import com.fitness.courses.http.coach.course.model.entity.CourseEntity;
 
 public interface ModuleService
 {
-    void add(CourseEntity courseEntity, NewCourseAuthorModuleDto newModuleDto);
+    void add(@NotNull CourseEntity courseEntity, @NotNull NewCourseAuthorModuleDto newModuleDto);
+
+    void deleteAllByCourse(@NotNull CourseEntity courseEntity);
 
     List<ModuleEntity> findAllByCourseAndSortAscBySerialNumber(@NotNull CourseEntity course);
 

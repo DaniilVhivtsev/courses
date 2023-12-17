@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.fitness.courses.global.exceptions.NotFoundException;
+import com.fitness.courses.http.coach.course.content.model.dto.stage.UpdateCourseAuthorStageDto;
 import com.fitness.courses.http.coach.course.content.model.entity.LessonEntity;
 import com.fitness.courses.http.coach.course.content.model.entity.stage.StageEntity;
 
@@ -34,6 +35,12 @@ public class StageServiceImpl implements StageService
         newStageEntity.setLesson(lesson);
 
         crudStageEntityService.save(newStageEntity);
+    }
+
+    @Override
+    public void deleteAllByLesson(LessonEntity lesson)
+    {
+        crudStageEntityService.deleteByLessonEntity(lesson);
     }
 
     @Override
@@ -64,5 +71,66 @@ public class StageServiceImpl implements StageService
     {
         return crudStageEntityService.findById(id)
                 .orElseThrow(() -> new NotFoundException("Can't find stage with id %s".formatted(id)));
+    }
+
+    @Override
+    public void update(@NotNull LessonEntity lessonEntityFromDb, @NotNull Long stageId,
+            @NotNull UpdateCourseAuthorStageDto updateStageDto)
+    {
+        StageEntity stageEntityFromDb = getOrThrow(stageId);
+        if (stageEntityFromDb.getSerialNumber() != updateStageDto.getSerialNumber())
+        {
+            List<StageEntity> lessonStages = findAllByLessonAndSortAscBySerialNumber(lessonEntityFromDb);
+            StageEntity stageEntityFromList = lessonStages.stream()
+                    .filter(stage -> stage.getId().equals(stageId))
+                    .findFirst()
+                    .orElseThrow();
+
+            int newSerialNumber = updateStageDto.getSerialNumber();
+
+            for (StageEntity stage : lessonStages)
+            {
+                if (stage != stageEntityFromList)
+                {
+                    int currentSerialNumber = stage.getSerialNumber();
+                    if (currentSerialNumber >= newSerialNumber
+                            && currentSerialNumber < lessonEntityFromDb.getSerialNumber())
+                    {
+                        stage.setSerialNumber(currentSerialNumber + 1);
+                    }
+                    else if (currentSerialNumber > lessonEntityFromDb.getSerialNumber()
+                            && currentSerialNumber <= newSerialNumber)
+                    {
+                        stage.setSerialNumber(currentSerialNumber - 1);
+                    }
+                }
+            }
+
+            stageEntityFromList.setSerialNumber(updateStageDto.getSerialNumber());
+
+            lessonStages.forEach(crudStageEntityService::update);
+        }
+    }
+
+    @Override
+    public void delete(@NotNull LessonEntity lessonEntityFromDb, @NotNull Long stageId)
+    {
+        List<StageEntity> lessonStages = findAllByLessonAndSortAscBySerialNumber(lessonEntityFromDb);
+        StageEntity stageEntityFromList = lessonStages.stream()
+                .filter(stage -> stage.getId().equals(stageId))
+                .findFirst()
+                .orElseThrow();
+
+        lessonStages.remove(stageEntityFromList);
+
+        int removedSerialNumber = stageEntityFromList.getSerialNumber();
+        for (StageEntity stage : lessonStages) {
+            if (stage.getSerialNumber() > removedSerialNumber) {
+                stage.setSerialNumber(stage.getSerialNumber() - 1);
+                crudStageEntityService.update(stage);
+            }
+        }
+
+        crudStageEntityService.deleteById(stageId);
     }
 }

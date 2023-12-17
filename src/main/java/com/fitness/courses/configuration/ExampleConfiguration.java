@@ -83,7 +83,7 @@ public class ExampleConfiguration
 
             StageEntity stageEntityFromDb = crudStageEntityService.save(stageEntity);
             System.out.println(stageEntityFromDb);
-            CourseAuthorStageWithContentInfoDto stageInfoDto = stageMapper.toInfoDto(stageEntityFromDb);
+            CourseAuthorStageWithContentInfoDto stageInfoDto = stageMapper.toInfoDtoWithContent(stageEntityFromDb);
             System.out.println(stageInfoDto);
         };
     }

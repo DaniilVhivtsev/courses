@@ -3,7 +3,8 @@ package com.fitness.courses.http.coach.course.content.model.dto.stage.content.ex
 public enum ExerciseSetContentType
 {
     REPEAT("REPEAT"),
-    TIME("TIME");
+    TIME("TIME"),
+    DISTANCE("DISTANCE");
 
     private final String value;
 
