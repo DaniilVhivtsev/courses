@@ -1,4 +1,4 @@
-package com.fitness.courses.http.coach.course.content.model.dto.stage.content;
+package com.fitness.courses.http.coach.course.content.model.dto.stage.content.get;
 
 public class TextStageContentInfoDto extends AbstractStageContentInfoDto
 {

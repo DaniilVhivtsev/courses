@@ -14,9 +14,10 @@ public class AttachmentInfoDto
         return id;
     }
 
-    public void setId(Long id)
+    public AttachmentInfoDto setId(Long id)
     {
         this.id = id;
+        return this;
     }
 
     public String getFileName()
@@ -24,9 +25,10 @@ public class AttachmentInfoDto
         return fileName;
     }
 
-    public void setFileName(String fileName)
+    public AttachmentInfoDto setFileName(String fileName)
     {
         this.fileName = fileName;
+        return this;
     }
 
     public String getUrl()
@@ -34,8 +36,9 @@ public class AttachmentInfoDto
         return url;
     }
 
-    public void setUrl(String url)
+    public AttachmentInfoDto setUrl(String url)
     {
         this.url = url;
+        return this;
     }
 }

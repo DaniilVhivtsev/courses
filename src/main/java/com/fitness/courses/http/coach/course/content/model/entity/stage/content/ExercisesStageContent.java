@@ -15,9 +15,10 @@ public class ExercisesStageContent extends AbstractStageContent
         return exercises;
     }
 
-    public void setExercises(List<AbstractExerciseContent<?>> exercises)
+    public ExercisesStageContent setExercises(List<AbstractExerciseContent<?>> exercises)
     {
         this.exercises = exercises;
+        return this;
     }
 
     @Override

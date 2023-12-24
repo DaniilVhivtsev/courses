@@ -5,14 +5,20 @@ import java.util.List;
 import javax.validation.constraints.NotNull;
 
 import org.springframework.lang.NonNull;
+import org.springframework.lang.Nullable;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.fitness.courses.http.coach.course.content.model.dto.lesson.NewCourseAuthorLessonDto;
 import com.fitness.courses.http.coach.course.content.model.dto.module.NewCourseAuthorModuleDto;
 import com.fitness.courses.http.coach.course.content.model.dto.lesson.UpdateCourseAuthorLessonDto;
 import com.fitness.courses.http.coach.course.content.model.dto.module.UpdateCourseAuthorModuleDto;
+import com.fitness.courses.http.coach.course.content.model.dto.stage.AddCourseAuthorStageContentInfoDto;
 import com.fitness.courses.http.coach.course.content.model.dto.stage.CourseAuthorStageInfoDto;
 import com.fitness.courses.http.coach.course.content.model.dto.stage.CourseAuthorStageWithContentInfoDto;
 import com.fitness.courses.http.coach.course.content.model.dto.stage.UpdateCourseAuthorStageDto;
+import com.fitness.courses.http.coach.course.content.model.dto.stage.content.get.StageContentType;
+import com.fitness.courses.http.coach.course.content.model.dto.stage.content.update.UpdateAbstractStageContentDto;
 import com.fitness.courses.http.coach.course.model.dto.CourseAuthorContentInfo;
 import com.fitness.courses.http.coach.course.model.dto.CourseAuthorGeneralInfoDto;
 import com.fitness.courses.http.coach.course.model.dto.EditCourseAuthorGeneralInfo;
@@ -64,4 +70,11 @@ public interface RestCourseService
             @NotNull UpdateCourseAuthorStageDto updateStageDto);
 
     void deleteStage(@NotNull Long courseId, @NotNull Long lessonId, @NotNull Long stageId);
+
+    void addStageContent(@NotNull Long courseId, @NotNull Long lessonId, @NotNull Long stageId,
+            @NotNull AddCourseAuthorStageContentInfoDto addContentDto);
+
+    void editStageContent(@NotNull Long courseId, @NotNull Long lessonId, @NotNull Long stageId,
+            @NotNull StageContentType type, @NotNull MultiValueMap<String, Object> formData,
+            @Nullable MultipartFile multipartFile);
 }

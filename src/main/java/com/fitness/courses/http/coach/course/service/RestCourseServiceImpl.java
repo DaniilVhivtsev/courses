@@ -1,22 +1,41 @@
 package com.fitness.courses.http.coach.course.service;
 
+import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import javax.validation.constraints.NotNull;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.NonNull;
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fitness.courses.global.utils.UUIDGenerator;
+import com.fitness.courses.http.auth.dto.JwtResponse;
+import com.fitness.courses.http.coach.card.service.CardValidator;
 import com.fitness.courses.http.coach.course.content.mapper.StageMapper;
 import com.fitness.courses.http.coach.course.content.model.dto.lesson.NewCourseAuthorLessonDto;
 import com.fitness.courses.http.coach.course.content.model.dto.module.NewCourseAuthorModuleDto;
 import com.fitness.courses.http.coach.course.content.model.dto.lesson.UpdateCourseAuthorLessonDto;
 import com.fitness.courses.http.coach.course.content.model.dto.module.UpdateCourseAuthorModuleDto;
+import com.fitness.courses.http.coach.course.content.model.dto.stage.AddCourseAuthorStageContentInfoDto;
 import com.fitness.courses.http.coach.course.content.model.dto.stage.CourseAuthorStageInfoDto;
 import com.fitness.courses.http.coach.course.content.model.dto.stage.CourseAuthorStageWithContentInfoDto;
 import com.fitness.courses.http.coach.course.content.model.dto.stage.UpdateCourseAuthorStageDto;
+import com.fitness.courses.http.coach.course.content.model.dto.stage.content.get.StageContentType;
+import com.fitness.courses.http.coach.course.content.model.dto.stage.content.update.UpdateAbstractStageContentDto;
+import com.fitness.courses.http.coach.course.content.model.dto.stage.content.update.UpdateExercisesStageContentDto;
+import com.fitness.courses.http.coach.course.content.model.dto.stage.content.update.UpdateImgStageContentDto;
+import com.fitness.courses.http.coach.course.content.model.dto.stage.content.update.UpdateTextStageContentDto;
+import com.fitness.courses.http.coach.course.content.model.dto.stage.content.update.UpdateVideoStageContentDto;
+import com.fitness.courses.http.coach.course.content.model.dto.stage.content.update.exercise.set.UpdateExerciseDistanceSetContentDto;
+import com.fitness.courses.http.coach.course.content.model.dto.stage.content.update.exercise.set.UpdateExerciseRepeatSetContentDto;
+import com.fitness.courses.http.coach.course.content.model.dto.stage.content.update.exercise.set.UpdateExerciseTimeSetContentDto;
 import com.fitness.courses.http.coach.course.content.model.entity.LessonEntity;
 import com.fitness.courses.http.coach.course.content.model.entity.ModuleEntity;
 import com.fitness.courses.http.coach.course.content.model.entity.stage.StageEntity;
@@ -48,6 +67,8 @@ public class RestCourseServiceImpl implements RestCourseService
     private final StageService stageService;
     private final StageMapper stageMapper;
     private final StageValidator stageValidator;
+    private final ObjectMapper objectMapper;
+    private final CardValidator cardValidator;
 
     @Autowired
     public RestCourseServiceImpl(
@@ -59,7 +80,9 @@ public class RestCourseServiceImpl implements RestCourseService
             LessonService lessonService,
             StageService stageService,
             StageMapper stageMapper,
-            StageValidator stageValidator)
+            StageValidator stageValidator,
+            ObjectMapper objectMapper,
+            CardValidator cardValidator)
     {
         this.courseService = courseService;
         this.courseValidator = courseValidator;
@@ -70,6 +93,8 @@ public class RestCourseServiceImpl implements RestCourseService
         this.stageService = stageService;
         this.stageMapper = stageMapper;
         this.stageValidator = stageValidator;
+        this.objectMapper = objectMapper;
+        this.cardValidator = cardValidator;
     }
 
     @Override
@@ -239,7 +264,6 @@ public class RestCourseServiceImpl implements RestCourseService
         lessonValidator.validateLessonBelongsToModule(moduleId, lessonId);
         LessonEntity lessonEntityFromDb = lessonService.getOrThrow(moduleId);
 
-
         if (updateLessonDto.getTitle() != null)
         {
             lessonValidator.validateTitle(updateLessonDto.getTitle());
@@ -305,7 +329,8 @@ public class RestCourseServiceImpl implements RestCourseService
     }
 
     @Override
-    public List<CourseAuthorStageWithContentInfoDto> getStagesWithContent(@NotNull Long courseId, @NotNull Long lessonId)
+    public List<CourseAuthorStageWithContentInfoDto> getStagesWithContent(@NotNull Long courseId,
+            @NotNull Long lessonId)
     {
         courseValidator.validateCourseExist(courseId);
         courseValidator.validateCurrentUserHasPermission(courseId);
@@ -376,5 +401,211 @@ public class RestCourseServiceImpl implements RestCourseService
         stageValidator.validateStageBelongsToLesson(lessonId, stageId);
 
         stageService.delete(lessonEntityFromDb, stageId);
+    }
+
+    @Override
+    public void addStageContent(@NotNull Long courseId, @NotNull Long lessonId, @NotNull Long stageId,
+            @NotNull AddCourseAuthorStageContentInfoDto addContentDto)
+    {
+        courseValidator.validateCourseExist(courseId);
+        courseValidator.validateCurrentUserHasPermission(courseId);
+
+        lessonValidator.validateExist(lessonId);
+        lessonValidator.validateLessonBelongsToCourse(courseId, lessonId);
+
+        stageValidator.validateExist(stageId);
+        stageValidator.validateStageBelongsToLesson(lessonId, stageId);
+
+        stageService.addContent(stageId, addContentDto);
+    }
+
+    @Override
+    public void editStageContent(@NotNull Long courseId, @NotNull Long lessonId, @NotNull Long stageId,
+            @NotNull StageContentType type, @NotNull MultiValueMap<String, Object> formData,
+            @Nullable MultipartFile multipartFile)
+    {
+        courseValidator.validateCourseExist(courseId);
+        courseValidator.validateCurrentUserHasPermission(courseId);
+
+        lessonValidator.validateExist(lessonId);
+        lessonValidator.validateLessonBelongsToCourse(courseId, lessonId);
+
+        stageValidator.validateExist(stageId);
+        stageValidator.validateStageBelongsToLesson(lessonId, stageId);
+        UpdateAbstractStageContentDto updateAbstractStageContentDto = getUpdateAbstractStageContentDto(stageId, type,
+                formData.toSingleValueMap(), multipartFile);
+
+        stageService.updateStageContent(stageId, updateAbstractStageContentDto);
+    }
+
+    private UpdateAbstractStageContentDto getUpdateAbstractStageContentDto(@NotNull Long stageId,
+            @NotNull StageContentType type, @NotNull Map<String, Object> formData, @Nullable MultipartFile multipartFile)
+    {
+        UpdateAbstractStageContentDto dto = switch (type)
+                {
+                    case IMG -> getUpdateImgStageContentDto(stageId, formData, multipartFile);
+                    case VIDEO -> getUpdateVideoStageContentDto(stageId, formData, multipartFile);
+                    case TEXT -> getUpdateTextStageContentDto(stageId, formData);
+                    case EXERCISES -> getUpdateExercisesStageContentDto(stageId, formData);
+                };
+
+        return dto;
+    }
+
+    private UpdateTextStageContentDto getUpdateTextStageContentDto(@NotNull Long stageId,
+            @NotNull Map<String, Object> formData)
+    {
+        StageEntity stageEntityFromDb = stageService.getOrThrow(stageId);
+        UpdateTextStageContentDto dto = objectMapper.convertValue(formData, UpdateTextStageContentDto.class);
+        stageValidator.validateStageContentExist(stageId, dto.getUuid());
+
+        if (dto.getSerialNumber() != null)
+        {
+            stageValidator.validateContentSerialNumber(stageId, dto.getSerialNumber());
+        }
+        else
+        {
+            dto.setSerialNumber(stageEntityFromDb.getSerialNumber());
+        }
+
+        if (dto.getTextContent() == null)
+        {
+            dto.setTextContent("");
+        }
+
+        return dto;
+    }
+
+    private UpdateImgStageContentDto getUpdateImgStageContentDto(@NotNull Long stageId,
+            @NotNull Map<String, Object> formData, @Nullable MultipartFile multipartFile)
+    {
+        StageEntity stageEntityFromDb = stageService.getOrThrow(stageId);
+        UpdateImgStageContentDto dto = objectMapper.convertValue(formData, UpdateImgStageContentDto.class);
+        stageValidator.validateStageContentExist(stageId, dto.getUuid());
+
+        if (dto.getSerialNumber() != null)
+        {
+            stageValidator.validateContentSerialNumber(stageId, dto.getSerialNumber());
+        }
+        else
+        {
+            dto.setSerialNumber(stageEntityFromDb.getSerialNumber());
+        }
+
+        dto.setImage(multipartFile);
+
+        return dto;
+    }
+
+    private UpdateVideoStageContentDto getUpdateVideoStageContentDto(@NotNull Long stageId,
+            @NotNull Map<String, Object> formData, @Nullable MultipartFile multipartFile)
+    {
+        StageEntity stageEntityFromDb = stageService.getOrThrow(stageId);
+        UpdateVideoStageContentDto dto = objectMapper.convertValue(formData, UpdateVideoStageContentDto.class);
+        stageValidator.validateStageContentExist(stageId, dto.getUuid());
+
+        if (dto.getSerialNumber() != null)
+        {
+            stageValidator.validateContentSerialNumber(stageId, dto.getSerialNumber());
+        }
+        else
+        {
+            dto.setSerialNumber(stageEntityFromDb.getSerialNumber());
+        }
+
+        dto.setVideo(multipartFile);
+
+        return dto;
+    }
+
+    private UpdateExercisesStageContentDto getUpdateExercisesStageContentDto(@NotNull Long stageId,
+            @NotNull Map<String, Object> formData)
+    {
+        StageEntity stageEntityFromDb = stageService.getOrThrow(stageId);
+        UpdateExercisesStageContentDto dto = objectMapper.convertValue(formData, UpdateExercisesStageContentDto.class);
+        stageValidator.validateStageContentExist(stageId, dto.getUuid());
+
+        if (dto.getSerialNumber() != null)
+        {
+            stageValidator.validateContentSerialNumber(stageId, dto.getSerialNumber());
+        }
+        else
+        {
+            dto.setSerialNumber(stageEntityFromDb.getSerialNumber());
+        }
+
+        if (dto.getExercises() != null)
+        {
+            dto.getExercises().forEach(exercise -> {
+                if (exercise.getUuid() != null)
+                {
+                    stageValidator.validateExerciseContentExist(stageId, dto.getUuid(), exercise.getUuid());
+                }
+                else
+                {
+                    exercise.setUuid(UUIDGenerator.nestUuidInString());
+                }
+
+                cardValidator.validateCardExist(exercise.getCardId());
+
+                if (exercise.getSets() != null)
+                {
+                    exercise.getSets().forEach(set -> {
+                        if (set.getUuid() != null)
+                        {
+                            stageValidator.validateExerciseSetContentExist(stageId, dto.getUuid(), exercise.getUuid(),
+                                    set.getUuid());
+                        }
+                        else
+                        {
+                            set.setUuid(UUIDGenerator.nestUuidInString());
+                        }
+
+                        if (set.getCountOfKilograms() == null)
+                        {
+                            set.setCountOfKilograms(0F);
+                        }
+
+                        if (set.getPauseAfter() == null)
+                        {
+                            set.setPauseAfter(LocalTime.of(0, 0, 0));
+                        }
+
+                        if (set instanceof UpdateExerciseDistanceSetContentDto setDistance)
+                        {
+                            if (setDistance.getDistanceKilometers() == null)
+                            {
+                                setDistance.setDistanceKilometers(0F);
+                            }
+                        }
+                        else if (set instanceof UpdateExerciseRepeatSetContentDto setRepeat)
+                        {
+                            if (setRepeat.getRepeatCount() == null)
+                            {
+                                setRepeat.setRepeatCount(0);
+                            }
+                        }
+                        else if (set instanceof UpdateExerciseTimeSetContentDto setTime)
+                        {
+                            if (setTime.getExecutionTime() == null)
+                            {
+                                setTime.setExecutionTime(LocalTime.of(0, 0, 0));
+                            }
+                        }
+
+                    });
+                }
+                else
+                {
+                    exercise.setSets(new ArrayList<>());
+                }
+            });
+        }
+        else
+        {
+            dto.setExercises(new ArrayList<>());
+        }
+
+        return dto;
     }
 }

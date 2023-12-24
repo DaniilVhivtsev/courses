@@ -1,6 +1,7 @@
-package com.fitness.courses.http.coach.course.content.model.dto.stage.content.exercise.set;
+package com.fitness.courses.http.coach.course.content.model.dto.stage.content.get.exercise.set;
 
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 public abstract class AbstractExerciseSetContentInfoDto
 {
@@ -8,7 +9,7 @@ public abstract class AbstractExerciseSetContentInfoDto
 
     private Float countOfKilograms;
 
-    private LocalDateTime pauseAfter;
+    private LocalTime pauseAfter;
 
     protected ExerciseSetContentType type;
 
@@ -32,12 +33,12 @@ public abstract class AbstractExerciseSetContentInfoDto
         this.countOfKilograms = countOfKilograms;
     }
 
-    public LocalDateTime getPauseAfter()
+    public LocalTime getPauseAfter()
     {
         return pauseAfter;
     }
 
-    public void setPauseAfter(LocalDateTime pauseAfter)
+    public void setPauseAfter(LocalTime pauseAfter)
     {
         this.pauseAfter = pauseAfter;
     }

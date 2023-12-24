@@ -1,4 +1,4 @@
-package com.fitness.courses.http.coach.course.content.model.dto.stage.content.exercise.set;
+package com.fitness.courses.http.coach.course.content.model.dto.stage.content.get.exercise.set;
 
 public class ExerciseRepeatSetContentInfoDto extends AbstractExerciseSetContentInfoDto
 {

@@ -75,6 +75,21 @@ public class AttachmentServiceImpl implements AttachmentService
     }
 
     @Override
+    public AttachmentEntity findById(Long attachmentId)
+    {
+        return crudAttachmentService.getById(attachmentId).orElseThrow();
+    }
+
+    @Override
+    @Transactional
+    public void delete(Long attachmentId)
+    {
+        AttachmentEntity attachmentEntity = crudAttachmentService.getById(attachmentId).orElseThrow();
+        localStorageFileService.delete(attachmentEntity.getFileEntity().getId());
+        crudAttachmentService.delete(attachmentId);
+    }
+
+    @Override
     @Transactional
     public List<AttachmentEntity> add(List<MultipartFileWithExtension> multipartFileWithExtensions)
     {

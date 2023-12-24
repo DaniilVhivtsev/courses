@@ -81,10 +81,10 @@ public class ExampleConfiguration
 
             exercises.add(repeatExerciseContent);
 
-            StageEntity stageEntityFromDb = crudStageEntityService.save(stageEntity);
-            System.out.println(stageEntityFromDb);
-            CourseAuthorStageWithContentInfoDto stageInfoDto = stageMapper.toInfoDtoWithContent(stageEntityFromDb);
-            System.out.println(stageInfoDto);
+//            StageEntity stageEntityFromDb = crudStageEntityService.save(stageEntity);
+//            System.out.println(stageEntityFromDb);
+//            CourseAuthorStageWithContentInfoDto stageInfoDto = stageMapper.toInfoDtoWithContent(stageEntityFromDb);
+//            System.out.println(stageInfoDto);
         };
     }
 }

@@ -1,5 +1,6 @@
 package com.fitness.courses.http.coach.course.content.service.stage;
 
+import java.util.List;
 import java.util.Optional;
 
 import javax.validation.constraints.NotNull;
@@ -11,8 +12,11 @@ import org.springframework.stereotype.Service;
 
 import com.fitness.courses.global.exceptions.ValidationException;
 import com.fitness.courses.http.coach.course.content.model.entity.LessonEntity;
-import com.fitness.courses.http.coach.course.content.model.entity.ModuleEntity;
 import com.fitness.courses.http.coach.course.content.model.entity.stage.StageEntity;
+import com.fitness.courses.http.coach.course.content.model.entity.stage.content.AbstractStageContent;
+import com.fitness.courses.http.coach.course.content.model.entity.stage.content.ExercisesStageContent;
+import com.fitness.courses.http.coach.course.content.model.entity.stage.content.exercise.AbstractExerciseContent;
+import com.fitness.courses.http.coach.course.content.model.entity.stage.content.exercise.set.AbstractExerciseSetContent;
 
 @Service
 public class StageValidatorImpl implements StageValidator
@@ -78,5 +82,100 @@ public class StageValidatorImpl implements StageValidator
                 throw new ValidationException(message);
             }
         });
+    }
+
+    @Override
+    public void validateStageContentExist(final @NotNull Long stageId, final @NotNull String stageContentUuid)
+            throws ValidationException
+    {
+        final StageEntity stageEntityFromDb = stageService.getOrThrow(stageId);
+        if (stageEntityFromDb.getStageContent().stream()
+                .noneMatch(stageContent -> stageContent.getUuid().equals(stageContentUuid)))
+        {
+            final String message = "Stage content not exist";
+            LOG.error(message);
+            throw new ValidationException(message);
+        }
+    }
+
+    @Override
+    public void validateContentSerialNumber(final @NotNull Long stageId, final @NotNull Integer contentSerialNumber)
+            throws ValidationException
+    {
+        if (contentSerialNumber < 0)
+        {
+            final String message = "Serial number can't be less than 0 (zero)";
+            LOG.error(message);
+            throw new ValidationException(message);
+        }
+
+        StageEntity stageEntity = stageService.getOrThrow(stageId);
+
+        List<AbstractStageContent> contentList = stageEntity.getStageContent();
+
+        AbstractStageContent lastBySerialStageContent = contentList.get(contentList.size() - 1);
+
+        if (contentSerialNumber > lastBySerialStageContent.getSerialNumber())
+        {
+            final String message = "The new serial number is outside the available numbers. "
+                    + "It cannot be greater than the serial number of the last stage content";
+            LOG.error(message);
+            throw new ValidationException(message);
+        }
+    }
+
+    @Override
+    public void validateExerciseContentExist(final @NotNull Long stageId, final @NotNull String stageContentUuid,
+            final @NotNull String stageContentExerciseUuid) throws ValidationException
+    {
+        final StageEntity stageEntityFromDb = stageService.getOrThrow(stageId);
+
+        validateStageContentExist(stageId, stageContentUuid);
+
+        ExercisesStageContent exercisesStageContent = (ExercisesStageContent)stageEntityFromDb.getStageContent()
+                .stream()
+                .filter(stageContent -> stageContent.getUuid().equals(stageContentUuid))
+                .findFirst()
+                .orElseThrow();
+
+        if (exercisesStageContent.getExercises()
+                .stream()
+                .noneMatch(exercise -> exercise.getUuid().equals(stageContentExerciseUuid)))
+        {
+            final String message = "Stage exercise content not exist";
+            LOG.error(message);
+            throw new ValidationException(message);
+        }
+    }
+
+    @Override
+    public void validateExerciseSetContentExist(final @NotNull Long stageId, final @NotNull String stageContentUuid,
+            final @NotNull String stageContentExerciseUuid, final @NotNull String stageExerciseSetContentUuid)
+    {
+        final StageEntity stageEntityFromDb = stageService.getOrThrow(stageId);
+
+        validateStageContentExist(stageId, stageContentUuid);
+
+        validateExerciseContentExist(stageId, stageContentUuid, stageContentExerciseUuid);
+
+        AbstractExerciseContent<?> exerciseContent = ((ExercisesStageContent)stageEntityFromDb.getStageContent()
+                .stream()
+                .filter(stageContent -> stageContent.getUuid().equals(stageContentUuid))
+                .findFirst()
+                .orElseThrow())
+                .getExercises()
+                .stream()
+                .filter(exercise -> exercise.getUuid().equals(stageContentExerciseUuid))
+                .findFirst()
+                .orElseThrow();
+
+        if (exerciseContent.getSets()
+                .stream()
+                .noneMatch(set -> set.getUuid().equals(stageExerciseSetContentUuid)))
+        {
+            final String message = "Stage exercise set content not exist";
+            LOG.error(message);
+            throw new ValidationException(message);
+        }
     }
 }

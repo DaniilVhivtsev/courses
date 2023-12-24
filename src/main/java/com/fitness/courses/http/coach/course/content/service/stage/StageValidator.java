@@ -13,4 +13,15 @@ public interface StageValidator
 
     void validateSerialNumber(@NotNull LessonEntity lessonEntity, @NotNull Integer serialNumber)
             throws ValidationException;
+
+    void validateStageContentExist(@NotNull Long stageId, @NotNull String stageContentId) throws ValidationException;
+
+    void validateContentSerialNumber(@NotNull Long stageId, @NotNull Integer contentSerialNumber)
+            throws ValidationException;
+
+    void validateExerciseContentExist(@NotNull Long stageId, @NotNull String stageContentUuid,
+            @NotNull String stageContentExerciseUuid) throws ValidationException;
+
+    void validateExerciseSetContentExist(@NotNull Long stageId, @NotNull String stageContentUuid,
+            @NotNull String stageContentExerciseUuid, @NotNull String stageExerciseSetContentUuid);
 }

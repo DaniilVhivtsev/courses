@@ -1,22 +1,23 @@
-package com.fitness.courses.http.coach.course.content.model.dto.stage.content.exercise.set;
+package com.fitness.courses.http.coach.course.content.model.dto.stage.content.get.exercise.set;
 
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 public class ExerciseTimeSetContentInfoDto extends AbstractExerciseSetContentInfoDto
 {
-    private LocalDateTime executionTime;
+    private LocalTime executionTime;
 
     public ExerciseTimeSetContentInfoDto()
     {
         super.type = ExerciseSetContentType.TIME;
     }
 
-    public LocalDateTime getExecutionTime()
+    public LocalTime getExecutionTime()
     {
         return executionTime;
     }
 
-    public void setExecutionTime(LocalDateTime executionTime)
+    public void setExecutionTime(LocalTime executionTime)
     {
         this.executionTime = executionTime;
     }

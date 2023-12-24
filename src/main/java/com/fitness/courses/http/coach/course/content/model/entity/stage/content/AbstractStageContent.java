@@ -34,6 +34,8 @@ public abstract class AbstractStageContent implements Serializable
 {
     private String uuid;
 
+    private int serialNumber;
+
     public String getUuid()
     {
         return uuid;
@@ -42,6 +44,17 @@ public abstract class AbstractStageContent implements Serializable
     public AbstractStageContent setUuid(String uuid)
     {
         this.uuid = uuid;
+        return this;
+    }
+
+    public int getSerialNumber()
+    {
+        return serialNumber;
+    }
+
+    public AbstractStageContent setSerialNumber(int serialNumber)
+    {
+        this.serialNumber = serialNumber;
         return this;
     }
 
@@ -55,19 +68,18 @@ public abstract class AbstractStageContent implements Serializable
         {
             return true;
         }
-
         if (o == null || getClass() != o.getClass())
         {
             return false;
         }
 
         AbstractStageContent that = (AbstractStageContent)o;
-        return Objects.equals(uuid, that.uuid);
+        return serialNumber == that.serialNumber && Objects.equals(uuid, that.uuid);
     }
 
     @Override
     public int hashCode()
     {
-        return Objects.hash(uuid);
+        return Objects.hash(uuid, serialNumber);
     }
 }

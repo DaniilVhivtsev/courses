@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -16,6 +17,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.support.StandardMultipartHttpServletRequest;
 
 import com.fitness.courses.global.exceptions.ResponseErrorException;
 import com.fitness.courses.http.coach.card.model.dto.CardInfoDto;
@@ -23,12 +26,14 @@ import com.fitness.courses.http.coach.card.model.dto.ListCardInfoDto;
 import com.fitness.courses.http.coach.card.model.dto.NewCardDto;
 import com.fitness.courses.http.coach.card.service.RestCardService;
 import com.fitness.courses.http.coach.course.content.model.dto.lesson.NewCourseAuthorLessonDto;
-import com.fitness.courses.http.coach.course.content.model.dto.module.NewCourseAuthorModuleDto;
 import com.fitness.courses.http.coach.course.content.model.dto.lesson.UpdateCourseAuthorLessonDto;
+import com.fitness.courses.http.coach.course.content.model.dto.module.NewCourseAuthorModuleDto;
 import com.fitness.courses.http.coach.course.content.model.dto.module.UpdateCourseAuthorModuleDto;
+import com.fitness.courses.http.coach.course.content.model.dto.stage.AddCourseAuthorStageContentInfoDto;
 import com.fitness.courses.http.coach.course.content.model.dto.stage.CourseAuthorStageInfoDto;
 import com.fitness.courses.http.coach.course.content.model.dto.stage.CourseAuthorStageWithContentInfoDto;
 import com.fitness.courses.http.coach.course.content.model.dto.stage.UpdateCourseAuthorStageDto;
+import com.fitness.courses.http.coach.course.content.model.dto.stage.content.get.StageContentType;
 import com.fitness.courses.http.coach.course.model.dto.CourseAuthorContentInfo;
 import com.fitness.courses.http.coach.course.model.dto.CourseAuthorGeneralInfoDto;
 import com.fitness.courses.http.coach.course.model.dto.EditCourseAuthorGeneralInfo;
@@ -36,6 +41,8 @@ import com.fitness.courses.http.coach.course.model.dto.ListCourseInfoDto;
 import com.fitness.courses.http.coach.course.model.dto.NewCourseDto;
 import com.fitness.courses.http.coach.course.service.RestCourseService;
 import com.fitness.courses.http.user.dto.UserGeneralInfoDto;
+
+import jakarta.servlet.http.HttpServletRequest;
 
 @RestController
 @RequestMapping(path = "/coach")
@@ -341,6 +348,47 @@ public class CoachCourseController
         try
         {
             restCourseService.deleteStage(id, lessonId, stageId);
+            return new ResponseEntity<Void>(HttpStatus.OK);
+        }
+        catch (ResponseErrorException e)
+        {
+            return new ResponseEntity<String>(e.getMessage(), HttpStatus.valueOf(e.getHttpStatusCode()));
+        }
+    }
+
+    @PostMapping(value = "/course/author/{id}/info/content/lesson/{lessonId}/stage/{stageId}/content")
+    public ResponseEntity<?> addContentToStageToAuthorCourseContent(@PathVariable Long id, @PathVariable Long lessonId,
+            @PathVariable Long stageId, @RequestBody AddCourseAuthorStageContentInfoDto addContentDto)
+    {
+        try
+        {
+            restCourseService.addStageContent(id, lessonId, stageId, addContentDto);
+            return new ResponseEntity<Void>(HttpStatus.OK);
+        }
+        catch (ResponseErrorException e)
+        {
+            return new ResponseEntity<String>(e.getMessage(), HttpStatus.valueOf(e.getHttpStatusCode()));
+        }
+    }
+
+    // TODO custom deserializer
+    @PatchMapping(
+            value = "/course/author/{id}/info/content/lesson/{lessonId}/stage/{stageId}/content",
+//            consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE
+            consumes = "multipart/form-data"
+    )
+    public ResponseEntity<?> updateContentToStageToAuthorCourseContent(@PathVariable Long id,
+            @PathVariable Long lessonId, @PathVariable Long stageId, @ModelAttribute("type") StageContentType type,
+            @RequestParam MultiValueMap<String, Object> formData, HttpServletRequest request)
+    {
+        try
+        {
+            MultiValueMap<String, MultipartFile> multiValueMap =
+                    ((StandardMultipartHttpServletRequest)request).getMultiFileMap();
+            MultipartFile multipartFile = multiValueMap.containsKey("image")
+                    ? multiValueMap.get("image").get(0)
+                    : multiValueMap.containsKey("video") ? multiValueMap.get("video").get(0) : null;
+            restCourseService.editStageContent(id, lessonId, stageId, type, formData, multipartFile);
             return new ResponseEntity<Void>(HttpStatus.OK);
         }
         catch (ResponseErrorException e)

@@ -6,8 +6,8 @@ import javax.validation.constraints.NotNull;
 
 import org.dozer.DozerBeanMapper;
 import org.dozer.loader.api.BeanMappingBuilder;
-import org.springframework.lang.NonNull;
 
+import com.fitness.courses.http.attachment.model.dto.AttachmentInfoDto;
 import com.fitness.courses.http.coach.course.content.mapper.ModuleMapper;
 import com.fitness.courses.http.coach.course.content.model.info.ModuleWithLessonsInfo;
 import com.fitness.courses.http.coach.course.model.dto.CourseAuthorContentInfo;
@@ -76,7 +76,6 @@ public class CourseMapper
 
     public static @NotNull CourseEntity toEntity(@NotNull NewCourseDto dto)
     {
-        // TODO logo
         return MAPPER.map(dto, CourseEntity.class);
     }
 
@@ -87,15 +86,24 @@ public class CourseMapper
 
     public static @NotNull ListCourseInfoDto toListCourseInfoDto(@NotNull CourseEntity entity)
     {
-        // TODO logo
-        return MAPPER.map(entity, ListCourseInfoDto.class);
+        ListCourseInfoDto dto = MAPPER.map(entity, ListCourseInfoDto.class);
+        dto.setLogo(new AttachmentInfoDto()
+                .setId(entity.getLogo().getId())
+                .setFileName(entity.getLogo().getFileName())
+                .setUrl(entity.getLogo().getFileEntity().getUrl()));
+
+        return dto;
     }
 
     public static @NotNull CourseAuthorGeneralInfoDto toCourseAuthorInfoDto(@NotNull CourseEntity entity)
     {
         CourseAuthorGeneralInfoDto dto = MAPPER.map(entity, CourseAuthorGeneralInfoDto.class);
         dto.setAuthor(UserMapper.toUserGeneralInfoDto(entity.getAuthor()));
-        dto.setLogo(null);
+        dto.setLogo(new AttachmentInfoDto()
+                .setId(entity.getLogo().getId())
+                .setFileName(entity.getLogo().getFileName())
+                .setUrl(entity.getLogo().getFileEntity().getUrl()));
+
         return dto;
     }
 

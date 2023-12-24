@@ -3,7 +3,7 @@ package com.fitness.courses.http.coach.course.content.model.dto.stage;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.fitness.courses.http.coach.course.content.model.dto.stage.content.AbstractStageContentInfoDto;
+import com.fitness.courses.http.coach.course.content.model.dto.stage.content.get.AbstractStageContentInfoDto;
 
 public class CourseAuthorStageWithContentInfoDto
 {

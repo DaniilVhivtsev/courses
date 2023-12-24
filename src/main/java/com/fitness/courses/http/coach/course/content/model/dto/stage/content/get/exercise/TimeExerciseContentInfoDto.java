@@ -1,8 +1,8 @@
-package com.fitness.courses.http.coach.course.content.model.dto.stage.content.exercise;
+package com.fitness.courses.http.coach.course.content.model.dto.stage.content.get.exercise;
 
 import java.util.List;
 
-import com.fitness.courses.http.coach.course.content.model.dto.stage.content.exercise.set.ExerciseTimeSetContentInfoDto;
+import com.fitness.courses.http.coach.course.content.model.dto.stage.content.get.exercise.set.ExerciseTimeSetContentInfoDto;
 
 public class TimeExerciseContentInfoDto extends AbstractExerciseContentInfoDto<ExerciseTimeSetContentInfoDto>
 {

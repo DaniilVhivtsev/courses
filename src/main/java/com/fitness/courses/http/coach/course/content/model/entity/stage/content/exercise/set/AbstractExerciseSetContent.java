@@ -1,6 +1,7 @@
 package com.fitness.courses.http.coach.course.content.model.entity.stage.content.exercise.set;
 
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.Objects;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
@@ -32,7 +33,7 @@ public abstract class AbstractExerciseSetContent
 
     private Float countOfKilograms;
 
-    private LocalDateTime pauseAfter;
+    private LocalTime pauseAfter;
 
     public String getUuid()
     {
@@ -54,12 +55,12 @@ public abstract class AbstractExerciseSetContent
         this.countOfKilograms = countOfKilograms;
     }
 
-    public LocalDateTime getPauseAfter()
+    public LocalTime getPauseAfter()
     {
         return pauseAfter;
     }
 
-    public void setPauseAfter(LocalDateTime pauseAfter)
+    public void setPauseAfter(LocalTime pauseAfter)
     {
         this.pauseAfter = pauseAfter;
     }

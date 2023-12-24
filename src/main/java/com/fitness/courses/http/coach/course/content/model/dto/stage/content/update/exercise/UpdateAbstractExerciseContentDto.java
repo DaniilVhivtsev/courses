@@ -1,18 +1,16 @@
-package com.fitness.courses.http.coach.course.content.model.dto.stage.content.exercise;
+package com.fitness.courses.http.coach.course.content.model.dto.stage.content.update.exercise;
 
 import java.util.List;
 
-import com.fitness.courses.http.coach.course.content.model.dto.stage.content.exercise.set.AbstractExerciseSetContentInfoDto;
+import com.fitness.courses.http.coach.course.content.model.dto.stage.content.update.exercise.set.UpdateAbstractExerciseSetContentDto;
 
-public abstract class AbstractExerciseContentInfoDto<T extends AbstractExerciseSetContentInfoDto>
+public abstract class UpdateAbstractExerciseContentDto<T extends UpdateAbstractExerciseSetContentDto>
 {
     private String uuid;
 
     private Long cardId;
 
     protected List<T> sets;
-
-    protected ExerciseContentType type;
 
     public String getUuid()
     {
@@ -42,15 +40,5 @@ public abstract class AbstractExerciseContentInfoDto<T extends AbstractExerciseS
     public void setSets(List<T> sets)
     {
         this.sets = sets;
-    }
-
-    public ExerciseContentType getType()
-    {
-        return type;
-    }
-
-    protected void setType(ExerciseContentType type)
-    {
-        this.type = type;
     }
 }

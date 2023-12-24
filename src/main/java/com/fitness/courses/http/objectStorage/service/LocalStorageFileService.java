@@ -10,6 +10,8 @@ public interface LocalStorageFileService
 {
     LocalStorageFileEntity addFile(String bucketName, FileExtensionEnum fileExtension, InputStream inputStream);
 
+    void delete(Long localStorageFileEntityId);
+
     List<LocalStorageFileEntity> addFiles(String bucketName, List<FileExtensionWithInputStreamRecord> files);
 
     FileWithContentRecord getFile(String bucketName, String fileKey);

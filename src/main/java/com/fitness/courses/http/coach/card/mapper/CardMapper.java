@@ -3,9 +3,9 @@ package com.fitness.courses.http.coach.card.mapper;
 import javax.validation.constraints.NotNull;
 
 import org.dozer.DozerBeanMapper;
-import org.dozer.Mapper;
 import org.dozer.loader.api.BeanMappingBuilder;
 
+import com.fitness.courses.http.attachment.model.dto.AttachmentInfoDto;
 import com.fitness.courses.http.coach.card.model.dto.CardInfoDto;
 import com.fitness.courses.http.coach.card.model.dto.ListCardInfoDto;
 import com.fitness.courses.http.coach.card.model.dto.NewCardDto;
@@ -65,12 +65,38 @@ public class CardMapper
     public static @NotNull CardInfoDto toDto(@NotNull CardEntity entity)
     {
         CardInfoDto cardInfoDto = MAPPER.map(entity, CardInfoDto.class);
-        return null;
+        cardInfoDto.setImages(
+                entity.getImages().stream()
+                        .map(image ->
+                                new AttachmentInfoDto()
+                                        .setId(image.getId())
+                                        .setFileName(image.getFileName())
+                                        .setUrl(image.getFileEntity().getUrl())
+                        )
+                        .toList()
+        );
+        cardInfoDto.setVideo(new AttachmentInfoDto()
+                .setId(entity.getVideo().getId())
+                .setFileName(entity.getVideo().getFileName())
+                .setUrl(entity.getVideo().getFileEntity().getUrl()));
+
+        return cardInfoDto;
     }
 
     public static @NotNull ListCardInfoDto toListCardDto(@NotNull CardEntity entity)
     {
-        ListCardInfoDto listCardInfoDto = MAPPER.map(entity, ListCardInfoDto.class);
-        return null;
+        ListCardInfoDto dto = MAPPER.map(entity, ListCardInfoDto.class);
+        dto.setMainImage(
+                entity.getImages().stream()
+                        .findFirst()
+                        .map(image -> new AttachmentInfoDto()
+                                .setId(image.getId())
+                                .setFileName(image.getFileName())
+                                .setUrl(image.getFileEntity().getUrl())
+                        )
+                        .orElse(null)
+        );
+
+        return dto;
     }
 }

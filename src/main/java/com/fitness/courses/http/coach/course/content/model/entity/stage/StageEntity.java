@@ -1,6 +1,7 @@
 package com.fitness.courses.http.coach.course.content.model.entity.stage;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 import org.hibernate.annotations.Type;
@@ -68,7 +69,9 @@ public class StageEntity
 
     public List<AbstractStageContent> getStageContent()
     {
-        return stageContent;
+        return stageContent.stream()
+                .sorted(Comparator.comparing(AbstractStageContent::getSerialNumber))
+                .toList();
     }
 
     public void setStageContent(

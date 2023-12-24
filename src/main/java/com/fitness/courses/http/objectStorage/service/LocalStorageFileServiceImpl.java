@@ -57,6 +57,15 @@ public class LocalStorageFileServiceImpl implements LocalStorageFileService
     }
 
     @Override
+    public void delete(Long localStorageFileEntityId)
+    {
+        LocalStorageFileEntity localStorageFileEntity =
+                crudLocalStorageFileEntityService.getById(localStorageFileEntityId).orElseThrow();
+        yandexBucketProvider.deleteObject(localStorageFileEntity.getBucketName(), localStorageFileEntity.getFileKey());
+        crudLocalStorageFileEntityService.delete(localStorageFileEntityId);
+    }
+
+    @Override
     public List<LocalStorageFileEntity> addFiles(String bucketName, List<FileExtensionWithInputStreamRecord> files)
     {
         ExecutorService executorService = Executors.newFixedThreadPool(files.size());

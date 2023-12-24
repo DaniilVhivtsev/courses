@@ -1,4 +1,4 @@
-package com.fitness.courses.http.coach.course.content.model.dto.stage.content.exercise;
+package com.fitness.courses.http.coach.course.content.model.dto.stage.content.get.exercise;
 
 public enum ExerciseContentType
 {
