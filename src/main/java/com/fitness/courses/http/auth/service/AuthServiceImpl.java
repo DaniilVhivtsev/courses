@@ -172,6 +172,20 @@ public class AuthServiceImpl implements AuthService
         return (User) authentication.getPrincipal();
     }
 
+    @Override
+    public Optional<User> getCurrentUser()
+    {
+        SecurityContext context = SecurityContextHolder.getContext();
+        Authentication authentication = context.getAuthentication();
+
+        if (authentication instanceof AnonymousAuthenticationToken)
+        {
+            return Optional.empty();
+        }
+
+        return Optional.of((User) authentication.getPrincipal());
+    }
+
     private void sendVerificationEmailCode(Long userId)
     {
         final Optional<User> userOptional = userService.findById(userId);

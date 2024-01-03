@@ -156,4 +156,9 @@ public class User implements UserDetails
     {
         this.confirmed = confirmed;
     }
+
+    public String getFullName()
+    {
+        return String.format("%s %s", this.lastName, this.firstName);
+    }
 }

@@ -9,6 +9,7 @@ import org.springframework.lang.NonNull;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.fitness.courses.http.coach.course.model.entity.CourseEntity;
+import com.fitness.courses.http.coach.course.model.info.CourseEntityWithStudentsCount;
 
 public interface CourseService
 {
@@ -23,4 +24,11 @@ public interface CourseService
     CourseEntity getCourseOrThrow(@NotNull Long id);
 
     List<CourseEntity> getAllCoursesWhereCurrentUserIsAuthor();
+
+    List<CourseEntity> getNewCourses(@NotNull Integer offset, @NotNull Integer limit);
+
+    List<CourseEntityWithStudentsCount> getPopularCourses(@NotNull Integer offset, @NotNull Integer limit);
+
+    List<CourseEntity> findAllByKeyword(@NotNull String keyword, @NotNull Integer offset,
+            @NotNull Integer limit);
 }

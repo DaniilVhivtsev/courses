@@ -1,5 +1,7 @@
 package com.fitness.courses.http.auth.service;
 
+import java.util.Optional;
+
 import javax.validation.constraints.NotNull;
 
 import com.fitness.courses.global.exceptions.AuthorizedException;
@@ -19,4 +21,6 @@ public interface AuthService
     void confirmEmailByCode(String userIdString, String confirmCode);
 
     User getCurrentUserOrThrow() throws AuthorizedException;
+
+    Optional<User> getCurrentUser();
 }

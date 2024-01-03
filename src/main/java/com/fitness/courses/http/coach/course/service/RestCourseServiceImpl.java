@@ -16,12 +16,11 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fitness.courses.global.utils.UUIDGenerator;
-import com.fitness.courses.http.auth.dto.JwtResponse;
 import com.fitness.courses.http.coach.card.service.CardValidator;
 import com.fitness.courses.http.coach.course.content.mapper.StageMapper;
 import com.fitness.courses.http.coach.course.content.model.dto.lesson.NewCourseAuthorLessonDto;
-import com.fitness.courses.http.coach.course.content.model.dto.module.NewCourseAuthorModuleDto;
 import com.fitness.courses.http.coach.course.content.model.dto.lesson.UpdateCourseAuthorLessonDto;
+import com.fitness.courses.http.coach.course.content.model.dto.module.NewCourseAuthorModuleDto;
 import com.fitness.courses.http.coach.course.content.model.dto.module.UpdateCourseAuthorModuleDto;
 import com.fitness.courses.http.coach.course.content.model.dto.stage.AddCourseAuthorStageContentInfoDto;
 import com.fitness.courses.http.coach.course.content.model.dto.stage.CourseAuthorStageInfoDto;
@@ -52,6 +51,8 @@ import com.fitness.courses.http.coach.course.model.dto.EditCourseAuthorGeneralIn
 import com.fitness.courses.http.coach.course.model.dto.ListCourseInfoDto;
 import com.fitness.courses.http.coach.course.model.dto.NewCourseDto;
 import com.fitness.courses.http.coach.course.model.entity.CourseEntity;
+import com.fitness.courses.http.student.model.entity.StudentEntity;
+import com.fitness.courses.http.student.service.student.StudentService;
 import com.fitness.courses.http.user.dto.UserGeneralInfoDto;
 import com.fitness.courses.http.user.mapper.UserMapper;
 
@@ -69,6 +70,7 @@ public class RestCourseServiceImpl implements RestCourseService
     private final StageValidator stageValidator;
     private final ObjectMapper objectMapper;
     private final CardValidator cardValidator;
+    private final StudentService studentService;
 
     @Autowired
     public RestCourseServiceImpl(
@@ -82,7 +84,8 @@ public class RestCourseServiceImpl implements RestCourseService
             StageMapper stageMapper,
             StageValidator stageValidator,
             ObjectMapper objectMapper,
-            CardValidator cardValidator)
+            CardValidator cardValidator,
+            StudentService studentService)
     {
         this.courseService = courseService;
         this.courseValidator = courseValidator;
@@ -95,6 +98,7 @@ public class RestCourseServiceImpl implements RestCourseService
         this.stageValidator = stageValidator;
         this.objectMapper = objectMapper;
         this.cardValidator = cardValidator;
+        this.studentService = studentService;
     }
 
     @Override
@@ -151,7 +155,9 @@ public class RestCourseServiceImpl implements RestCourseService
         courseValidator.validateCourseExist(courseId);
         courseValidator.validateCurrentUserHasPermission(courseId);
 
-        return courseService.getCourseOrThrow(courseId).getStudents().stream()
+        final CourseEntity course = courseService.getCourseOrThrow(courseId);
+        return studentService.getCourseStudents(course).stream()
+                .map(StudentEntity::getUser)
                 .map(UserMapper::toUserGeneralInfoDto)
                 .toList();
     }

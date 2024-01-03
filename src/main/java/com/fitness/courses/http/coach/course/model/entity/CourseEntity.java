@@ -7,24 +7,21 @@ import java.util.List;
 import com.fitness.courses.http.attachment.model.entity.AttachmentEntity;
 import com.fitness.courses.http.user.model.User;
 
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "courses")
+@Table(name = "course")
 public class CourseEntity
 {
     @Id
@@ -62,9 +59,6 @@ public class CourseEntity
     private AttachmentEntity logo;
 
     private CourseStatus status;
-
-    @OneToMany(fetch = FetchType.LAZY)
-    private List<User> students = new ArrayList<>();
 
     public Long getId()
     {
@@ -174,15 +168,5 @@ public class CourseEntity
     public void setStatus(CourseStatus status)
     {
         this.status = status;
-    }
-
-    public List<User> getStudents()
-    {
-        return students;
-    }
-
-    public void setStudents(List<User> students)
-    {
-        this.students = students;
     }
 }
