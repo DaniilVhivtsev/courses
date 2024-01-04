@@ -61,7 +61,6 @@ public class CrudStudentServiceImpl implements CrudStudentService
         return repository.findAllByCourseId(course.getId());
     }
 
-
     @Override
     @Transactional(readOnly = true)
     public int countByCourse(CourseEntity course)
@@ -74,5 +73,19 @@ public class CrudStudentServiceImpl implements CrudStudentService
     public boolean studentWithUserAndCourseExist(User user, CourseEntity course)
     {
         return repository.findFirstByUserIdAndCourseId(user.getId(), course.getId()).isPresent();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<StudentEntity> getByUserOrderById(User user)
+    {
+        return repository.findAllByUserIdOrderById(user.getId());
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Optional<StudentEntity> getByUserAndCourse(User user, CourseEntity course)
+    {
+        return repository.findFirstByUserIdAndCourseId(user.getId(), course.getId());
     }
 }

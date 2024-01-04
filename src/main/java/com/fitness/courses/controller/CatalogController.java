@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -14,6 +15,8 @@ import com.fitness.courses.global.exceptions.ResponseErrorException;
 import com.fitness.courses.http.catalog.model.dto.CatalogBySearchValueCourseInfoDto;
 import com.fitness.courses.http.catalog.model.dto.CatalogNewCourseInfoDto;
 import com.fitness.courses.http.catalog.model.dto.CatalogPopularCourseInfoDto;
+import com.fitness.courses.http.catalog.model.dto.CourseInfoDto;
+import com.fitness.courses.http.catalog.model.dto.content.StageInfoDto;
 import com.fitness.courses.http.catalog.service.RestCatalogService;
 
 @RestController
@@ -74,6 +77,35 @@ public class CatalogController
         {
             return new ResponseEntity<List<CatalogBySearchValueCourseInfoDto>>(
                     restCatalogService.getCoursesBySearchValue(searchValue, offset, limit),
+                    HttpStatus.OK
+            );
+        }
+        catch (ResponseErrorException e)
+        {
+            return new ResponseEntity<String>(e.getMessage(), HttpStatus.valueOf(e.getHttpStatusCode()));
+        }
+    }
+
+    @GetMapping("/info/{courseId}")
+    public ResponseEntity<?> getCourseInfo(@PathVariable Long courseId)
+    {
+        try
+        {
+            return new ResponseEntity<CourseInfoDto>(restCatalogService.getCourseInfo(courseId), HttpStatus.OK);
+        }
+        catch (ResponseErrorException e)
+        {
+            return new ResponseEntity<String>(e.getMessage(), HttpStatus.valueOf(e.getHttpStatusCode()));
+        }
+    }
+
+    @GetMapping("/info/{courseId}/lesson/{lessonId}/stages")
+    public ResponseEntity<?> getLessonStagesInfo(@PathVariable Long courseId, @PathVariable Long lessonId)
+    {
+        try
+        {
+            return new ResponseEntity<List<StageInfoDto>>(
+                    restCatalogService.getLessonStagesInfo(courseId, lessonId),
                     HttpStatus.OK
             );
         }

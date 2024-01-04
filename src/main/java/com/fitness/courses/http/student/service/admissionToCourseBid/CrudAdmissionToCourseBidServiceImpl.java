@@ -1,4 +1,4 @@
-package com.fitness.courses.http.student.service;
+package com.fitness.courses.http.student.service.admissionToCourseBid;
 
 import java.util.List;
 import java.util.Optional;

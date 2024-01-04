@@ -156,7 +156,7 @@ public class RestCourseServiceImpl implements RestCourseService
         courseValidator.validateCurrentUserHasPermission(courseId);
 
         final CourseEntity course = courseService.getCourseOrThrow(courseId);
-        return studentService.getCourseStudents(course).stream()
+        return studentService.getStudents(course).stream()
                 .map(StudentEntity::getUser)
                 .map(UserMapper::toUserGeneralInfoDto)
                 .toList();

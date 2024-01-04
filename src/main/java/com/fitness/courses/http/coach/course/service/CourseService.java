@@ -2,6 +2,7 @@ package com.fitness.courses.http.coach.course.service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import javax.validation.constraints.NotNull;
 
@@ -31,4 +32,6 @@ public interface CourseService
 
     List<CourseEntity> findAllByKeyword(@NotNull String keyword, @NotNull Integer offset,
             @NotNull Integer limit);
+
+    Set<String> getCourseStagesUuids(CourseEntity course);
 }

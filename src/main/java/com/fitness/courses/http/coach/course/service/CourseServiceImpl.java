@@ -3,8 +3,11 @@ package com.fitness.courses.http.coach.course.service;
 import java.lang.reflect.Field;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.validation.constraints.NotNull;
 
@@ -18,8 +21,11 @@ import com.fitness.courses.global.exceptions.NotFoundException;
 import com.fitness.courses.http.attachment.model.info.MultipartFileWithExtension;
 import com.fitness.courses.http.attachment.service.AttachmentService;
 import com.fitness.courses.http.auth.service.AuthService;
+import com.fitness.courses.http.coach.course.content.model.info.LessonWithStagesInfo;
+import com.fitness.courses.http.coach.course.content.service.lesson.LessonService;
 import com.fitness.courses.http.coach.course.content.service.module.ModuleService;
 import com.fitness.courses.http.coach.course.model.entity.CourseEntity;
+import com.fitness.courses.http.coach.course.model.entity.CourseStatus;
 import com.fitness.courses.http.coach.course.model.info.CourseEntityWithStudentsCount;
 import com.fitness.courses.http.objectStorage.model.entity.FileExtensionEnum;
 
@@ -30,18 +36,21 @@ public class CourseServiceImpl implements CourseService
     private final AuthService authService;
     private final AttachmentService attachmentService;
     private final ModuleService moduleService;
+    private final LessonService lessonService;
 
     @Autowired
     public CourseServiceImpl(
             CrudCourseEntityService crudCourseEntityService,
             AuthService authService,
             AttachmentService attachmentService,
-            ModuleService moduleService)
+            ModuleService moduleService,
+            LessonService lessonService)
     {
         this.crudCourseEntityService = crudCourseEntityService;
         this.authService = authService;
         this.attachmentService = attachmentService;
         this.moduleService = moduleService;
+        this.lessonService = lessonService;
     }
 
     @Override
@@ -49,6 +58,7 @@ public class CourseServiceImpl implements CourseService
     {
         newCourseEntity.setAuthor(authService.getCurrentUserOrThrow());
         newCourseEntity.setDateTimeCreated(LocalDateTime.now(ZoneId.systemDefault()));
+        newCourseEntity.setStatus(CourseStatus.PUBLISHED); // TODO edit
         crudCourseEntityService.save(newCourseEntity);
     }
 
@@ -135,5 +145,17 @@ public class CourseServiceImpl implements CourseService
             @NotNull Integer limit)
     {
         return crudCourseEntityService.findAllByKeyword(keyword, offset, limit);
+    }
+
+    @Override
+    public Set<String> getCourseStagesUuids(CourseEntity course)
+    {
+        return moduleService.findAllByCourseAndSortAscBySerialNumber(course).stream()
+                .map(lessonService::findAllLessonsWithStagesByModule)
+                .flatMap(Collection::stream)
+                .map(LessonWithStagesInfo::stages)
+                .flatMap(Collection::stream)
+                .map(stage -> stage.getId().toString())
+                .collect(Collectors.toSet());
     }
 }

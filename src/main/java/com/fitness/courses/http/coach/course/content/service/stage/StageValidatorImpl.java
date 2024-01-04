@@ -17,6 +17,7 @@ import com.fitness.courses.http.coach.course.content.model.entity.stage.content.
 import com.fitness.courses.http.coach.course.content.model.entity.stage.content.ExercisesStageContent;
 import com.fitness.courses.http.coach.course.content.model.entity.stage.content.exercise.AbstractExerciseContent;
 import com.fitness.courses.http.coach.course.content.model.entity.stage.content.exercise.set.AbstractExerciseSetContent;
+import com.fitness.courses.http.coach.course.model.entity.CourseEntity;
 
 @Service
 public class StageValidatorImpl implements StageValidator
@@ -49,8 +50,21 @@ public class StageValidatorImpl implements StageValidator
 
         if (!stageEntityFromDb.getLesson().getId().equals(lessonId))
         {
-            final String message = "Stage with id %d doesn't belong to lesson with id %d".formatted(lessonId,
-                    stageId);
+            final String message = "Stage with id %d doesn't belong to lesson with id %d".formatted(stageId, lessonId);
+            LOG.error(message);
+            throw new ValidationException(message);
+        }
+    }
+
+    @Override
+    public void validateStageBelongsToCourse(@NotNull Long courseId, @NotNull Long stageId)
+    {
+        final StageEntity stageEntityFromDb = stageService.getOrThrow(stageId);
+        final CourseEntity courseEntity = stageEntityFromDb.getLesson().getModule().getCourse();
+
+        if (!courseEntity.getId().equals(courseId))
+        {
+            final String message = "Stage with id %d doesn't belong to course with id %d".formatted(stageId, courseId);
             LOG.error(message);
             throw new ValidationException(message);
         }

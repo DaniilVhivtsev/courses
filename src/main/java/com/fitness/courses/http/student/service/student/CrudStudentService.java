@@ -25,4 +25,8 @@ public interface CrudStudentService
     int countByCourse(CourseEntity entity);
 
     boolean studentWithUserAndCourseExist(User user, CourseEntity course);
+
+    List<StudentEntity> getByUserOrderById(User user);
+
+    Optional<StudentEntity> getByUserAndCourse(User user, CourseEntity course);
 }

@@ -16,4 +16,6 @@ public interface StudentEntityRepository extends JpaRepository<StudentEntity, Lo
     int countByCourseId(Long courseId);
 
     Optional<StudentEntity> findFirstByUserIdAndCourseId(Long userId, Long courseId);
+
+    List<StudentEntity> findAllByUserIdOrderById(Long userId);
 }

@@ -22,7 +22,7 @@ import jakarta.persistence.UniqueConstraint;
 @Table(
         name = "student",
         uniqueConstraints = {
-                @UniqueConstraint(columnNames = {"user_id", "course_id"})
+                @UniqueConstraint(columnNames = { "user_id", "course_id" })
         }
 )
 public class StudentEntity
@@ -44,9 +44,9 @@ public class StudentEntity
     private AdmissionToCourseBidEntity approvedBid;
 
     @ElementCollection
-    @CollectionTable(name = "student_done_stage_uuids", joinColumns = @JoinColumn(name = "student_id"))
-    @Column(name = "done_stage_uuid")
-    private Set<String> doneStageUuids;
+    @CollectionTable(name = "student_done_stage_and_set_uuids", joinColumns = @JoinColumn(name = "student_id"))
+    @Column(name = "done_stage_or_set_uuid")
+    private Set<String> doneStageAndSetUuids;
 
     public Long getId()
     {
@@ -88,13 +88,13 @@ public class StudentEntity
         this.approvedBid = approvedBid;
     }
 
-    public Set<String> getDoneStageUuids()
+    public Set<String> getDoneStageAndSetUuids()
     {
-        return doneStageUuids;
+        return doneStageAndSetUuids;
     }
 
-    public void setDoneStageUuids(Set<String> doneStageUuids)
+    public void setDoneStageAndSetUuids(Set<String> doneStageAndSetUuids)
     {
-        this.doneStageUuids = doneStageUuids;
+        this.doneStageAndSetUuids = doneStageAndSetUuids;
     }
 }

@@ -11,6 +11,8 @@ public interface StageValidator
 
     void validateStageBelongsToLesson(@NotNull Long lessonId, @NotNull Long stageId);
 
+    void validateStageBelongsToCourse(@NotNull Long courseId, @NotNull Long stageId);
+
     void validateSerialNumber(@NotNull LessonEntity lessonEntity, @NotNull Integer serialNumber)
             throws ValidationException;
 
