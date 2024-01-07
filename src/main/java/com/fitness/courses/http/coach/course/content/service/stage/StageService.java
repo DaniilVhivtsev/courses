@@ -13,9 +13,9 @@ import com.fitness.courses.http.coach.course.content.model.entity.stage.StageEnt
 
 public interface StageService
 {
-    void add(@NotNull LessonEntity lesson);
+    StageEntity add(@NotNull LessonEntity lesson, @NotNull String stageTitle);
 
-    void addContent(@NotNull Long stageId, @NotNull AddCourseAuthorStageContentInfoDto addContentDto);
+    String addContent(@NotNull Long stageId, @NotNull AddCourseAuthorStageContentInfoDto addContentDto);
 
     void deleteAllByLesson(@NotNull LessonEntity lesson);
 

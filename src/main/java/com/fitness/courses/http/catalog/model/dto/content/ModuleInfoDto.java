@@ -2,14 +2,21 @@ package com.fitness.courses.http.catalog.model.dto.content;
 
 import java.util.List;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
+@Schema(name = "Ответ сервера с публичной информацией о модуле в курсе.")
 public class ModuleInfoDto
 {
+    @Schema(description = "Идентификатор модуля.")
     private Long id;
 
+    @Schema(description = "Название модуля.")
     private String title;
 
+    @Schema(description = "Порядковый номер модуля.")
     private int serialNumber;
 
+    @Schema(description = "Урок модуля курса. (Содержание курса).")
     private List<LessonInfoDto> lessons;
 
     public Long getId()

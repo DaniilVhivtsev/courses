@@ -55,7 +55,7 @@ public abstract class AbstractExerciseSetContentInfoDto
         this.type = type;
     }
 
-    public boolean isCompleted()
+    public boolean getIsCompleted()
     {
         return isCompleted;
     }

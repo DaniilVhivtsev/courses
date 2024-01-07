@@ -4,6 +4,9 @@ import java.util.List;
 
 import com.fitness.courses.http.coach.course.content.model.dto.stage.content.get.exercise.set.ExerciseRepeatSetContentInfoDto;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
+@Schema(description = "RepeatExerciseContentInfoDtoAuthor", allOf = AbstractExerciseContentInfoDto.class)
 public class RepeatExerciseContentInfoDto extends AbstractExerciseContentInfoDto<ExerciseRepeatSetContentInfoDto>
 {
     public RepeatExerciseContentInfoDto()

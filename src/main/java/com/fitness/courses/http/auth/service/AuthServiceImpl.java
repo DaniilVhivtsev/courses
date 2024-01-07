@@ -152,6 +152,7 @@ public class AuthServiceImpl implements AuthService
         }
         else
         {
+            sendVerificationEmailCode(userId);
             throw new RuntimeException();
         }
     }
@@ -200,6 +201,7 @@ public class AuthServiceImpl implements AuthService
         String randomCode = RandomString.make(64);
         user.setLastVerificationEmailCode(randomCode);
         user.setConfirmed(false);
+        userService.update(user);
 
         try
         {

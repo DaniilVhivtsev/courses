@@ -1,5 +1,8 @@
 package com.fitness.courses.http.coach.course.content.model.dto.stage.content.get;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
+@Schema(description = "VideoStageContentInfoDtoAuthor")
 public class VideoStageContentInfoDto extends AbstractStageContentInfoDto
 {
     private String url;

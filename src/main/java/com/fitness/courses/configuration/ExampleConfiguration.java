@@ -1,8 +1,11 @@
 package com.fitness.courses.configuration;
 
+import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
+import org.springdoc.core.customizers.OpenApiCustomizer;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -19,9 +22,30 @@ import com.fitness.courses.http.coach.course.content.model.entity.stage.content.
 import com.fitness.courses.http.coach.course.content.service.stage.CrudStageEntityService;
 import com.fitness.courses.http.objectStorage.service.LocalStorageFileService;
 
+import io.swagger.v3.oas.models.media.ArraySchema;
+import io.swagger.v3.oas.models.media.Discriminator;
+
 @Configuration
 public class ExampleConfiguration
 {
+    @Bean
+    public OpenApiCustomizer myCustomiser() {
+
+        Map<String, String> classTypeMapping = Map.ofEntries(
+                new AbstractMap.SimpleEntry<String, String>("ExercisesStageContentInfoDto", "#/components/schemas/ExercisesStageContentInfoDto"),
+                new AbstractMap.SimpleEntry<String, String>("ImgStageContentInfoDto", "#/components/schemas/ImgStageContentInfoDto")
+        );
+
+        Discriminator classTypeDiscriminator = new Discriminator().propertyName("classType")
+                .mapping(classTypeMapping);
+
+        return openApi -> openApi.getComponents().getSchemas().values()
+                .stream()
+                .filter(schema -> "ContainerClass".equals(schema.getName()))
+                .map(schema -> schema.getProperties().get("elements"))
+                .forEach(arraySchema -> ((ArraySchema)arraySchema).getItems().discriminator(classTypeDiscriminator));
+    }
+
     @Bean
     public CommandLineRunner testS3BucketLoader(LocalStorageFileService localStorageFileService,
             CrudStageEntityService crudStageEntityService, StageMapper stageMapper)

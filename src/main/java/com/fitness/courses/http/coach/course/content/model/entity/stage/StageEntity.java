@@ -29,6 +29,8 @@ public class StageEntity
 
     private int serialNumber;
 
+    private String title;
+
     @ManyToOne(optional = true)
     @JoinColumn(name = "lesson_id", nullable = true)
     private LessonEntity lesson = null;
@@ -55,6 +57,16 @@ public class StageEntity
     public void setSerialNumber(int serialNumber)
     {
         this.serialNumber = serialNumber;
+    }
+
+    public String getTitle()
+    {
+        return title;
+    }
+
+    public void setTitle(String title)
+    {
+        this.title = title;
     }
 
     public LessonEntity getLesson()

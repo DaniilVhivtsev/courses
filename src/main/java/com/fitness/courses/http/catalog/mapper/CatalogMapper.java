@@ -254,6 +254,7 @@ public class CatalogMapper
     {
         StageInfoDto dto = MAPPER.map(stage, StageInfoDto.class);
         dto.setCompleted(doneStageAndSetUuids.contains(stage.getId().toString()));
+        dto.setTitle("Example title");
 
         return dto;
     }

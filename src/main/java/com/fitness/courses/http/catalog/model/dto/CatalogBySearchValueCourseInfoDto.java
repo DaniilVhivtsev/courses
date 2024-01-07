@@ -1,17 +1,42 @@
 package com.fitness.courses.http.catalog.model.dto;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
+@Schema(name = "Ответ сервера с информацией о найденном курсе по ключевому слову в каталоге.")
 public class CatalogBySearchValueCourseInfoDto
 {
+    @Schema(description = "Идентификатор курса.")
     private Long id;
+
+    @Schema(description = "Название курса.")
     private String title;
+
+    @Schema(description = "Описание курса.")
     private String description;
+
+    @Schema(description = "Url для получения иконки курса.")
     private String iconImgUrl;
+
+    @Schema(description = "Рейтинг курса.")
     private Double rating;
+
+    @Schema(description = "Количество студентов на курсе.")
     private Integer numberOfPeople;
+
+    @Schema(description = "Бесплатный ли курс. true - курс бесплатный, false - курс платный).")
     private boolean isFree;
+
+    @Schema(description = "Цена за курс. (Если курс платный)")
     private Integer price;
+
+    @Schema(description = "Идентификатор автора курса.")
     private Long authorId;
+
+    @Schema(description = "Полное имя (Фамилия Имя) автора курса.")
     private String authorFullName;
+
+    @Schema(description = "Пользователь является студентом данного курса. true - если пользователь прошел "
+            + "аутентификацию и является студентом, иначе - false.")
     private boolean userIsRegisteredForTheCourse;
 
     public Long getId()
@@ -74,7 +99,7 @@ public class CatalogBySearchValueCourseInfoDto
         this.numberOfPeople = numberOfPeople;
     }
 
-    public boolean isFree()
+    public boolean getIsFree()
     {
         return isFree;
     }

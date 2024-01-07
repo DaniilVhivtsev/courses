@@ -215,6 +215,23 @@ public class AuthController
         }
     }
 
+    @Operation(
+            summary = "Post метод подтверждения почты.",
+            description = "Post метод подтверждает эл. почту пользователя по переданным двум кодам."
+    )
+    @ApiResponses(
+            value = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Почта успешно подтверждена.",
+                            content = {}
+                    ),
+                    @ApiResponse(
+                            responseCode = "500",
+                            description = "Ошибки сервера."
+                    ),
+            }
+    )
     @PostMapping("/verifyEmail")
     public ResponseEntity<?> verificationEmail(@RequestParam String code, @RequestParam String secondeCode)
     {

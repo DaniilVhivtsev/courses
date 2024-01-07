@@ -6,33 +6,31 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.fitness.courses.http.coach.course.model.entity.CourseCategoryEnum;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
+@Schema(name = "Значения передаются через form-data. Также необходимо в хедере указать Content-Type равным multipart form-data")
 public class EditCourseAuthorGeneralInfo
 {
-    private Long id;
-
+    @Schema(description = "Название курса")
     private String title;
 
+    @Schema(description = "Краткое описание курса")
     private String shortDescription;
 
+    @Schema(description = "Категории курса")
     private List<CourseCategoryEnum> categories;
 
+    @Schema(description = "О чем курс")
     private String about;
 
+    @Schema(description = "Для кого курс")
     private String courseFor;
 
+    @Schema(description = "Требования для прохождения курса")
     private String requirements;
 
+    @Schema(description = "Файл для загрузки", type = "string", format = "binary")
     private MultipartFile logo;
-
-    public Long getId()
-    {
-        return id;
-    }
-
-    public void setId(Long id)
-    {
-        this.id = id;
-    }
 
     public String getTitle()
     {

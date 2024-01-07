@@ -73,6 +73,7 @@ public class StageMapper
         CourseAuthorStageInfoDto infoDto = new CourseAuthorStageInfoDto();
         infoDto.setId(entity.getId());
         infoDto.setSerialNumber(entity.getSerialNumber());
+        infoDto.setTitle(entity.getTitle());
 
         return infoDto;
     }
@@ -82,6 +83,7 @@ public class StageMapper
         CourseAuthorStageWithContentInfoDto infoDto = new CourseAuthorStageWithContentInfoDto();
         infoDto.setId(entity.getId());
         infoDto.setSerialNumber(entity.getSerialNumber());
+        infoDto.setTitle(entity.getTitle());
         infoDto.setStageContent(entity.getStageContent().stream().map(this::toContentInfoDto).toList());
 
         return infoDto;

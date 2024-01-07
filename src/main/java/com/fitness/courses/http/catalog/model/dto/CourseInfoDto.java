@@ -6,42 +6,64 @@ import java.util.List;
 import com.fitness.courses.http.catalog.model.dto.content.ModuleInfoDto;
 import com.fitness.courses.http.coach.course.model.entity.CourseCategoryEnum;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
+@Schema(name = "Ответ сервера с информации (публичной и содержанием: модули, уроки) о курсе.")
 public class CourseInfoDto
 {
+    @Schema(description = "Идентификатор курса.")
     private Long id;
 
+    @Schema(description = "Название курса.")
     private String title;
 
+    @Schema(description = "Краткое описание курса.")
     private String shortDescription;
 
+    @Schema(description = "Категории курса курса. ПОКА ЗДЕСЬ НИЧЕГО")
     private List<CourseCategoryEnum> categories;
 
+    @Schema(description = "Полное описание курса.")
     private String about;
 
+    @Schema(description = "Описание для кого данный курс.")
     private String courseFor;
 
+    @Schema(description = "Требования для прохождения данного курса. (Может быть также: какой инвентарь требуется)")
     private String requirements;
 
+    @Schema(description = "Идентификатор автора курса.")
     private Long authorId;
 
+    @Schema(description = "Полное имя (Фамилия Имя) автора курса.")
     private String authorFullName;
 
+    @Schema(description = "Краткое описание автора курс.")
     private String authorShortDescription;
 
+    @Schema(description = "Дата создания курса.")
     private LocalDateTime dateTimeCreated;
 
+    @Schema(description = "Url для получения иконки курса.")
     private String iconImgUrl;
 
+    @Schema(description = "Рейтинг курса.")
     private Double rating;
 
+    @Schema(description = "Количество студентов на курсе.")
     private Integer numberOfPeople;
 
+    @Schema(description = "Бесплатный ли курс. true - курс бесплатный, false - курс платный).")
     private boolean isFree;
 
+    @Schema(description = "Цена за курс. (Если курс платный)")
     private Integer price;
 
+    @Schema(description = "Пользователь является студентом данного курса. true - если пользователь прошел "
+            + "аутентификацию и является студентом, иначе - false.")
     private boolean userIsRegisteredForTheCourse;
 
+    @Schema(description = "Модули курса. (Содержание курса).")
     private List<ModuleInfoDto> modules;
 
     public Long getId()
@@ -184,7 +206,7 @@ public class CourseInfoDto
         this.numberOfPeople = numberOfPeople;
     }
 
-    public boolean isFree()
+    public boolean getIsFree()
     {
         return isFree;
     }

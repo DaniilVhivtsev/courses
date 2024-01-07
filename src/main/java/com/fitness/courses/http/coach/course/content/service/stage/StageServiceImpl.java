@@ -61,23 +61,31 @@ public class StageServiceImpl implements StageService
     }
 
     @Override
-    public void add(@NotNull LessonEntity lesson)
+    public StageEntity add(@NotNull LessonEntity lesson, @NotNull String stageTitle)
     {
         StageEntity newStageEntity = new StageEntity();
         newStageEntity.setStageContent(new ArrayList<>());
         newStageEntity.setSerialNumber(getNextSerialNumber(lesson));
+        newStageEntity.setTitle(stageTitle);
         newStageEntity.setLesson(lesson);
 
-        crudStageEntityService.save(newStageEntity);
+        return crudStageEntityService.save(newStageEntity);
     }
 
     @Override
-    public void addContent(@NotNull Long stageId, @NotNull AddCourseAuthorStageContentInfoDto addContentDto)
+    public String addContent(@NotNull Long stageId, @NotNull AddCourseAuthorStageContentInfoDto addContentDto)
     {
         final StageEntity stageEntity = getOrThrow(stageId);
         AbstractStageContent newStageContent = createStageContent(addContentDto);
         newStageContent.setUuid(UUIDGenerator.nestUuidInString());
         newStageContent.setSerialNumber(getNextSerialNumber(stageEntity));
+        List<AbstractStageContent> newStageEntityContent = new ArrayList<>(stageEntity.getStageContent());
+        newStageEntityContent.add(newStageContent);
+        stageEntity.setStageContent(newStageEntityContent);
+
+        crudStageEntityService.update(stageEntity);
+
+        return newStageContent.getUuid();
     }
 
     private AbstractStageContent createStageContent(AddCourseAuthorStageContentInfoDto addContentDto)
@@ -178,8 +186,15 @@ public class StageServiceImpl implements StageService
             }
 
             stageEntityFromList.setSerialNumber(updateStageDto.getSerialNumber());
+            stageEntityFromList.setTitle(updateStageDto.getTitle());
 
             lessonStages.forEach(crudStageEntityService::update);
+        }
+        else
+        {
+            stageEntityFromDb.setTitle(updateStageDto.getTitle());
+
+            crudStageEntityService.update(stageEntityFromDb);
         }
     }
 

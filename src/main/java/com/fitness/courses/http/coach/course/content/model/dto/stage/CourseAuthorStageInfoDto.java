@@ -6,6 +6,8 @@ public class CourseAuthorStageInfoDto
 
     private int serialNumber;
 
+    private String title;
+
     public Long getId()
     {
         return id;
@@ -24,5 +26,15 @@ public class CourseAuthorStageInfoDto
     public void setSerialNumber(int serialNumber)
     {
         this.serialNumber = serialNumber;
+    }
+
+    public String getTitle()
+    {
+        return title;
+    }
+
+    public void setTitle(String title)
+    {
+        this.title = title;
     }
 }

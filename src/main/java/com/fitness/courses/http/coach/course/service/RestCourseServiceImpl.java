@@ -14,6 +14,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fitness.courses.global.utils.UUIDGenerator;
 import com.fitness.courses.http.coach.card.service.CardValidator;
@@ -32,6 +34,7 @@ import com.fitness.courses.http.coach.course.content.model.dto.stage.content.upd
 import com.fitness.courses.http.coach.course.content.model.dto.stage.content.update.UpdateImgStageContentDto;
 import com.fitness.courses.http.coach.course.content.model.dto.stage.content.update.UpdateTextStageContentDto;
 import com.fitness.courses.http.coach.course.content.model.dto.stage.content.update.UpdateVideoStageContentDto;
+import com.fitness.courses.http.coach.course.content.model.dto.stage.content.update.exercise.UpdateAbstractExerciseContentDto;
 import com.fitness.courses.http.coach.course.content.model.dto.stage.content.update.exercise.set.UpdateExerciseDistanceSetContentDto;
 import com.fitness.courses.http.coach.course.content.model.dto.stage.content.update.exercise.set.UpdateExerciseRepeatSetContentDto;
 import com.fitness.courses.http.coach.course.content.model.dto.stage.content.update.exercise.set.UpdateExerciseTimeSetContentDto;
@@ -309,7 +312,7 @@ public class RestCourseServiceImpl implements RestCourseService
     }
 
     @Override
-    public void addStage(@NotNull Long courseId, @NotNull Long lessonId)
+    public Long addStage(@NotNull Long courseId, @NotNull Long lessonId, @NotNull String stageTitle)
     {
         courseValidator.validateCourseExist(courseId);
         courseValidator.validateCurrentUserHasPermission(courseId);
@@ -317,7 +320,7 @@ public class RestCourseServiceImpl implements RestCourseService
         lessonValidator.validateExist(lessonId);
         lessonValidator.validateLessonBelongsToCourse(courseId, lessonId);
 
-        stageService.add(lessonService.getOrThrow(lessonId));
+        return stageService.add(lessonService.getOrThrow(lessonId), stageTitle).getId();
     }
 
     @Override
@@ -410,7 +413,7 @@ public class RestCourseServiceImpl implements RestCourseService
     }
 
     @Override
-    public void addStageContent(@NotNull Long courseId, @NotNull Long lessonId, @NotNull Long stageId,
+    public String addStageContent(@NotNull Long courseId, @NotNull Long lessonId, @NotNull Long stageId,
             @NotNull AddCourseAuthorStageContentInfoDto addContentDto)
     {
         courseValidator.validateCourseExist(courseId);
@@ -422,7 +425,7 @@ public class RestCourseServiceImpl implements RestCourseService
         stageValidator.validateExist(stageId);
         stageValidator.validateStageBelongsToLesson(lessonId, stageId);
 
-        stageService.addContent(stageId, addContentDto);
+        return stageService.addContent(stageId, addContentDto);
     }
 
     @Override
@@ -438,14 +441,23 @@ public class RestCourseServiceImpl implements RestCourseService
 
         stageValidator.validateExist(stageId);
         stageValidator.validateStageBelongsToLesson(lessonId, stageId);
-        UpdateAbstractStageContentDto updateAbstractStageContentDto = getUpdateAbstractStageContentDto(stageId, type,
-                formData.toSingleValueMap(), multipartFile);
+        UpdateAbstractStageContentDto updateAbstractStageContentDto = null;
+        try
+        {
+            updateAbstractStageContentDto = getUpdateAbstractStageContentDto(stageId, type,
+                    formData.toSingleValueMap(), multipartFile);
+        }
+        catch (JsonProcessingException e)
+        {
+            throw new RuntimeException(e.getLocalizedMessage());
+        }
 
         stageService.updateStageContent(stageId, updateAbstractStageContentDto);
     }
 
     private UpdateAbstractStageContentDto getUpdateAbstractStageContentDto(@NotNull Long stageId,
-            @NotNull StageContentType type, @NotNull Map<String, Object> formData, @Nullable MultipartFile multipartFile)
+            @NotNull StageContentType type, @NotNull Map<String, Object> formData,
+            @Nullable MultipartFile multipartFile) throws JsonProcessingException
     {
         UpdateAbstractStageContentDto dto = switch (type)
                 {
@@ -525,10 +537,16 @@ public class RestCourseServiceImpl implements RestCourseService
     }
 
     private UpdateExercisesStageContentDto getUpdateExercisesStageContentDto(@NotNull Long stageId,
-            @NotNull Map<String, Object> formData)
+            @NotNull Map<String, Object> formData) throws JsonProcessingException
     {
+        List<UpdateAbstractExerciseContentDto<?>> updateAbstractExerciseContentDtoList =
+                objectMapper.readValue((String)formData.get("exercises"),
+                        new TypeReference<List<UpdateAbstractExerciseContentDto<?>>>() {});
+        formData.remove("exercises");
+
         StageEntity stageEntityFromDb = stageService.getOrThrow(stageId);
         UpdateExercisesStageContentDto dto = objectMapper.convertValue(formData, UpdateExercisesStageContentDto.class);
+        dto.setExercises(updateAbstractExerciseContentDtoList);
         stageValidator.validateStageContentExist(stageId, dto.getUuid());
 
         if (dto.getSerialNumber() != null)
@@ -542,7 +560,8 @@ public class RestCourseServiceImpl implements RestCourseService
 
         if (dto.getExercises() != null)
         {
-            dto.getExercises().forEach(exercise -> {
+            dto.getExercises().forEach(exercise ->
+            {
                 if (exercise.getUuid() != null)
                 {
                     stageValidator.validateExerciseContentExist(stageId, dto.getUuid(), exercise.getUuid());
@@ -556,7 +575,8 @@ public class RestCourseServiceImpl implements RestCourseService
 
                 if (exercise.getSets() != null)
                 {
-                    exercise.getSets().forEach(set -> {
+                    exercise.getSets().forEach(set ->
+                    {
                         if (set.getUuid() != null)
                         {
                             stageValidator.validateExerciseSetContentExist(stageId, dto.getUuid(), exercise.getUuid(),

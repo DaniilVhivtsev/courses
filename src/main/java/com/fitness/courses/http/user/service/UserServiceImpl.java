@@ -35,6 +35,13 @@ public class UserServiceImpl implements UserService
     }
 
     @Override
+    @Transactional
+    public User update(User user)
+    {
+        return userRepository.save(user);
+    }
+
+    @Override
     @Transactional(readOnly = true)
     public Optional<User> findById(Long id)
     {

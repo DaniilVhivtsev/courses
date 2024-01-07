@@ -4,13 +4,32 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.fitness.courses.http.student.model.dto.stage.content.AbstractStageContentInfoDto;
+import com.fitness.courses.http.student.model.dto.stage.content.ExercisesStageContentInfoDto;
+import com.fitness.courses.http.student.model.dto.stage.content.ImgStageContentInfoDto;
+import com.fitness.courses.http.student.model.dto.stage.content.TextStageContentInfoDto;
+import com.fitness.courses.http.student.model.dto.stage.content.VideoStageContentInfoDto;
+
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 public class StageContentInfoDto
 {
     private Long id;
 
+    private String title;
+
     private boolean isCompleted;
 
+    @ArraySchema(
+            schema = @Schema(
+                    oneOf = {
+                            ExercisesStageContentInfoDto.class,
+                            ImgStageContentInfoDto.class,
+                            TextStageContentInfoDto.class,
+                            VideoStageContentInfoDto.class
+                    }
+            )
+    )
     private List<AbstractStageContentInfoDto> stageContent = new ArrayList<>();
 
     public Long getId()
@@ -23,7 +42,17 @@ public class StageContentInfoDto
         this.id = id;
     }
 
-    public boolean isCompleted()
+    public String getTitle()
+    {
+        return title;
+    }
+
+    public void setTitle(String title)
+    {
+        this.title = title;
+    }
+
+    public boolean getIsCompleted()
     {
         return isCompleted;
     }

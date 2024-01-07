@@ -2,8 +2,33 @@ package com.fitness.courses.http.student.model.dto.stage.content.exercise;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fitness.courses.http.student.model.dto.stage.content.exercise.set.AbstractExerciseSetContentInfoDto;
 
+import io.swagger.v3.oas.annotations.media.DiscriminatorMapping;
+import io.swagger.v3.oas.annotations.media.Schema;
+
+@JsonTypeInfo(
+        use = JsonTypeInfo.Id.NAME,
+        include = JsonTypeInfo.As.EXISTING_PROPERTY,
+        property = "type second",
+        defaultImpl = AbstractExerciseContentInfoDto.class,
+        visible = true)
+@JsonSubTypes({
+        @JsonSubTypes.Type(value = DistanceExerciseContentInfoDto.class, name = "DistanceExerciseContentInfoDto"),
+        @JsonSubTypes.Type(value = RepeatExerciseContentInfoDto.class, name = "RepeatExerciseContentInfoDto"),
+        @JsonSubTypes.Type(value = TimeExerciseContentInfoDto.class, name = "TimeExerciseContentInfoDto")
+})
+@Schema(
+        description = "Parent description",
+        discriminatorProperty = "type second",
+        discriminatorMapping = {
+                @DiscriminatorMapping(value = "DistanceExerciseContentInfoDto", schema = DistanceExerciseContentInfoDto.class),
+                @DiscriminatorMapping(value = "RepeatExerciseContentInfoDto", schema = RepeatExerciseContentInfoDto.class),
+                @DiscriminatorMapping(value = "TimeExerciseContentInfoDto", schema = TimeExerciseContentInfoDto.class)
+        }
+)
 public abstract class AbstractExerciseContentInfoDto<T extends AbstractExerciseSetContentInfoDto>
 {
     private String uuid;

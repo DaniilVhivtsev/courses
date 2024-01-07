@@ -57,7 +57,7 @@ public interface RestCourseService
 
     void deleteLesson(@NotNull Long courseId, @NotNull Long moduleId, @NotNull Long lessonId);
 
-    void addStage(@NotNull Long courseId, @NotNull Long lessonId);
+    Long addStage(@NotNull Long courseId, @NotNull Long lessonId, @NotNull String stageTitle);
 
     List<CourseAuthorStageInfoDto> getStages(@NotNull Long courseId, @NotNull Long lessonId);
 
@@ -71,7 +71,7 @@ public interface RestCourseService
 
     void deleteStage(@NotNull Long courseId, @NotNull Long lessonId, @NotNull Long stageId);
 
-    void addStageContent(@NotNull Long courseId, @NotNull Long lessonId, @NotNull Long stageId,
+    String addStageContent(@NotNull Long courseId, @NotNull Long lessonId, @NotNull Long stageId,
             @NotNull AddCourseAuthorStageContentInfoDto addContentDto);
 
     void editStageContent(@NotNull Long courseId, @NotNull Long lessonId, @NotNull Long stageId,
