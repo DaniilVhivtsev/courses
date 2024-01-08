@@ -91,7 +91,9 @@ public class CatalogMapper
             protected void configure()
             {
                 mapping(CourseInfoDto.class, CourseEntity.class)
-                        .fields("description", "shortDescription"); // TODO check categories, dateTimeCreated
+                        .fields("description", "shortDescription")
+                        .exclude("categories")
+                        .exclude("dateTimeCreated"); // TODO check categories, dateTimeCreated
             }
         };
 

@@ -12,6 +12,7 @@ import com.fitness.courses.http.coach.course.content.model.entity.stage.content.
 import io.hypersistence.utils.hibernate.type.json.JsonType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -31,7 +32,7 @@ public class StageEntity
 
     private String title;
 
-    @ManyToOne(optional = true)
+    @ManyToOne(optional = true, fetch = FetchType.EAGER)
     @JoinColumn(name = "lesson_id", nullable = true)
     private LessonEntity lesson = null;
 

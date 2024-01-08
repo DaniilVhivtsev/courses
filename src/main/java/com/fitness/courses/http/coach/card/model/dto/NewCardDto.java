@@ -19,9 +19,10 @@ public class NewCardDto
         return title;
     }
 
-    public void setTitle(String title)
+    public NewCardDto setTitle(String title)
     {
         this.title = title;
+        return this;
     }
 
     public String getDescription()
@@ -29,9 +30,10 @@ public class NewCardDto
         return description;
     }
 
-    public void setDescription(String description)
+    public NewCardDto setDescription(String description)
     {
         this.description = description;
+        return this;
     }
 
     public String getMuscleGroupsDescription()
@@ -39,9 +41,10 @@ public class NewCardDto
         return muscleGroupsDescription;
     }
 
-    public void setMuscleGroupsDescription(String muscleGroupsDescription)
+    public NewCardDto setMuscleGroupsDescription(String muscleGroupsDescription)
     {
         this.muscleGroupsDescription = muscleGroupsDescription;
+        return this;
     }
 
     public String getInventoryDescription()
@@ -49,9 +52,10 @@ public class NewCardDto
         return inventoryDescription;
     }
 
-    public void setInventoryDescription(String inventoryDescription)
+    public NewCardDto setInventoryDescription(String inventoryDescription)
     {
         this.inventoryDescription = inventoryDescription;
+        return this;
     }
 
     public List<MultipartFile> getImages()
@@ -59,9 +63,10 @@ public class NewCardDto
         return images;
     }
 
-    public void setImages(List<MultipartFile> images)
+    public NewCardDto setImages(List<MultipartFile> images)
     {
         this.images = images;
+        return this;
     }
 
     public MultipartFile getVideo()
@@ -69,8 +74,9 @@ public class NewCardDto
         return video;
     }
 
-    public void setVideo(MultipartFile video)
+    public NewCardDto setVideo(MultipartFile video)
     {
         this.video = video;
+        return this;
     }
 }

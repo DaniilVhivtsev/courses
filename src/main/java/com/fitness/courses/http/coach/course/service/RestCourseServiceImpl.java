@@ -2,6 +2,7 @@ package com.fitness.courses.http.coach.course.service;
 
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -17,6 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.fitness.courses.global.utils.UUIDGenerator;
 import com.fitness.courses.http.coach.card.service.CardValidator;
 import com.fitness.courses.http.coach.course.content.mapper.StageMapper;
@@ -105,11 +107,11 @@ public class RestCourseServiceImpl implements RestCourseService
     }
 
     @Override
-    public void createCourse(@NonNull NewCourseDto newCourseDto)
+    public Long createCourse(@NonNull NewCourseDto newCourseDto)
     {
         courseValidator.validateCourseTitle(newCourseDto.getTitle());
 
-        courseService.createCourse(CourseMapper.toEntity(newCourseDto));
+        return courseService.createCourse(CourseMapper.toEntity(newCourseDto)).getId();
     }
 
     @Override
@@ -176,7 +178,7 @@ public class RestCourseServiceImpl implements RestCourseService
     }
 
     @Override
-    public void addModule(@NotNull Long courseId, @NotNull NewCourseAuthorModuleDto newModuleDto)
+    public Long addModule(@NotNull Long courseId, @NotNull NewCourseAuthorModuleDto newModuleDto)
     {
         courseValidator.validateCourseExist(courseId);
         courseValidator.validateCurrentUserHasPermission(courseId);
@@ -184,7 +186,7 @@ public class RestCourseServiceImpl implements RestCourseService
         moduleValidator.validateModuleTitle(newModuleDto.getTitle());
         moduleValidator.validateModuleDescription(newModuleDto.getDescription());
 
-        moduleService.add(courseService.getCourseOrThrow(courseId), newModuleDto);
+        return moduleService.add(courseService.getCourseOrThrow(courseId), newModuleDto).getId();
     }
 
     @Override
@@ -244,7 +246,7 @@ public class RestCourseServiceImpl implements RestCourseService
     }
 
     @Override
-    public void addLesson(@NotNull Long courseId, @NotNull Long moduleId,
+    public Long addLesson(@NotNull Long courseId, @NotNull Long moduleId,
             @NotNull NewCourseAuthorLessonDto newLessonDto)
     {
         courseValidator.validateCourseExist(courseId);
@@ -255,7 +257,7 @@ public class RestCourseServiceImpl implements RestCourseService
 
         lessonValidator.validateTitle(newLessonDto.getTitle());
 
-        lessonService.add(moduleService.getOrThrow(moduleId), newLessonDto);
+        return lessonService.add(moduleService.getOrThrow(moduleId), newLessonDto).getId();
     }
 
     @Override
@@ -539,9 +541,20 @@ public class RestCourseServiceImpl implements RestCourseService
     private UpdateExercisesStageContentDto getUpdateExercisesStageContentDto(@NotNull Long stageId,
             @NotNull Map<String, Object> formData) throws JsonProcessingException
     {
-        List<UpdateAbstractExerciseContentDto<?>> updateAbstractExerciseContentDtoList =
+        List<Map<String, Object>> exercisesList = (ArrayList<Map<String, Object>>) formData.get("exercises");
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JavaTimeModule());
+
+        // Чтение объектов из строковых представлений в списке
+        List<UpdateAbstractExerciseContentDto<?>> updateAbstractExerciseContentDtoList = objectMapper.readValue(
+                objectMapper.writeValueAsString(exercisesList),
+                new TypeReference<List<UpdateAbstractExerciseContentDto<?>>>() {}
+        );
+
+        /*List<UpdateAbstractExerciseContentDto<?>> updateAbstractExerciseContentDtoList =
                 objectMapper.readValue((String)formData.get("exercises"),
-                        new TypeReference<List<UpdateAbstractExerciseContentDto<?>>>() {});
+                        new TypeReference<List<UpdateAbstractExerciseContentDto<?>>>() {});*/
         formData.remove("exercises");
 
         StageEntity stageEntityFromDb = stageService.getOrThrow(stageId);

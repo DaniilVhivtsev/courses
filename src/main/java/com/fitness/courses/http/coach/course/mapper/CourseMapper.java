@@ -6,7 +6,9 @@ import javax.validation.constraints.NotNull;
 
 import org.dozer.DozerBeanMapper;
 import org.dozer.loader.api.BeanMappingBuilder;
+import org.dozer.loader.api.FieldsMappingOptions;
 
+import com.fitness.courses.global.dozer.LocalDateTimeToStringConverter;
 import com.fitness.courses.http.attachment.model.dto.AttachmentInfoDto;
 import com.fitness.courses.http.coach.course.content.mapper.ModuleMapper;
 import com.fitness.courses.http.coach.course.content.model.info.ModuleWithLessonsInfo;
@@ -28,6 +30,8 @@ public class CourseMapper
 
     static
     {
+        MAPPER.setCustomConverters(List.of(new LocalDateTimeToStringConverter()));
+
         BeanMappingBuilder newCourseBuilder = new BeanMappingBuilder()
         {
             @Override
@@ -43,6 +47,8 @@ public class CourseMapper
             protected void configure()
             {
                 mapping(ListCourseInfoDto.class, CourseEntity.class)
+//                        .fields("dateTimeCreated", "dateTimeCreated", FieldsMappingOptions.customConverter(LocalDateTimeToStringConverter.class))
+                        .exclude("dateTimeCreated")
                         .exclude("logo");
             }
         };
@@ -53,6 +59,8 @@ public class CourseMapper
             protected void configure()
             {
                 mapping(CourseAuthorGeneralInfoDto.class, CourseEntity.class)
+                        .exclude("categories")
+                        .exclude("dateTimeCreated")
                         .exclude("author")
                         .exclude("logo");
             }
@@ -64,6 +72,7 @@ public class CourseMapper
             protected void configure()
             {
                 mapping(EditCourseAuthorGeneralInfo.class, CourseEntity.class)
+                        .exclude("categories")
                         .exclude("logo");
             }
         };
@@ -87,6 +96,7 @@ public class CourseMapper
     public static @NotNull ListCourseInfoDto toListCourseInfoDto(@NotNull CourseEntity entity)
     {
         ListCourseInfoDto dto = MAPPER.map(entity, ListCourseInfoDto.class);
+        dto.setDateTimeCreated(entity.getDateTimeCreated());
         dto.setLogo(new AttachmentInfoDto()
                 .setId(entity.getLogo().getId())
                 .setFileName(entity.getLogo().getFileName())
@@ -99,6 +109,7 @@ public class CourseMapper
     {
         CourseAuthorGeneralInfoDto dto = MAPPER.map(entity, CourseAuthorGeneralInfoDto.class);
         dto.setAuthor(UserMapper.toUserGeneralInfoDto(entity.getAuthor()));
+        dto.setDateTimeCreated(entity.getDateTimeCreated());
         dto.setLogo(new AttachmentInfoDto()
                 .setId(entity.getLogo().getId())
                 .setFileName(entity.getLogo().getFileName())

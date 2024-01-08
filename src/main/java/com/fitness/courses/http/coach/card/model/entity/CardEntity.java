@@ -30,7 +30,8 @@ public class CardEntity
     @Column(nullable = false)
     private String title;
 
-    @Column(nullable = true)
+    @Column(nullable = true, length = 2048)
+
     private String description;
 
     @Column(nullable = true)
@@ -39,14 +40,14 @@ public class CardEntity
     @Column(nullable = true)
     private String inventoryDescription;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "author_id", nullable = false)
     private User author;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<AttachmentEntity> images = new ArrayList<>();
 
-    @OneToOne()
+    @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "video_id", nullable = true)
     private AttachmentEntity video;
 

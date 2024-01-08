@@ -37,9 +37,10 @@ public class EditCourseAuthorGeneralInfo
         return title;
     }
 
-    public void setTitle(String title)
+    public EditCourseAuthorGeneralInfo setTitle(String title)
     {
         this.title = title;
+        return this;
     }
 
     public String getShortDescription()
@@ -47,9 +48,10 @@ public class EditCourseAuthorGeneralInfo
         return shortDescription;
     }
 
-    public void setShortDescription(String shortDescription)
+    public EditCourseAuthorGeneralInfo setShortDescription(String shortDescription)
     {
         this.shortDescription = shortDescription;
+        return this;
     }
 
     public List<CourseCategoryEnum> getCategories()
@@ -57,9 +59,10 @@ public class EditCourseAuthorGeneralInfo
         return categories;
     }
 
-    public void setCategories(List<CourseCategoryEnum> categories)
+    public EditCourseAuthorGeneralInfo setCategories(List<CourseCategoryEnum> categories)
     {
         this.categories = categories;
+        return this;
     }
 
     public String getAbout()
@@ -67,9 +70,10 @@ public class EditCourseAuthorGeneralInfo
         return about;
     }
 
-    public void setAbout(String about)
+    public EditCourseAuthorGeneralInfo setAbout(String about)
     {
         this.about = about;
+        return this;
     }
 
     public String getCourseFor()
@@ -77,9 +81,10 @@ public class EditCourseAuthorGeneralInfo
         return courseFor;
     }
 
-    public void setCourseFor(String courseFor)
+    public EditCourseAuthorGeneralInfo setCourseFor(String courseFor)
     {
         this.courseFor = courseFor;
+        return this;
     }
 
     public String getRequirements()
@@ -87,9 +92,10 @@ public class EditCourseAuthorGeneralInfo
         return requirements;
     }
 
-    public void setRequirements(String requirements)
+    public EditCourseAuthorGeneralInfo setRequirements(String requirements)
     {
         this.requirements = requirements;
+        return this;
     }
 
     public MultipartFile getLogo()
@@ -97,8 +103,9 @@ public class EditCourseAuthorGeneralInfo
         return logo;
     }
 
-    public void setLogo(MultipartFile logo)
+    public EditCourseAuthorGeneralInfo setLogo(MultipartFile logo)
     {
         this.logo = logo;
+        return this;
     }
 }

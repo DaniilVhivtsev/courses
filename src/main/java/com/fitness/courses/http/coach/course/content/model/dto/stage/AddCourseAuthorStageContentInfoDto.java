@@ -11,8 +11,9 @@ public class AddCourseAuthorStageContentInfoDto
         return type;
     }
 
-    public void setType(StageContentType type)
+    public AddCourseAuthorStageContentInfoDto setType(StageContentType type)
     {
         this.type = type;
+        return this;
     }
 }

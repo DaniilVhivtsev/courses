@@ -42,7 +42,7 @@ public class CardServiceImpl implements CardService
 
     @Transactional
     @Override
-    public void addCard(NewCardDto newCardDto)
+    public CardEntity addCard(NewCardDto newCardDto)
     {
         CardEntity cardEntity = CardMapper.toEntity(newCardDto);
         cardEntity.setAuthor(authService.getCurrentUserOrThrow());
@@ -62,7 +62,7 @@ public class CardServiceImpl implements CardService
                 :
                 null);
 
-        crudCardService.save(cardEntity);
+        return crudCardService.save(cardEntity);
     }
 
     @Override

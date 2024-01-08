@@ -11,9 +11,10 @@ public class NewCourseAuthorModuleDto
         return title;
     }
 
-    public void setTitle(String title)
+    public NewCourseAuthorModuleDto setTitle(String title)
     {
         this.title = title;
+        return this;
     }
 
     public String getDescription()
@@ -21,8 +22,9 @@ public class NewCourseAuthorModuleDto
         return description;
     }
 
-    public void setDescription(String description)
+    public NewCourseAuthorModuleDto setDescription(String description)
     {
         this.description = description;
+        return this;
     }
 }

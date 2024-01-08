@@ -9,8 +9,9 @@ public class NewCourseAuthorLessonDto
         return title;
     }
 
-    public void setTitle(String title)
+    public NewCourseAuthorLessonDto setTitle(String title)
     {
         this.title = title;
+        return this;
     }
 }

@@ -152,9 +152,10 @@ public class User implements UserDetails
         return confirmed;
     }
 
-    public void setConfirmed(boolean confirmed)
+    public User setConfirmed(boolean confirmed)
     {
         this.confirmed = confirmed;
+        return this;
     }
 
     public String getFullName()

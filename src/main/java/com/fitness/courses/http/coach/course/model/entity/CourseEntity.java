@@ -12,6 +12,7 @@ import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -47,14 +48,14 @@ public class CourseEntity
     @Column(nullable = true)
     private String requirements;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "author_id")
     private User author;
 
     @Column(nullable = false)
     private LocalDateTime dateTimeCreated;
 
-    @OneToOne()
+    @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "logo_id", nullable = true)
     private AttachmentEntity logo;
 

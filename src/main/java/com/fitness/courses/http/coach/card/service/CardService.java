@@ -10,7 +10,7 @@ import com.fitness.courses.http.coach.card.model.entity.CardEntity;
 
 public interface CardService
 {
-    void addCard(NewCardDto newCardDto);
+    CardEntity addCard(NewCardDto newCardDto);
 
     Optional<CardEntity> getCardOptional(@NotNull Long id);
 

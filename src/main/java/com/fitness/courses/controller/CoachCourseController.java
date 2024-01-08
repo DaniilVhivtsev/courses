@@ -87,8 +87,13 @@ public class CoachCourseController
             value = {
                     @ApiResponse(
                             responseCode = "200",
-                            description = "Новый курс успешно создан.",
-                            content = {}
+                            description = "Новый курс успешно создан. Возвращается идентификатор курса.",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(
+                                            implementation = Long.class
+                                    )
+                            )
                     ),
                     @ApiResponse(
                             responseCode = "401",
@@ -107,8 +112,7 @@ public class CoachCourseController
     {
         try
         {
-            restCourseService.createCourse(newCourseDto);
-            return new ResponseEntity<Void>(HttpStatus.OK);
+            return new ResponseEntity<Long>(restCourseService.createCourse(newCourseDto), HttpStatus.OK);
         }
         catch (ResponseErrorException e)
         {
@@ -399,8 +403,13 @@ public class CoachCourseController
             value = {
                     @ApiResponse(
                             responseCode = "200",
-                            description = "Модуль успешно добавлен.",
-                            content = {}
+                            description = "Модуль успешно добавлен. Возвращается идентификатор модуля.",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(
+                                            implementation = Long.class
+                                    )
+                            )
                     ),
                     @ApiResponse(
                             responseCode = "401",
@@ -422,8 +431,7 @@ public class CoachCourseController
     {
         try
         {
-            restCourseService.addModule(id, newModuleDto);
-            return new ResponseEntity<Void>(HttpStatus.OK);
+            return new ResponseEntity<Long>(restCourseService.addModule(id, newModuleDto), HttpStatus.OK);
         }
         catch (ResponseErrorException e)
         {
@@ -520,8 +528,13 @@ public class CoachCourseController
             value = {
                     @ApiResponse(
                             responseCode = "200",
-                            description = "Занятие успешно добавлено.",
-                            content = {}
+                            description = "Занятие успешно добавлено. Возвращается идентификатор занятия.",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(
+                                            implementation = Long.class
+                                    )
+                            )
                     ),
                     @ApiResponse(
                             responseCode = "401",
@@ -544,8 +557,7 @@ public class CoachCourseController
     {
         try
         {
-            restCourseService.addLesson(id, moduleId, newLessonDto);
-            return new ResponseEntity<Void>(HttpStatus.OK);
+            return new ResponseEntity<Long>(restCourseService.addLesson(id, moduleId, newLessonDto), HttpStatus.OK);
         }
         catch (ResponseErrorException e)
         {
@@ -1027,7 +1039,7 @@ public class CoachCourseController
             MultipartFile multipartFile = multiValueMap.containsKey("image")
                     ? multiValueMap.get("image").get(0)
                     : multiValueMap.containsKey("video") ? multiValueMap.get("video").get(0) : null;
-            formData.remove("type");
+//            formData.remove("type");
             restCourseService.editStageContent(id, lessonId, stageId, type, formData, multipartFile);
             return new ResponseEntity<Void>(HttpStatus.OK);
         }
@@ -1055,8 +1067,13 @@ public class CoachCourseController
             value = {
                     @ApiResponse(
                             responseCode = "200",
-                            description = "Карточка с занятием успешно создана.",
-                            content = {}
+                            description = "Карточка с занятием успешно создана. Возвращается идентификатор карточки.",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(
+                                            implementation = Long.class
+                                    )
+                            )
                     ),
                     @ApiResponse(
                             responseCode = "401",
@@ -1075,8 +1092,7 @@ public class CoachCourseController
     {
         try
         {
-            restCardService.createCard(newCardDto);
-            return new ResponseEntity<Void>(HttpStatus.OK);
+            return new ResponseEntity<Long>(restCardService.createCard(newCardDto), HttpStatus.OK);
         }
         catch (ResponseErrorException e)
         {

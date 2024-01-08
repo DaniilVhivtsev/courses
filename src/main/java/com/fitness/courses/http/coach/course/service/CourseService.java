@@ -14,7 +14,7 @@ import com.fitness.courses.http.coach.course.model.info.CourseEntityWithStudents
 
 public interface CourseService
 {
-    void createCourse(@NonNull CourseEntity newCourseEntity);
+    CourseEntity createCourse(@NonNull CourseEntity newCourseEntity);
 
     void delete(@NonNull Long courseId);
 

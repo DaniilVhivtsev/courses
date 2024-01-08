@@ -1,6 +1,7 @@
 package com.fitness.courses.http.coach.course.content.model.entity;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -20,7 +21,7 @@ public class LessonEntity
 
     private int serialNumber;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "module_id")
     private ModuleEntity module;
 

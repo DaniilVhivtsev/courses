@@ -54,12 +54,12 @@ public class CourseServiceImpl implements CourseService
     }
 
     @Override
-    public void createCourse(@NonNull CourseEntity newCourseEntity)
+    public CourseEntity createCourse(@NonNull CourseEntity newCourseEntity)
     {
         newCourseEntity.setAuthor(authService.getCurrentUserOrThrow());
         newCourseEntity.setDateTimeCreated(LocalDateTime.now(ZoneId.systemDefault()));
         newCourseEntity.setStatus(CourseStatus.PUBLISHED); // TODO edit
-        crudCourseEntityService.save(newCourseEntity);
+        return crudCourseEntityService.save(newCourseEntity);
     }
 
     @Override

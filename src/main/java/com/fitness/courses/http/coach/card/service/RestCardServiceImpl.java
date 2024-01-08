@@ -24,10 +24,10 @@ public class RestCardServiceImpl implements RestCardService
     }
 
     @Override
-    public void createCard(NewCardDto newCardDto)
+    public Long createCard(NewCardDto newCardDto)
     {
         // TODO add validation
-        cardService.addCard(newCardDto);
+        return cardService.addCard(newCardDto).getId();
     }
 
     @Override

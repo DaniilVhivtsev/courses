@@ -33,14 +33,14 @@ public class LessonServiceImpl implements LessonService
     }
 
     @Override
-    public void add(@NotNull ModuleEntity moduleEntity, @NotNull NewCourseAuthorLessonDto newLessonDto)
+    public LessonEntity add(@NotNull ModuleEntity moduleEntity, @NotNull NewCourseAuthorLessonDto newLessonDto)
     {
         LessonEntity newLessonEntity = new LessonEntity();
         newLessonEntity.setTitle(newLessonDto.getTitle());
         newLessonEntity.setSerialNumber(getNextSerialNumber(moduleEntity));
         newLessonEntity.setModule(moduleEntity);
 
-        crudLessonEntityService.save(newLessonEntity);
+        return crudLessonEntityService.save(newLessonEntity);
     }
 
     @Override

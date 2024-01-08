@@ -28,7 +28,7 @@ import com.fitness.courses.http.user.dto.UserGeneralInfoDto;
 
 public interface RestCourseService
 {
-    void createCourse(@NonNull NewCourseDto newCourseDto);
+    Long createCourse(@NonNull NewCourseDto newCourseDto);
 
     void deleteCourse(@NonNull Long courseId);
 
@@ -43,14 +43,14 @@ public interface RestCourseService
 
     CourseAuthorContentInfo getAuthorCourseContent(@NotNull Long courseId);
 
-    void addModule(@NotNull Long courseId, @NotNull NewCourseAuthorModuleDto newModuleDto);
+    Long addModule(@NotNull Long courseId, @NotNull NewCourseAuthorModuleDto newModuleDto);
 
     void editModule(@NotNull Long courseId, @NotNull Long moduleId,
             @NotNull UpdateCourseAuthorModuleDto updateModuleDto);
 
     void deleteModule(@NotNull Long courseId, @NotNull Long moduleId);
 
-    void addLesson(@NotNull Long courseId, @NotNull Long moduleId, @NotNull NewCourseAuthorLessonDto newLessonDto);
+    Long addLesson(@NotNull Long courseId, @NotNull Long moduleId, @NotNull NewCourseAuthorLessonDto newLessonDto);
 
     void editLesson(@NotNull Long courseId, @NotNull Long moduleId, @NotNull Long lessonId,
             @NotNull UpdateCourseAuthorLessonDto updateLessonDto);

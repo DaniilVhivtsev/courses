@@ -13,7 +13,7 @@ import com.fitness.courses.http.coach.course.content.model.info.LessonWithStages
 
 public interface LessonService
 {
-    void add(@NotNull ModuleEntity moduleEntity, @NotNull NewCourseAuthorLessonDto newLessonDto);
+    LessonEntity add(@NotNull ModuleEntity moduleEntity, @NotNull NewCourseAuthorLessonDto newLessonDto);
 
     void deleteAllByModule(@NotNull ModuleEntity moduleEntity);
 

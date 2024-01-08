@@ -3,6 +3,7 @@ package com.fitness.courses.http.attachment.model.entity;
 import com.fitness.courses.http.objectStorage.model.entity.LocalStorageFileEntity;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -20,7 +21,7 @@ public class AttachmentEntity
 
     private String fileName;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "file_entity_id")
     private LocalStorageFileEntity fileEntity;
 

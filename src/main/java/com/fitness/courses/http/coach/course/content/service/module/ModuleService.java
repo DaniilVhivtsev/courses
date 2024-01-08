@@ -13,7 +13,7 @@ import com.fitness.courses.http.coach.course.model.entity.CourseEntity;
 
 public interface ModuleService
 {
-    void add(@NotNull CourseEntity courseEntity, @NotNull NewCourseAuthorModuleDto newModuleDto);
+    ModuleEntity add(@NotNull CourseEntity courseEntity, @NotNull NewCourseAuthorModuleDto newModuleDto);
 
     void deleteAllByCourse(@NotNull CourseEntity courseEntity);
 

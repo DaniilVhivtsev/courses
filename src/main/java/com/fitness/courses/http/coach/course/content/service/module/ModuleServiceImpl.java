@@ -33,7 +33,7 @@ public class ModuleServiceImpl implements ModuleService
     }
 
     @Override
-    public void add(@NotNull CourseEntity courseEntity, @NotNull NewCourseAuthorModuleDto newModuleDto)
+    public ModuleEntity add(@NotNull CourseEntity courseEntity, @NotNull NewCourseAuthorModuleDto newModuleDto)
     {
         ModuleEntity newModuleEntity = new ModuleEntity();
         newModuleEntity.setTitle(newModuleDto.getTitle());
@@ -41,7 +41,7 @@ public class ModuleServiceImpl implements ModuleService
         newModuleEntity.setSerialNumber(getNextSerialNumber(courseEntity));
         newModuleEntity.setCourse(courseEntity);
 
-        crudModuleEntityService.save(newModuleEntity);
+        return crudModuleEntityService.save(newModuleEntity);
     }
 
     @Override

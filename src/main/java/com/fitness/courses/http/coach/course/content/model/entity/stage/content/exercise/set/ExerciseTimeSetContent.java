@@ -1,6 +1,5 @@
 package com.fitness.courses.http.coach.course.content.model.entity.stage.content.exercise.set;
 
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 public class ExerciseTimeSetContent extends AbstractExerciseSetContent
@@ -22,6 +21,6 @@ public class ExerciseTimeSetContent extends AbstractExerciseSetContent
     @Override
     public String getType()
     {
-        return null;
+        return DISCRIMINATOR;
     }
 }

@@ -13,8 +13,9 @@ public class NewCourseDto
         return title;
     }
 
-    public void setTitle(String title)
+    public NewCourseDto setTitle(String title)
     {
         this.title = title;
+        return this;
     }
 }

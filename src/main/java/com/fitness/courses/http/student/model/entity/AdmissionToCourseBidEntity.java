@@ -6,6 +6,7 @@ import com.fitness.courses.http.coach.course.model.entity.CourseEntity;
 import com.fitness.courses.http.user.model.User;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -23,11 +24,11 @@ public class AdmissionToCourseBidEntity
 
     private LocalDateTime timeCreated;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id")
     private User user;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "course_id")
     private CourseEntity course;
 
