@@ -55,10 +55,10 @@ public abstract class AbstractExerciseContent<T extends AbstractExerciseSetConte
         this.cardId = cardId;
     }
 
-    public List<AbstractExerciseSetContent> getAbstractSets()
+/*    public List<AbstractExerciseSetContent> getAbstractSets()
     {
         return (List<AbstractExerciseSetContent>) sets;
-    }
+    }*/
 
     public abstract List<T> getSets();
 

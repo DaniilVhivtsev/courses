@@ -38,8 +38,11 @@ import com.fitness.courses.http.coach.course.content.model.entity.stage.content.
 import com.fitness.courses.http.coach.course.content.model.entity.stage.content.VideoStageContent;
 import com.fitness.courses.http.coach.course.content.model.entity.stage.content.exercise.AbstractExerciseContent;
 import com.fitness.courses.http.coach.course.content.model.entity.stage.content.exercise.DistanceExerciseContent;
+import com.fitness.courses.http.coach.course.content.model.entity.stage.content.exercise.ImgId;
 import com.fitness.courses.http.coach.course.content.model.entity.stage.content.exercise.RepeatExerciseContent;
+import com.fitness.courses.http.coach.course.content.model.entity.stage.content.exercise.TextContentString;
 import com.fitness.courses.http.coach.course.content.model.entity.stage.content.exercise.TimeExerciseContent;
+import com.fitness.courses.http.coach.course.content.model.entity.stage.content.exercise.VideoId;
 import com.fitness.courses.http.coach.course.content.model.entity.stage.content.exercise.set.ExerciseDistanceSetContent;
 import com.fitness.courses.http.coach.course.content.model.entity.stage.content.exercise.set.ExerciseRepeatSetContent;
 import com.fitness.courses.http.coach.course.content.model.entity.stage.content.exercise.set.ExerciseTimeSetContent;
@@ -356,16 +359,16 @@ public class StageServiceImpl implements StageService
         return exerciseTimeSetContent;
     }
 
-    @Transactional
+//    @Transactional
     void updateVideoStageContent(VideoStageContent stageContentFromDB,
             UpdateVideoStageContentDto updatedVideoStageContentDto)
     {
-        if (stageContentFromDB.getAttachmentId() != null)
+        if (stageContentFromDB.getVideoAttachmentId() != null)
         {
-            attachmentService.delete(stageContentFromDB.getAttachmentId());
+            attachmentService.delete(stageContentFromDB.getVideoAttachmentId());
         }
 
-        stageContentFromDB.setAttachmentId(
+        stageContentFromDB.setVideoAttachmentId(
                 attachmentService.add(
                         new MultipartFileWithExtension(
                                 FileExtensionEnum.getEnum(
@@ -377,18 +380,33 @@ public class StageServiceImpl implements StageService
                         )
                 ).getId()
         );
+
+        VideoId videoId = new VideoId();
+        videoId.setId(attachmentService.add(
+                new MultipartFileWithExtension(
+                        FileExtensionEnum.getEnum(
+                                FilenameUtils.getExtension(
+                                        updatedVideoStageContentDto.getVideo().getOriginalFilename()
+                                )
+                        ),
+                        updatedVideoStageContentDto.getVideo()
+                )
+        ).getId());
+        stageContentFromDB.setVideoId(
+                videoId
+        );
     }
 
-    @Transactional
+//    @Transactional
     void updateImgStageContent(ImgStageContent stageContentFromDB,
             UpdateImgStageContentDto updatedImgStageContentDto)
     {
-        if (stageContentFromDB.getAttachmentId() != null)
+        if (stageContentFromDB.getImgAttachmentId() != null)
         {
-            attachmentService.delete(stageContentFromDB.getAttachmentId());
+            attachmentService.delete(stageContentFromDB.getImgAttachmentId());
         }
 
-        stageContentFromDB.setAttachmentId(
+        stageContentFromDB.setImgAttachmentId(
                 attachmentService.add(
                         new MultipartFileWithExtension(
                                 FileExtensionEnum.getEnum(
@@ -400,12 +418,31 @@ public class StageServiceImpl implements StageService
                         )
                 ).getId()
         );
+
+        ImgId imgId = new ImgId();
+
+        imgId.setId(attachmentService.add(
+                new MultipartFileWithExtension(
+                        FileExtensionEnum.getEnum(
+                                FilenameUtils.getExtension(
+                                        updatedImgStageContentDto.getImage().getOriginalFilename()
+                                )
+                        ),
+                        updatedImgStageContentDto.getImage()
+                )
+        ).getId());
+        stageContentFromDB.setImgId(
+                imgId
+        );
     }
 
     private void updateTextStageContent(TextStageContent stageContentFromDB,
             UpdateTextStageContentDto updatedTextStageContentDto)
     {
         stageContentFromDB.setTextContent(updatedTextStageContentDto.getTextContent());
+        TextContentString textContentString = new TextContentString();
+        textContentString.setContent(updatedTextStageContentDto.getTextContent());
+        stageContentFromDB.setTextContentString(textContentString);
         // TODO научиться изменять serial number
     }
 }

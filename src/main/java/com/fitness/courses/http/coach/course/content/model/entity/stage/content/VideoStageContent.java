@@ -1,20 +1,33 @@
 package com.fitness.courses.http.coach.course.content.model.entity.stage.content;
 
+import com.fitness.courses.http.coach.course.content.model.entity.stage.content.exercise.VideoId;
+
 public class VideoStageContent extends AbstractStageContent
 {
     private static final String DISCRIMINATOR = "stage.content.video";
 
-    private Long attachmentId;
+    private VideoId videoId;
 
-    public Long getAttachmentId()
+    private Long videoAttachmentId;
+
+    public VideoId getVideoId()
     {
-        return attachmentId;
+        return videoId;
     }
 
-    public VideoStageContent setAttachmentId(Long attachmentId)
+    public void setVideoId(VideoId videoId)
     {
-        this.attachmentId = attachmentId;
-        return this;
+        this.videoId = videoId;
+    }
+
+    public Long getVideoAttachmentId()
+    {
+        return videoAttachmentId;
+    }
+
+    public void setVideoAttachmentId(Long videoAttachmentId)
+    {
+        this.videoAttachmentId = videoAttachmentId;
     }
 
     @Override

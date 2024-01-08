@@ -96,11 +96,14 @@ public class StageMapper
             ImgStageContentInfoDto dto = new ImgStageContentInfoDto();
             dto.setUuid(imgStageContent.getUuid());
             dto.setSerialNumber(imgStageContent.getSerialNumber());
-            dto.setUrl(
-                    attachmentService.findById(imgStageContent.getAttachmentId())
-                            .getFileEntity()
-                            .getUrl()
-            );
+            if (imgStageContent.getImgAttachmentId() != null)
+            {
+                dto.setUrl(
+                        attachmentService.findById(imgStageContent.getImgAttachmentId())
+                                .getFileEntity()
+                                .getUrl()
+                );
+            }
 
             return dto;
         }
@@ -120,11 +123,14 @@ public class StageMapper
             VideoStageContentInfoDto dto = new VideoStageContentInfoDto();
             dto.setUuid(videoStageContent.getUuid());
             dto.setSerialNumber(videoStageContent.getSerialNumber());
-            dto.setUrl(
-                    attachmentService.findById(videoStageContent.getAttachmentId())
-                    .getFileEntity()
-                    .getUrl()
-            );
+            if (videoStageContent.getVideoAttachmentId() != null)
+            {
+                dto.setUrl(
+                        attachmentService.findById(videoStageContent.getVideoAttachmentId())
+                                .getFileEntity()
+                                .getUrl()
+                );
+            }
 
             return dto;
         }

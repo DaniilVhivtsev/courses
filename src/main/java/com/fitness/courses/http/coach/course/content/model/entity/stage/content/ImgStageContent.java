@@ -1,20 +1,35 @@
 package com.fitness.courses.http.coach.course.content.model.entity.stage.content;
 
+import com.fasterxml.jackson.annotation.JsonTypeName;
+import com.fitness.courses.http.coach.course.content.model.entity.stage.content.exercise.ImgId;
+
+@JsonTypeName("stage.content.img")
 public class ImgStageContent extends AbstractStageContent
 {
     private static final String DISCRIMINATOR = "stage.content.img";
 
-    private Long attachmentId;
+    private ImgId imgId;
 
-    public Long getAttachmentId()
+    private Long imgAttachmentId;
+
+    public ImgId getImgId()
     {
-        return attachmentId;
+        return imgId;
     }
 
-    public ImgStageContent setAttachmentId(Long attachmentId)
+    public void setImgId(ImgId imgId)
     {
-        this.attachmentId = attachmentId;
-        return this;
+        this.imgId = imgId;
+    }
+
+    public Long getImgAttachmentId()
+    {
+        return imgAttachmentId;
+    }
+
+    public void setImgAttachmentId(Long imgAttachmentId)
+    {
+        this.imgAttachmentId = imgAttachmentId;
     }
 
     @Override

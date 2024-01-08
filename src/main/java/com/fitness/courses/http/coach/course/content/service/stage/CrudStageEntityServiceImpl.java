@@ -1,6 +1,7 @@
 package com.fitness.courses.http.coach.course.content.service.stage;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import javax.validation.constraints.NotNull;
@@ -9,6 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fitness.courses.global.exceptions.NotFoundException;
 import com.fitness.courses.http.coach.course.content.model.entity.LessonEntity;
 import com.fitness.courses.http.coach.course.content.model.entity.stage.StageEntity;
@@ -44,7 +47,7 @@ public class CrudStageEntityServiceImpl implements CrudStageEntityService
     @Transactional
     public StageEntity update(@NotNull StageEntity entity)
     {
-        return this.save(entity);
+        return stageEntityRepository.save(entity);
     }
 
     @Override

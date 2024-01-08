@@ -46,6 +46,7 @@ import com.fitness.courses.http.coach.course.content.mapper.StageMapper;
 import com.fitness.courses.http.coach.course.content.model.dto.lesson.NewCourseAuthorLessonDto;
 import com.fitness.courses.http.coach.course.content.model.dto.module.NewCourseAuthorModuleDto;
 import com.fitness.courses.http.coach.course.content.model.dto.stage.AddCourseAuthorStageContentInfoDto;
+import com.fitness.courses.http.coach.course.content.model.dto.stage.CourseAuthorStageWithContentInfoDto;
 import com.fitness.courses.http.coach.course.content.model.dto.stage.content.get.StageContentType;
 import com.fitness.courses.http.coach.course.content.model.dto.stage.content.update.UpdateExercisesStageContentDto;
 import com.fitness.courses.http.coach.course.content.model.dto.stage.content.update.UpdateImgStageContentDto;
@@ -168,6 +169,16 @@ public class ExampleConfiguration
 //            System.out.println(stageEntityFromDb);
 //            CourseAuthorStageWithContentInfoDto stageInfoDto = stageMapper.toInfoDtoWithContent(stageEntityFromDb);
 //            System.out.println(stageInfoDto);*/
+
+            if (true)
+            {
+                return;
+            }
+
+            if (userService.findByEmail("danya.vshivtsev@gmail.com").isPresent())
+            {
+                return;
+            }
 
             HttpStatusCode httpStatusCode = authController.registration(
                     new RegistrationUserInfoDto()
@@ -400,6 +411,46 @@ public class ExampleConfiguration
                 StageContentType.EXERCISES, convertToMultiValueMap(updateExercisesStageContentDto),
                 new StandardMultipartHttpServletRequest(request));
 
+        // EXERCISES
+        String fourthContentId = (String)coachCourseController
+                .addContentToStageToAuthorCourseContent(courseId, lessonId, stageId,
+                        new AddCourseAuthorStageContentInfoDto()
+                                .setType(StageContentType.EXERCISES))
+                .getBody();
+
+        distanceExercise = new UpdateDistanceExerciseContentDto();
+        distanceExercise.setCardId(firstCardId);
+
+        updateExercisesStageContentDto = new UpdateExercisesStageContentDto();
+        updateExercisesStageContentDto.setUuid(fourthContentId);
+        updateExercisesStageContentDto.setSerialNumber(1);
+        updateExercisesStageContentDto.setType(StageContentType.EXERCISES);
+        updateExercisesStageContentDto.setExercises(List.of(distanceExercise));
+
+        coachCourseController.updateContentToStageToAuthorCourseContent(courseId, lessonId, stageId,
+                StageContentType.EXERCISES, convertToMultiValueMap(updateExercisesStageContentDto),
+                new StandardMultipartHttpServletRequest(request));
+
+        // EXERCISES
+        String fifthContentId = (String)coachCourseController
+                .addContentToStageToAuthorCourseContent(courseId, lessonId, stageId,
+                        new AddCourseAuthorStageContentInfoDto()
+                                .setType(StageContentType.EXERCISES))
+                .getBody();
+
+        updateExercisesStageContentDto = new UpdateExercisesStageContentDto();
+        updateExercisesStageContentDto.setUuid(fifthContentId);
+        updateExercisesStageContentDto.setSerialNumber(2);
+        updateExercisesStageContentDto.setType(StageContentType.EXERCISES);
+        updateExercisesStageContentDto.setExercises(List.of());
+
+        coachCourseController.updateContentToStageToAuthorCourseContent(courseId, lessonId, stageId,
+                StageContentType.EXERCISES, convertToMultiValueMap(updateExercisesStageContentDto),
+                new StandardMultipartHttpServletRequest(request));
+
+        CourseAuthorStageWithContentInfoDto stageContent =
+                (CourseAuthorStageWithContentInfoDto)coachCourseController.getStageWithContentToAuthorCourseContent(
+                        courseId, lessonId, stageId).getBody();
         System.out.println();
     }
 
@@ -449,6 +500,9 @@ public class ExampleConfiguration
                 StageContentType.TEXT, convertToMultiValueMap(updateTextStageContentDto),
                 new StandardMultipartHttpServletRequest(request));
 
+        CourseAuthorStageWithContentInfoDto stageContent =
+                (CourseAuthorStageWithContentInfoDto)coachCourseController.getStageWithContentToAuthorCourseContent(
+                        courseId, lessonId, stageId).getBody();
         System.out.println();
     }
 
@@ -592,6 +646,9 @@ public class ExampleConfiguration
                 StageContentType.VIDEO, convertToMultiValueMap(videoStageContentDto),
                 getAbstractMultipartHttpServletRequest(request, multiValueMap));
 
+        CourseAuthorStageWithContentInfoDto stageContent =
+                (CourseAuthorStageWithContentInfoDto)coachCourseController.getStageWithContentToAuthorCourseContent(
+                courseId, lessonId, stageId).getBody();
         System.out.println();
     }
 

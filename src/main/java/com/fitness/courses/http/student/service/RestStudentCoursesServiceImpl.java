@@ -88,7 +88,8 @@ public class RestStudentCoursesServiceImpl implements RestStudentCoursesService
         final Set<String> stageSetsUuids = stage.getStageContent().stream()
                 .filter(ExercisesStageContent.class::isInstance)
                 .map(ExercisesStageContent.class::cast)
-                .flatMap(content -> content.getExercises().stream().map(AbstractExerciseContent::getAbstractSets))
+                .flatMap(content -> content.getExercises().stream()
+                        .map(AbstractExerciseContent::getSets))
                 .flatMap(Collection::stream)
                 .map(AbstractExerciseSetContent::getUuid).collect(Collectors.toSet());
         stageSetsUuids.removeAll(doneStageAndSetUuids);

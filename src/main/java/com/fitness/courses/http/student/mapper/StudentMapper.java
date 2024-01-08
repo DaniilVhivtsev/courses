@@ -111,7 +111,7 @@ public class StudentMapper
             dto.setUuid(imgStageContent.getUuid());
             dto.setSerialNumber(imgStageContent.getSerialNumber());
             dto.setUrl(
-                    attachmentService.findById(imgStageContent.getAttachmentId())
+                    attachmentService.findById(imgStageContent.getImgAttachmentId())
                             .getFileEntity()
                             .getUrl()
             );
@@ -135,7 +135,7 @@ public class StudentMapper
             dto.setUuid(videoStageContent.getUuid());
             dto.setSerialNumber(videoStageContent.getSerialNumber());
             dto.setUrl(
-                    attachmentService.findById(videoStageContent.getAttachmentId())
+                    attachmentService.findById(videoStageContent.getVideoAttachmentId())
                             .getFileEntity()
                             .getUrl()
             );
