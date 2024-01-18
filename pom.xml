@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>com.fitness</groupId>
 	<artifactId>courses</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>0.0.2-SNAPSHOT</version>
 	<name>courses</name>
 	<description>Online fitness courses</description>
 	<properties>

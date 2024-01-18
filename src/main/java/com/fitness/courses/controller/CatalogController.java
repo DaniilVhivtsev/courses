@@ -12,12 +12,16 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fitness.courses.global.exceptions.ResponseErrorException;
+import com.fitness.courses.http.catalog.model.dto.AuthorCourseInfoDto;
 import com.fitness.courses.http.catalog.model.dto.CatalogBySearchValueCourseInfoDto;
 import com.fitness.courses.http.catalog.model.dto.CatalogNewCourseInfoDto;
 import com.fitness.courses.http.catalog.model.dto.CatalogPopularCourseInfoDto;
 import com.fitness.courses.http.catalog.model.dto.CourseInfoDto;
+import com.fitness.courses.http.catalog.model.dto.content.LessonWithStagesInfoDto;
 import com.fitness.courses.http.catalog.model.dto.content.StageInfoDto;
 import com.fitness.courses.http.catalog.service.RestCatalogService;
+import com.fitness.courses.http.user.dto.GeneralInfo;
+import com.fitness.courses.http.user.service.RestUserService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -41,11 +45,15 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 public class CatalogController
 {
     private final RestCatalogService restCatalogService;
+    private final RestUserService restUserService;
 
     @Autowired
-    public CatalogController(RestCatalogService restCatalogService)
+    public CatalogController(
+            RestCatalogService restCatalogService,
+            RestUserService restUserService)
     {
         this.restCatalogService = restCatalogService;
+        this.restUserService = restUserService;
     }
 
     @Operation(
@@ -229,10 +237,8 @@ public class CatalogController
                             description = "Список этапов урока курса успешно возвращены.",
                             content = @Content(
                                     mediaType = "application/json",
-                                    array = @ArraySchema(
-                                            schema = @Schema(
-                                                    implementation = StageInfoDto.class
-                                            )
+                                    schema = @Schema(
+                                            implementation = LessonWithStagesInfoDto.class
                                     )
                             )
                     ),
@@ -249,8 +255,88 @@ public class CatalogController
     {
         try
         {
-            return new ResponseEntity<List<StageInfoDto>>(
+            return new ResponseEntity<LessonWithStagesInfoDto>(
                     restCatalogService.getLessonStagesInfo(courseId, lessonId),
+                    HttpStatus.OK
+            );
+        }
+        catch (ResponseErrorException e)
+        {
+            return new ResponseEntity<String>(e.getMessage(), HttpStatus.valueOf(e.getHttpStatusCode()));
+        }
+    }
+
+    @Operation(
+            summary = "Get метод информации об авторе курса.",
+            description = "Get метод информации об авторе курса."
+    )
+    @ApiResponses(
+            value = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Информация об авторе курса успешно возвращена.",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(
+                                            implementation = GeneralInfo.class
+                                    )
+                            )
+                    ),
+                    @ApiResponse(
+                            responseCode = "500",
+                            description = "Ошибки сервера."
+                    ),
+            }
+    )
+    @GetMapping("/author/{authorId}/info")
+    public ResponseEntity<?> getCourseAuthorInfo(
+            @PathVariable @Parameter(description = "Идентификатор автора (Идентификатор пользователя).") Long authorId)
+    {
+        try
+        {
+            return new ResponseEntity<GeneralInfo>(
+                    restUserService.getCurrentInfo(authorId),
+                    HttpStatus.OK
+            );
+        }
+        catch (ResponseErrorException e)
+        {
+            return new ResponseEntity<String>(e.getMessage(), HttpStatus.valueOf(e.getHttpStatusCode()));
+        }
+    }
+
+    @Operation(
+            summary = "Get метод получения курсов автора.",
+            description = "Get метод получения курсов автора."
+    )
+    @ApiResponses(
+            value = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Курсы автора были успешно возвращены.",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    array = @ArraySchema(
+                                            schema = @Schema(
+                                                    implementation = AuthorCourseInfoDto.class
+                                            )
+                                    )
+                            )
+                    ),
+                    @ApiResponse(
+                            responseCode = "500",
+                            description = "Ошибки сервера."
+                    ),
+            }
+    )
+    @GetMapping("/author/{authorId}/courses")
+    public ResponseEntity<?> getCourseAuthorCourses(
+            @PathVariable @Parameter(description = "Идентификатор автора (Идентификатор пользователя).") Long authorId)
+    {
+        try
+        {
+            return new ResponseEntity<List<AuthorCourseInfoDto>>(
+                    restCatalogService.getAuthorCourses(authorId),
                     HttpStatus.OK
             );
         }

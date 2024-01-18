@@ -97,11 +97,14 @@ public class CourseMapper
     {
         ListCourseInfoDto dto = MAPPER.map(entity, ListCourseInfoDto.class);
         dto.setDateTimeCreated(entity.getDateTimeCreated());
-        dto.setLogo(new AttachmentInfoDto()
-                .setId(entity.getLogo().getId())
-                .setFileName(entity.getLogo().getFileName())
-                .setUrl(entity.getLogo().getFileEntity().getUrl()));
 
+        if (entity.getLogo() != null)
+        {
+            dto.setLogo(new AttachmentInfoDto()
+                    .setId(entity.getLogo().getId())
+                    .setFileName(entity.getLogo().getFileName())
+                    .setUrl(entity.getLogo().getFileEntity().getUrl()));
+        }
         return dto;
     }
 
@@ -110,10 +113,13 @@ public class CourseMapper
         CourseAuthorGeneralInfoDto dto = MAPPER.map(entity, CourseAuthorGeneralInfoDto.class);
         dto.setAuthor(UserMapper.toUserGeneralInfoDto(entity.getAuthor()));
         dto.setDateTimeCreated(entity.getDateTimeCreated());
-        dto.setLogo(new AttachmentInfoDto()
-                .setId(entity.getLogo().getId())
-                .setFileName(entity.getLogo().getFileName())
-                .setUrl(entity.getLogo().getFileEntity().getUrl()));
+        if (entity.getLogo() != null)
+        {
+            dto.setLogo(new AttachmentInfoDto()
+                    .setId(entity.getLogo().getId())
+                    .setFileName(entity.getLogo().getFileName())
+                    .setUrl(entity.getLogo().getFileEntity().getUrl()));
+        }
 
         return dto;
     }

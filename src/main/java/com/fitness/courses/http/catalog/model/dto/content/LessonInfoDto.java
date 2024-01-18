@@ -21,6 +21,9 @@ public class LessonInfoDto
             + "является студентом курса, то значение будет 0")
     private int completedStagesCount;
 
+    @Schema(description = "Url иконки урока.")
+    private String iconImgUrl;
+
     public Long getId()
     {
         return id;
@@ -69,5 +72,15 @@ public class LessonInfoDto
     public void setCompletedStagesCount(int completedStagesCount)
     {
         this.completedStagesCount = completedStagesCount;
+    }
+
+    public String getIconImgUrl()
+    {
+        return iconImgUrl;
+    }
+
+    public void setIconImgUrl(String iconImgUrl)
+    {
+        this.iconImgUrl = iconImgUrl;
     }
 }

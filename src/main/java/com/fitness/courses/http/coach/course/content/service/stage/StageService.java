@@ -21,6 +21,8 @@ public interface StageService
 
     List<StageEntity> findAllByLessonAndSortAscBySerialNumber(@NotNull LessonEntity lesson);
 
+    List<StageEntity> findAllByLessonAndSortAscBySerialNumber(@NotNull Long lessonId);
+
     Optional<StageEntity> getOptional(@NotNull Long id);
 
     StageEntity getOrThrow(@NotNull Long id);

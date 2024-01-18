@@ -12,6 +12,8 @@ import org.springframework.stereotype.Service;
 
 import com.fitness.courses.global.exceptions.BadRequestException;
 import com.fitness.courses.http.attachment.service.AttachmentService;
+import com.fitness.courses.http.coach.card.model.entity.CardEntity;
+import com.fitness.courses.http.coach.card.service.CardService;
 import com.fitness.courses.http.coach.course.content.model.entity.stage.StageEntity;
 import com.fitness.courses.http.coach.course.content.model.entity.stage.content.AbstractStageContent;
 import com.fitness.courses.http.coach.course.content.model.entity.stage.content.ExercisesStageContent;
@@ -49,10 +51,14 @@ public class StudentMapper
     private static final @NotNull Logger LOG = LoggerFactory.getLogger(StudentMapper.class);
 
     private final AttachmentService attachmentService;
+    private final CardService cardService;
 
-    public StudentMapper(AttachmentService attachmentService)
+    public StudentMapper(
+            AttachmentService attachmentService,
+            CardService cardService)
     {
         this.attachmentService = attachmentService;
+        this.cardService = cardService;
     }
 
     private static final DozerBeanMapper MAPPER = new DozerBeanMapper();
@@ -170,6 +176,15 @@ public class StudentMapper
             RepeatExerciseContentInfoDto dto = new RepeatExerciseContentInfoDto();
             dto.setUuid(repeatExerciseContent.getUuid());
             dto.setCardId(repeatExerciseContent.getCardId());
+
+            CardEntity cardEntity = cardService.getCardOrThrow(repeatExerciseContent.getCardId());
+            dto.setCardTitle(cardEntity.getTitle());
+
+            if (cardEntity.getImages() != null && cardEntity.getImages().size() > 0)
+            {
+                dto.setCardImgUrl(cardEntity.getImages().get(0).getFileEntity().getUrl());
+            }
+
             dto.setSets(repeatExerciseContent.getSets().stream()
                     .map(set -> (ExerciseRepeatSetContentInfoDto)toExerciseSetContentInfoDto(set, doneStageAndSetUuids))
                     .toList());
@@ -188,6 +203,15 @@ public class StudentMapper
             TimeExerciseContentInfoDto dto = new TimeExerciseContentInfoDto();
             dto.setUuid(timeExerciseContent.getUuid());
             dto.setCardId(timeExerciseContent.getCardId());
+
+            CardEntity cardEntity = cardService.getCardOrThrow(timeExerciseContent.getCardId());
+            dto.setCardTitle(cardEntity.getTitle());
+
+            if (cardEntity.getImages() != null && cardEntity.getImages().size() > 0)
+            {
+                dto.setCardImgUrl(cardEntity.getImages().get(0).getFileEntity().getUrl());
+            }
+
             dto.setSets(timeExerciseContent.getSets().stream()
                     .map(set -> (ExerciseTimeSetContentInfoDto)toExerciseSetContentInfoDto(set, doneStageAndSetUuids))
                     .toList());
@@ -206,6 +230,15 @@ public class StudentMapper
             DistanceExerciseContentInfoDto dto = new DistanceExerciseContentInfoDto();
             dto.setUuid(distanceExerciseContent.getUuid());
             dto.setCardId(distanceExerciseContent.getCardId());
+
+            CardEntity cardEntity = cardService.getCardOrThrow(distanceExerciseContent.getCardId());
+            dto.setCardTitle(cardEntity.getTitle());
+
+            if (cardEntity.getImages() != null && cardEntity.getImages().size() > 0)
+            {
+                dto.setCardImgUrl(cardEntity.getImages().get(0).getFileEntity().getUrl());
+            }
+
             dto.setSets(distanceExerciseContent.getSets().stream()
                     .map(set -> (ExerciseDistanceSetContentInfoDto)toExerciseSetContentInfoDto(set,
                             doneStageAndSetUuids))

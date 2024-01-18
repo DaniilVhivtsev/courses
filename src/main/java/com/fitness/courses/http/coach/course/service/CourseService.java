@@ -11,6 +11,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.fitness.courses.http.coach.course.model.entity.CourseEntity;
 import com.fitness.courses.http.coach.course.model.info.CourseEntityWithStudentsCount;
+import com.fitness.courses.http.user.model.User;
 
 public interface CourseService
 {
@@ -25,6 +26,8 @@ public interface CourseService
     CourseEntity getCourseOrThrow(@NotNull Long id);
 
     List<CourseEntity> getAllCoursesWhereCurrentUserIsAuthor();
+
+    List<CourseEntity> getAllCoursesWhereUserIsAuthor(@NotNull User user);
 
     List<CourseEntity> getNewCourses(@NotNull Integer offset, @NotNull Integer limit);
 

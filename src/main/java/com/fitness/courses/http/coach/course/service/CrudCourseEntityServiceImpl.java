@@ -87,7 +87,7 @@ public class CrudCourseEntityServiceImpl implements CrudCourseEntityService
         final Pageable pageable = PageRequest.of(offset, limit);
         return courseEntityRepository.findCoursesByPopularity(pageable)
                 .stream()
-                .map(objects -> new CourseEntityWithStudentsCount((CourseEntity)objects[0], (Integer)objects[1]))
+                .map(objects -> new CourseEntityWithStudentsCount((CourseEntity)objects[0], (Long)objects[1]))
                 .toList();
     }
 

@@ -14,11 +14,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.fitness.courses.http.auth.service.AuthService;
+import com.fitness.courses.http.catalog.model.dto.AuthorCourseInfoDto;
 import com.fitness.courses.http.catalog.model.dto.CatalogBySearchValueCourseInfoDto;
 import com.fitness.courses.http.catalog.model.dto.CatalogNewCourseInfoDto;
 import com.fitness.courses.http.catalog.model.dto.CatalogPopularCourseInfoDto;
 import com.fitness.courses.http.catalog.model.dto.CourseInfoDto;
 import com.fitness.courses.http.catalog.model.dto.content.LessonInfoDto;
+import com.fitness.courses.http.catalog.model.dto.content.LessonWithStagesInfoDto;
 import com.fitness.courses.http.catalog.model.dto.content.ModuleInfoDto;
 import com.fitness.courses.http.catalog.model.dto.content.StageInfoDto;
 import com.fitness.courses.http.coach.course.content.model.entity.LessonEntity;
@@ -61,7 +63,19 @@ public class CatalogMapper
             protected void configure()
             {
                 mapping(CatalogNewCourseInfoDto.class, CourseEntity.class)
-                        .fields("description", "shortDescription");
+                        .exclude("description")
+                        .exclude("shortDescription");
+            }
+        };
+
+        BeanMappingBuilder authorCourseInfoDtoBuilder = new BeanMappingBuilder()
+        {
+            @Override
+            protected void configure()
+            {
+                mapping(AuthorCourseInfoDto.class, CourseEntity.class)
+                        .exclude("description")
+                        .exclude("shortDescription");
             }
         };
 
@@ -71,7 +85,8 @@ public class CatalogMapper
             protected void configure()
             {
                 mapping(CatalogPopularCourseInfoDto.class, CourseEntity.class)
-                        .fields("description", "shortDescription");
+                        .exclude("description")
+                        .exclude("shortDescription");
             }
         };
 
@@ -81,7 +96,8 @@ public class CatalogMapper
             protected void configure()
             {
                 mapping(CatalogBySearchValueCourseInfoDto.class, CourseEntity.class)
-                        .fields("description", "shortDescription");
+                        .exclude("description")
+                        .exclude("shortDescription");
             }
         };
 
@@ -91,7 +107,8 @@ public class CatalogMapper
             protected void configure()
             {
                 mapping(CourseInfoDto.class, CourseEntity.class)
-                        .fields("description", "shortDescription")
+                        .exclude("description")
+                        .exclude("shortDescription")
                         .exclude("categories")
                         .exclude("dateTimeCreated"); // TODO check categories, dateTimeCreated
             }
@@ -107,6 +124,7 @@ public class CatalogMapper
         };
 
         MAPPER.addMapping(catalogNewCourseInfoDtoBuilder);
+        MAPPER.addMapping(authorCourseInfoDtoBuilder);
         MAPPER.addMapping(catalogPopularCourseInfoDtoBuilder);
         MAPPER.addMapping(catalogBySearchValueCourseInfoDtoBuilder);
         MAPPER.addMapping(courseInfoDtoBuilder);
@@ -116,6 +134,31 @@ public class CatalogMapper
     public CatalogNewCourseInfoDto toCatalogNewCourseInfoDto(@NotNull CourseEntity entity)
     {
         CatalogNewCourseInfoDto dto = MAPPER.map(entity, CatalogNewCourseInfoDto.class);
+        dto.setDescription(entity.getShortDescription());
+        dto.setIconImgUrl(
+                entity.getLogo()
+                        .getFileEntity()
+                        .getUrl()
+        );
+        dto.setRating(0.0);
+        dto.setNumberOfPeople(studentService.countByCourse(entity));
+        dto.setFree(true);
+        dto.setPrice(0);
+        dto.setAuthorId(entity.getAuthor().getId());
+        dto.setAuthorFullName(entity.getAuthor().getFullName());
+
+        Optional<User> currentUserOptional = authService.getCurrentUser();
+        currentUserOptional.ifPresentOrElse(
+                user -> dto.setUserIsRegisteredForTheCourse(studentService.studentWithUserAndCourseExist(user, entity)),
+                () -> dto.setUserIsRegisteredForTheCourse(false));
+
+        return dto;
+    }
+
+    public AuthorCourseInfoDto toAuthorCourseInfoDto(@NotNull CourseEntity entity)
+    {
+        AuthorCourseInfoDto dto = MAPPER.map(entity, AuthorCourseInfoDto.class);
+        dto.setDescription(entity.getShortDescription());
         dto.setIconImgUrl(
                 entity.getLogo()
                         .getFileEntity()
@@ -140,8 +183,9 @@ public class CatalogMapper
             @NotNull CourseEntityWithStudentsCount courseEntityWithStudentsCount)
     {
         final CourseEntity entity = courseEntityWithStudentsCount.course();
-        final Integer studentsCount = courseEntityWithStudentsCount.studentsCount();
+        final Long studentsCount = courseEntityWithStudentsCount.studentsCount();
         CatalogPopularCourseInfoDto dto = MAPPER.map(entity, CatalogPopularCourseInfoDto.class);
+        dto.setDescription(entity.getShortDescription());
         dto.setIconImgUrl(
                 entity.getLogo()
                         .getFileEntity()
@@ -165,6 +209,7 @@ public class CatalogMapper
     public CatalogBySearchValueCourseInfoDto toCatalogBySearchValueCourseInfoDto(@NotNull CourseEntity entity)
     {
         CatalogBySearchValueCourseInfoDto dto = MAPPER.map(entity, CatalogBySearchValueCourseInfoDto.class);
+        dto.setDescription(entity.getShortDescription());
         dto.setIconImgUrl(
                 entity.getLogo()
                         .getFileEntity()
@@ -188,9 +233,16 @@ public class CatalogMapper
     public CourseInfoDto toCourseInfoDto(@NotNull CourseEntity entity)
     {
         CourseInfoDto dto = MAPPER.map(entity, CourseInfoDto.class);
+        dto.setShortDescription(entity.getShortDescription());
         dto.setAuthorId(entity.getAuthor().getId());
         dto.setAuthorFullName(entity.getAuthor().getFullName());
         dto.setAuthorShortDescription("Example description. TODO edit");
+
+        if (entity.getAuthor().getLogo() != null)
+        {
+            dto.setAuthorIconImgDto(entity.getAuthor().getLogo().getFileEntity()
+                    .getUrl());
+        }
 
         dto.setIconImgUrl(
                 entity.getLogo()
@@ -221,6 +273,7 @@ public class CatalogMapper
                     moduleInfoDto.setId(module.getId());
                     moduleInfoDto.setSerialNumber(module.getSerialNumber());
                     moduleInfoDto.setTitle(module.getTitle());
+
                     moduleInfoDto.setLessons(
                             lessons.stream().map(lesson ->
                                     {
@@ -238,6 +291,11 @@ public class CatalogMapper
                                         lessonInfoDto.setSerialNumber(lesson.getSerialNumber());
                                         lessonInfoDto.setStagesNumber(stages.size());
                                         lessonInfoDto.setCompletedStagesCount(stages.size() - stagesUuids.size());
+                                        lessonInfoDto.setIconImgUrl(
+                                                entity.getLogo()
+                                                        .getFileEntity()
+                                                        .getUrl()
+                                        );
 
                                         return lessonInfoDto;
                                     })
@@ -249,6 +307,81 @@ public class CatalogMapper
 
         dto.setModules(modules);
 
+        //
+        Long firstLessonUuid = null;
+        outerLoop:
+        for (ModuleInfoDto module : modules)
+        {
+            if (module.getLessons() == null)
+            {
+                break;
+            }
+            for (LessonInfoDto lesson : module.getLessons())
+            {
+                if (lesson == null)
+                {
+                    break;
+                }
+                if (firstLessonUuid == null)
+                {
+                    firstLessonUuid = lesson.getId();
+                }
+                if (lesson.getStagesNumber() - lesson.getCompletedStagesCount() == 0)
+                {
+                    dto.setLessonUuidStoppedAt(lesson.getId());
+                    break outerLoop;
+                }
+            }
+        }
+
+        if (dto.getLessonUuidStoppedAt() == null)
+        {
+            dto.setLessonUuidStoppedAt(firstLessonUuid);
+        }
+
+        //
+        Set<String> secondDoneStageAndSetUuids = new HashSet<>();
+        currentUserOptional.flatMap(user -> studentService.getByUserAndCourse(user, entity))
+                .ifPresent(student -> secondDoneStageAndSetUuids.addAll(student.getDoneStageAndSetUuids()));
+
+        Long firstStageUuid = null;
+        outerStageLoop:
+        for (ModuleInfoDto module : modules)
+        {
+            if (module.getLessons() == null)
+            {
+                break;
+            }
+
+            for (LessonInfoDto lesson : module.getLessons())
+            {
+                if (lesson == null)
+                {
+                    break;
+                }
+
+                for (StageEntity stage : stageService.findAllByLessonAndSortAscBySerialNumber(lesson.getId()))
+                {
+                    if (firstStageUuid == null)
+                    {
+                        firstStageUuid = stage.getId();
+                    }
+
+                    if (secondDoneStageAndSetUuids.contains(stage.getId().toString()))
+                    {
+                        dto.setStageUuidStoppedAt(stage.getId());
+                        break outerStageLoop;
+                    }
+                };
+
+            }
+        }
+
+        if (dto.getStageUuidStoppedAt() == null)
+        {
+            dto.setStageUuidStoppedAt(firstStageUuid);
+        }
+
         return dto;
     }
 
@@ -257,6 +390,17 @@ public class CatalogMapper
         StageInfoDto dto = MAPPER.map(stage, StageInfoDto.class);
         dto.setCompleted(doneStageAndSetUuids.contains(stage.getId().toString()));
         dto.setTitle("Example title");
+
+        return dto;
+    }
+
+    public LessonWithStagesInfoDto toLessonWithStagesInfoDto(@NotNull LessonEntity entity,
+            @NotNull List<StageInfoDto> stages)
+    {
+        LessonWithStagesInfoDto dto = new LessonWithStagesInfoDto();
+        dto.setId(entity.getId());
+        dto.setTitle(entity.getTitle());
+        dto.setStages(stages);
 
         return dto;
     }

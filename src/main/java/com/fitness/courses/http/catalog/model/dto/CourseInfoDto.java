@@ -38,8 +38,11 @@ public class CourseInfoDto
     @Schema(description = "Полное имя (Фамилия Имя) автора курса.")
     private String authorFullName;
 
-    @Schema(description = "Краткое описание автора курс.")
+    @Schema(description = "Краткое описание автора курса.")
     private String authorShortDescription;
+
+    @Schema(description = "Url иконки автора курса.")
+    private String authorIconImgDto;
 
     @Schema(description = "Дата создания курса.")
     private LocalDateTime dateTimeCreated;
@@ -65,6 +68,14 @@ public class CourseInfoDto
 
     @Schema(description = "Модули курса. (Содержание курса).")
     private List<ModuleInfoDto> modules;
+
+    @Schema(description = "Идентификатор урока, на котором остановился студент. Может быть null, т.к. пользователь "
+            + "может не быть студентом курса или может в курсе отсутствуют уроки.")
+    private Long lessonUuidStoppedAt;
+
+    @Schema(description = "Идентификатор этапа, на котором остановился студент. Может быть null, т.к. пользователь "
+            + "может не быть студентом курса или может в курсе отсутствуют этапы.")
+    private Long stageUuidStoppedAt;
 
     public Long getId()
     {
@@ -166,6 +177,16 @@ public class CourseInfoDto
         this.authorShortDescription = authorShortDescription;
     }
 
+    public String getAuthorIconImgDto()
+    {
+        return authorIconImgDto;
+    }
+
+    public void setAuthorIconImgDto(String authorIconImgDto)
+    {
+        this.authorIconImgDto = authorIconImgDto;
+    }
+
     public LocalDateTime getDateTimeCreated()
     {
         return dateTimeCreated;
@@ -244,5 +265,30 @@ public class CourseInfoDto
     public void setModules(List<ModuleInfoDto> modules)
     {
         this.modules = modules;
+    }
+
+    public boolean isFree()
+    {
+        return isFree;
+    }
+
+    public Long getLessonUuidStoppedAt()
+    {
+        return lessonUuidStoppedAt;
+    }
+
+    public void setLessonUuidStoppedAt(Long lessonUuidStoppedAt)
+    {
+        this.lessonUuidStoppedAt = lessonUuidStoppedAt;
+    }
+
+    public Long getStageUuidStoppedAt()
+    {
+        return stageUuidStoppedAt;
+    }
+
+    public void setStageUuidStoppedAt(Long stageUuidStoppedAt)
+    {
+        this.stageUuidStoppedAt = stageUuidStoppedAt;
     }
 }

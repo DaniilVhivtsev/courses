@@ -44,7 +44,7 @@ public class StudentEntity
     @JoinColumn(name = "approved_bid_id")
     private AdmissionToCourseBidEntity approvedBid;
 
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "student_done_stage_and_set_uuids", joinColumns = @JoinColumn(name = "student_id"))
     @Column(name = "done_stage_or_set_uuid")
     private Set<String> doneStageAndSetUuids;

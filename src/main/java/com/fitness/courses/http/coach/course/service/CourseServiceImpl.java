@@ -28,6 +28,7 @@ import com.fitness.courses.http.coach.course.model.entity.CourseEntity;
 import com.fitness.courses.http.coach.course.model.entity.CourseStatus;
 import com.fitness.courses.http.coach.course.model.info.CourseEntityWithStudentsCount;
 import com.fitness.courses.http.objectStorage.model.entity.FileExtensionEnum;
+import com.fitness.courses.http.user.model.User;
 
 @Service
 public class CourseServiceImpl implements CourseService
@@ -126,6 +127,12 @@ public class CourseServiceImpl implements CourseService
     public List<CourseEntity> getAllCoursesWhereCurrentUserIsAuthor()
     {
         return crudCourseEntityService.findByAuthorId(authService.getCurrentUserOrThrow().getId());
+    }
+
+    @Override
+    public List<CourseEntity> getAllCoursesWhereUserIsAuthor(@NotNull User user)
+    {
+        return crudCourseEntityService.findByAuthorId(user.getId());
     }
 
     @Override

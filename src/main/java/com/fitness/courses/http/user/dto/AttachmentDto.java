@@ -11,9 +11,10 @@ public class AttachmentDto
         return id;
     }
 
-    public void setId(Long id)
+    public AttachmentDto setId(Long id)
     {
         this.id = id;
+        return this;
     }
 
     public String getTitle()
@@ -21,9 +22,10 @@ public class AttachmentDto
         return title;
     }
 
-    public void setTitle(String title)
+    public AttachmentDto setTitle(String title)
     {
         this.title = title;
+        return this;
     }
 
     public String getLink()
@@ -31,8 +33,9 @@ public class AttachmentDto
         return link;
     }
 
-    public void setLink(String link)
+    public AttachmentDto setLink(String link)
     {
         this.link = link;
+        return this;
     }
 }

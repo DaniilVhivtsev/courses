@@ -131,6 +131,12 @@ public class StageServiceImpl implements StageService
         return crudStageEntityService.findAllByLessonIdAndSortAscBySerialNumber(lesson.getId());
     }
 
+    @Override
+    public List<StageEntity> findAllByLessonAndSortAscBySerialNumber(@NotNull Long lessonId)
+    {
+        return crudStageEntityService.findAllByLessonIdAndSortAscBySerialNumber(lessonId);
+    }
+
     private int getNextSerialNumber(@NotNull LessonEntity lesson)
     {
         List<StageEntity> lessonStages = findAllByLessonAndSortAscBySerialNumber(lesson);

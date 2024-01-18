@@ -13,19 +13,24 @@ import org.springframework.stereotype.Service;
 import com.fitness.courses.global.pagination.PaginationValidator;
 import com.fitness.courses.http.auth.service.AuthService;
 import com.fitness.courses.http.catalog.mapper.CatalogMapper;
+import com.fitness.courses.http.catalog.model.dto.AuthorCourseInfoDto;
 import com.fitness.courses.http.catalog.model.dto.CatalogBySearchValueCourseInfoDto;
 import com.fitness.courses.http.catalog.model.dto.CatalogNewCourseInfoDto;
 import com.fitness.courses.http.catalog.model.dto.CatalogPopularCourseInfoDto;
 import com.fitness.courses.http.catalog.model.dto.CourseInfoDto;
+import com.fitness.courses.http.catalog.model.dto.content.LessonWithStagesInfoDto;
 import com.fitness.courses.http.catalog.model.dto.content.StageInfoDto;
 import com.fitness.courses.http.coach.course.content.service.lesson.LessonService;
 import com.fitness.courses.http.coach.course.content.service.lesson.LessonValidator;
 import com.fitness.courses.http.coach.course.content.service.stage.StageService;
+import com.fitness.courses.http.coach.course.mapper.CourseMapper;
 import com.fitness.courses.http.coach.course.model.entity.CourseEntity;
+import com.fitness.courses.http.coach.course.model.entity.CourseStatus;
 import com.fitness.courses.http.coach.course.service.CourseService;
 import com.fitness.courses.http.coach.course.service.CourseValidator;
 import com.fitness.courses.http.student.service.student.StudentService;
 import com.fitness.courses.http.user.model.User;
+import com.fitness.courses.http.user.service.UserService;
 
 @Service
 public class RestCatalogServiceImpl implements RestCatalogService
@@ -40,15 +45,21 @@ public class RestCatalogServiceImpl implements RestCatalogService
     private final LessonService lessonService;
     private final AuthService authService;
     private final StudentService studentService;
+    private final UserService userService;
 
     @Autowired
-    public RestCatalogServiceImpl(CourseService courseService,
-            CourseValidator courseValidator, PaginationValidator paginationValidator,
-            CatalogMapper catalogMapper, CatalogValidator catalogValidator,
+    public RestCatalogServiceImpl(
+            CourseService courseService,
+            CourseValidator courseValidator,
+            PaginationValidator paginationValidator,
+            CatalogMapper catalogMapper,
+            CatalogValidator catalogValidator,
             LessonValidator lessonValidator,
             StageService stageService,
-            LessonService lessonService, AuthService authService,
-            StudentService studentService)
+            LessonService lessonService,
+            AuthService authService,
+            StudentService studentService,
+            UserService userService)
     {
         this.courseService = courseService;
         this.courseValidator = courseValidator;
@@ -60,10 +71,11 @@ public class RestCatalogServiceImpl implements RestCatalogService
         this.lessonService = lessonService;
         this.authService = authService;
         this.studentService = studentService;
+        this.userService = userService;
     }
 
     @Override
-    public List<StageInfoDto> getLessonStagesInfo(@NotNull Long courseId, @NotNull Long lessonId)
+    public LessonWithStagesInfoDto getLessonStagesInfo(@NotNull Long courseId, @NotNull Long lessonId)
     {
         courseValidator.validateCourseExist(courseId);
         lessonValidator.validateExist(lessonId);
@@ -75,8 +87,19 @@ public class RestCatalogServiceImpl implements RestCatalogService
         currentUserOptional.flatMap(user -> studentService.getByUserAndCourse(user, course))
                 .ifPresent(student -> doneStageAndSetUuids.addAll(student.getDoneStageAndSetUuids()));
 
-        return stageService.findAllByLessonAndSortAscBySerialNumber(lessonService.getOrThrow(lessonId)).stream()
-                .map(stage -> catalogMapper.toStageInfoDto(stage, doneStageAndSetUuids))
+        return catalogMapper.toLessonWithStagesInfoDto(
+                lessonService.getOrThrow(lessonId),
+                stageService.findAllByLessonAndSortAscBySerialNumber(lessonService.getOrThrow(lessonId)).stream()
+                        .map(stage -> catalogMapper.toStageInfoDto(stage, doneStageAndSetUuids))
+                        .toList());
+    }
+
+    @Override
+    public List<AuthorCourseInfoDto> getAuthorCourses(@NotNull Long authorId)
+    {
+        return courseService.getAllCoursesWhereUserIsAuthor(userService.findById(authorId).orElseThrow()).stream()
+                .filter(course -> course.getStatus().equals(CourseStatus.PUBLISHED))
+                .map(catalogMapper::toAuthorCourseInfoDto)
                 .toList();
     }
 

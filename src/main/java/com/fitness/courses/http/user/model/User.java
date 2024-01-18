@@ -6,11 +6,16 @@ import java.util.Set;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import com.fitness.courses.http.attachment.model.entity.AttachmentEntity;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 
 @Entity
@@ -29,6 +34,16 @@ public class User implements UserDetails
 
     @Column(nullable = false, unique = true)
     private String email;
+
+    @OneToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "logo_id", nullable = true)
+    private AttachmentEntity logo;
+
+    @Column(nullable = true)
+    private String biography;
+
+    @Column(nullable = true)
+    private String about;
 
     @Column(nullable = true)
     private String lastVerificationEmailCode;
@@ -58,6 +73,36 @@ public class User implements UserDetails
     public void setEmail(String email)
     {
         this.email = email;
+    }
+
+    public AttachmentEntity getLogo()
+    {
+        return logo;
+    }
+
+    public void setLogo(AttachmentEntity logo)
+    {
+        this.logo = logo;
+    }
+
+    public String getBiography()
+    {
+        return biography;
+    }
+
+    public void setBiography(String biography)
+    {
+        this.biography = biography;
+    }
+
+    public String getAbout()
+    {
+        return about;
+    }
+
+    public void setAbout(String about)
+    {
+        this.about = about;
     }
 
     @Override

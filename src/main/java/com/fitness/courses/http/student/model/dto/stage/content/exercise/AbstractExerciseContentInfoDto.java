@@ -35,6 +35,10 @@ public abstract class AbstractExerciseContentInfoDto<T extends AbstractExerciseS
 
     private Long cardId;
 
+    private String cardTitle;
+
+    private String cardImgUrl;
+
     protected List<T> sets;
 
     protected ExerciseContentType type;
@@ -61,6 +65,26 @@ public abstract class AbstractExerciseContentInfoDto<T extends AbstractExerciseS
     public void setCardId(Long cardId)
     {
         this.cardId = cardId;
+    }
+
+    public String getCardTitle()
+    {
+        return cardTitle;
+    }
+
+    public void setCardTitle(String cardTitle)
+    {
+        this.cardTitle = cardTitle;
+    }
+
+    public String getCardImgUrl()
+    {
+        return cardImgUrl;
+    }
+
+    public void setCardImgUrl(String cardImgUrl)
+    {
+        this.cardImgUrl = cardImgUrl;
     }
 
     public List<T> getSets()

@@ -2,8 +2,8 @@ package com.fitness.courses.http.catalog.model.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
-@Schema(name = "Ответ сервера с информацией о популярном курсе в каталоге.")
-public class CatalogPopularCourseInfoDto
+@Schema(name = "Ответ сервера с информацией о курсах автора.")
+public class AuthorCourseInfoDto
 {
     @Schema(description = "Идентификатор курса.")
     private Long id;
@@ -21,7 +21,7 @@ public class CatalogPopularCourseInfoDto
     private Double rating;
 
     @Schema(description = "Количество студентов на курсе.")
-    private Long numberOfPeople;
+    private Integer numberOfPeople;
 
     @Schema(description = "Бесплатный ли курс. true - курс бесплатный, false - курс платный).")
     private boolean isFree;
@@ -89,17 +89,17 @@ public class CatalogPopularCourseInfoDto
         this.rating = rating;
     }
 
-    public Long getNumberOfPeople()
+    public Integer getNumberOfPeople()
     {
         return numberOfPeople;
     }
 
-    public void setNumberOfPeople(Long numberOfPeople)
+    public void setNumberOfPeople(Integer numberOfPeople)
     {
         this.numberOfPeople = numberOfPeople;
     }
 
-    public boolean getIsFree()
+    public boolean isFree()
     {
         return isFree;
     }

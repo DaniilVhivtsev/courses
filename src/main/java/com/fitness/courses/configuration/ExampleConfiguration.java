@@ -1,7 +1,9 @@
 package com.fitness.courses.configuration;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.time.LocalTime;
 import java.util.AbstractMap;
 import java.util.ArrayList;
@@ -38,7 +40,9 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.fitness.courses.controller.AuthController;
+import com.fitness.courses.controller.CatalogController;
 import com.fitness.courses.controller.CoachCourseController;
+import com.fitness.courses.controller.StudentCourseController;
 import com.fitness.courses.http.auth.dto.RegistrationUserInfoDto;
 import com.fitness.courses.http.coach.card.model.dto.CardInfoDto;
 import com.fitness.courses.http.coach.card.model.dto.NewCardDto;
@@ -74,15 +78,22 @@ public class ExampleConfiguration
 {
     private final AuthController authController;
     private final CoachCourseController coachCourseController;
+    private final CatalogController catalogController;
+    private final StudentCourseController studentCourseController;
 
     private Long firstCardId;
     private Long secondCardId;
 
-    public ExampleConfiguration(AuthController authController,
-            CoachCourseController coachCourseController)
+    public ExampleConfiguration(
+            AuthController authController,
+            CoachCourseController coachCourseController,
+            CatalogController catalogController,
+            StudentCourseController studentCourseController)
     {
         this.authController = authController;
         this.coachCourseController = coachCourseController;
+        this.catalogController = catalogController;
+        this.studentCourseController = studentCourseController;
     }
 
     @Bean
@@ -170,10 +181,10 @@ public class ExampleConfiguration
 //            CourseAuthorStageWithContentInfoDto stageInfoDto = stageMapper.toInfoDtoWithContent(stageEntityFromDb);
 //            System.out.println(stageInfoDto);*/
 
-            if (true)
-            {
-                return;
-            }
+//            if (true)
+//            {
+//                return;
+//            }
 
             if (userService.findByEmail("danya.vshivtsev@gmail.com").isPresent())
             {
@@ -269,32 +280,31 @@ public class ExampleConfiguration
             ).getStatusCode();
             checkHttpStatusCode(httpStatusCode);
 
+            catalogController.getPopularCourses(0, 10);
+
             // Добавляем содержание
 
             addModule(courseId, "первого");
             addModule(courseId, "второго");
-            addModule(courseId, "третьего");
+//            addModule(courseId, "третьего");
+//            var q = studentCourseController.createBidRegistrationForTheCourse(courseId);
+//            var qwe = studentCourseController.getCourseStageContent(courseId, 1L);
+
+
+            System.out.println("End");
         };
     }
 
     private MultipartFile getFile(String path)
     {
-        ClassPathResource resource = new ClassPathResource(path);
-        FileInputStream input = null;
-        try
-        {
-            input = new FileInputStream(resource.getFile());
-        }
-        catch (IOException e)
-        {
-            e.printStackTrace();
-        }
+//        ClassPathResource resource = new ClassPathResource(path);
+        InputStream inputStream = getClass().getClassLoader().getResourceAsStream(path);
 
-        assert input != null;
         try
         {
+            assert inputStream != null;
             return new MockMultipartFile("file",
-                    resource.getFilename(), "text/plain", IOUtils.toByteArray(input));
+                    new File(path).getName(), "text/plain", IOUtils.toByteArray(inputStream));
         }
         catch (IOException e)
         {
@@ -305,7 +315,7 @@ public class ExampleConfiguration
         {
             try
             {
-                input.close();
+                inputStream.close();
             }
             catch (IOException e)
             {
