@@ -11,7 +11,7 @@ import com.fitness.courses.http.coach.course.content.model.entity.stage.content.
 @JsonTypeInfo(
         use = JsonTypeInfo.Id.NAME,
         include = JsonTypeInfo.As.PROPERTY,
-        property = "type"
+        property = "exerciseContentType"
 )
 @JsonSubTypes({
         @JsonSubTypes.Type(
@@ -34,6 +34,8 @@ public abstract class AbstractExerciseContent<T extends AbstractExerciseSetConte
     private Long cardId;
 
     protected List<T> sets;
+
+    private String exerciseContentType;
 
     public String getUuid()
     {
@@ -64,8 +66,13 @@ public abstract class AbstractExerciseContent<T extends AbstractExerciseSetConte
 
     public abstract void setSets(List<T> sets);
 
+    public void setExerciseContentType(String exerciseContentType)
+    {
+        this.exerciseContentType = exerciseContentType;
+    }
+
     @JsonTypeInfo(use = Id.NAME)
-    public abstract String getType();
+    public abstract String getExerciseContentType();
 
     @Override
     public boolean equals(Object o)

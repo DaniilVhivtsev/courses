@@ -21,7 +21,7 @@ public class RepeatExerciseContent extends AbstractExerciseContent<ExerciseRepea
     }
 
     @Override
-    public String getType()
+    public String getExerciseContentType()
     {
         return DISCRIMINATOR;
     }

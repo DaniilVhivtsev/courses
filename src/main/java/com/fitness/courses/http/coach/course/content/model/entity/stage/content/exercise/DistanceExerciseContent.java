@@ -21,7 +21,7 @@ public class DistanceExerciseContent extends AbstractExerciseContent<ExerciseDis
     }
 
     @Override
-    public String getType()
+    public String getExerciseContentType()
     {
         return DISCRIMINATOR;
     }

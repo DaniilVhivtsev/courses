@@ -19,7 +19,7 @@ public class ExerciseTimeSetContent extends AbstractExerciseSetContent
     }
 
     @Override
-    public String getType()
+    public String getExerciseSetContentType()
     {
         return DISCRIMINATOR;
     }

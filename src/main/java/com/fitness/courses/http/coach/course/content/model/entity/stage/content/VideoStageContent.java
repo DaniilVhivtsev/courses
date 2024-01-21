@@ -31,7 +31,7 @@ public class VideoStageContent extends AbstractStageContent
     }
 
     @Override
-    public String getType()
+    public String getStageContentType()
     {
         return DISCRIMINATOR;
     }

@@ -11,7 +11,7 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo.Id;
 @JsonTypeInfo(
         use = JsonTypeInfo.Id.NAME,
         include = JsonTypeInfo.As.PROPERTY,
-        property = "type"
+        property = "exerciseSetContentType"
 )
 @JsonSubTypes({
         @JsonSubTypes.Type(
@@ -34,6 +34,8 @@ public abstract class AbstractExerciseSetContent
     private Float countOfKilograms;
 
     private LocalTime pauseAfter;
+
+    private String exerciseSetContentType;
 
     public String getUuid()
     {
@@ -65,8 +67,13 @@ public abstract class AbstractExerciseSetContent
         this.pauseAfter = pauseAfter;
     }
 
+    public void setExerciseSetContentType(String exerciseSetContentType)
+    {
+        this.exerciseSetContentType = exerciseSetContentType;
+    }
+
     @JsonTypeInfo(use = Id.NAME)
-    public abstract String getType();
+    public abstract String getExerciseSetContentType();
 
     @Override
     public boolean equals(Object o)

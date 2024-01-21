@@ -10,7 +10,7 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo.Id;
 @JsonTypeInfo(
         use = JsonTypeInfo.Id.NAME,
         include = JsonTypeInfo.As.PROPERTY,
-        property = "type"
+        property = "stageContentType"
 )
 @JsonSubTypes({
         @JsonSubTypes.Type(
@@ -36,6 +36,8 @@ public abstract class AbstractStageContent implements Serializable
 
     private int serialNumber;
 
+    private String stageContentType;
+
     public String getUuid()
     {
         return uuid;
@@ -58,8 +60,13 @@ public abstract class AbstractStageContent implements Serializable
         return this;
     }
 
+    public void setStageContentType(String stageContentType)
+    {
+        this.stageContentType = stageContentType;
+    }
+
     @JsonTypeInfo(use = Id.NAME)
-    public abstract String getType();
+    public abstract String getStageContentType();
 
     @Override
     public boolean equals(Object o)

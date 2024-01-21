@@ -33,7 +33,7 @@ public class TextStageContent extends AbstractStageContent
     }
 
     @Override
-    public String getType()
+    public String getStageContentType()
     {
         return DISCRIMINATOR;
     }

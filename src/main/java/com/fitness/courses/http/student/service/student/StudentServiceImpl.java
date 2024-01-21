@@ -91,10 +91,10 @@ public class StudentServiceImpl implements StudentService
         final int courseStagesUuidsCount = courseStagesUuids.size();
 
         courseStagesUuids.removeAll(student.getDoneStageAndSetUuids());
-        final int courseDoneStagesUuidsCount = courseStagesUuids.size();
+        final int courseDoneStagesUuidsCount = courseStagesUuidsCount - courseStagesUuids.size();
 
         double coursePercentagePassed = (double)courseDoneStagesUuidsCount * 100 / courseStagesUuidsCount;
-        return Double.valueOf(String.format("%.2f", coursePercentagePassed));
+        return Double.valueOf(String.format("%.2f", coursePercentagePassed).replace(",", "."));
     }
 
     @Override

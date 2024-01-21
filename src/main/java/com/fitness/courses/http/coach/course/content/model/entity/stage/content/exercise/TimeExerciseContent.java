@@ -21,7 +21,7 @@ public class TimeExerciseContent extends AbstractExerciseContent<ExerciseTimeSet
     }
 
     @Override
-    public String getType()
+    public String getExerciseContentType()
     {
         return DISCRIMINATOR;
     }
