@@ -34,7 +34,7 @@ public class RestCardServiceImpl implements RestCardService
     public CardInfoDto getCard(Long id)
     {
         cardValidator.validateCardExist(id);
-        cardValidator.validateCurrentUserHasPermission(id);
+//        cardValidator.validateCurrentUserHasPermission(id);
 
         return CardMapper.toDto(cardService.getCardOrThrow(id));
     }

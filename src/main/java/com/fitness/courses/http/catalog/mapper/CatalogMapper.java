@@ -236,7 +236,7 @@ public class CatalogMapper
         dto.setShortDescription(entity.getShortDescription());
         dto.setAuthorId(entity.getAuthor().getId());
         dto.setAuthorFullName(entity.getAuthor().getFullName());
-        dto.setAuthorShortDescription("Example description. TODO edit");
+        dto.setAuthorShortDescription(entity.getAbout());
 
         if (entity.getAuthor().getLogo() != null)
         {
