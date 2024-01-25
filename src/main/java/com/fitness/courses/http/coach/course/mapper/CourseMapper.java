@@ -90,7 +90,11 @@ public class CourseMapper
 
     public static @NotNull CourseEntity toEntity(@NotNull EditCourseAuthorGeneralInfo dto)
     {
-        return MAPPER.map(dto, CourseEntity.class);
+        CourseEntity entity = MAPPER.map(dto, CourseEntity.class);
+        entity.setShortDescription(dto.getShortDescription());
+        entity.setAbout(dto.getAbout());
+
+        return entity;
     }
 
     public static @NotNull ListCourseInfoDto toListCourseInfoDto(@NotNull CourseEntity entity)

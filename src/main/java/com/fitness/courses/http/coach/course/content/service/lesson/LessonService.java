@@ -5,6 +5,8 @@ import java.util.Optional;
 
 import javax.validation.constraints.NotNull;
 
+import org.springframework.web.multipart.MultipartFile;
+
 import com.fitness.courses.http.coach.course.content.model.dto.lesson.NewCourseAuthorLessonDto;
 import com.fitness.courses.http.coach.course.content.model.dto.lesson.UpdateCourseAuthorLessonDto;
 import com.fitness.courses.http.coach.course.content.model.entity.LessonEntity;
@@ -14,6 +16,8 @@ import com.fitness.courses.http.coach.course.content.model.info.LessonWithStages
 public interface LessonService
 {
     LessonEntity add(@NotNull ModuleEntity moduleEntity, @NotNull NewCourseAuthorLessonDto newLessonDto);
+
+    void addIcon(Long lessonId, @NotNull MultipartFile icon);
 
     void deleteAllByModule(@NotNull ModuleEntity moduleEntity);
 

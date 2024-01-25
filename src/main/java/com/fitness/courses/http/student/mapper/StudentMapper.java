@@ -99,7 +99,7 @@ public class StudentMapper
     {
         StageContentInfoDto dto = new StageContentInfoDto();
         dto.setId(stageEntity.getId());
-        dto.setTitle("Example title");
+        dto.setTitle(stageEntity.getTitle());
         dto.setCompleted(doneStageAndSetUuids.contains(stageEntity.getId().toString()));
         dto.setStageContent(stageEntity.getStageContent().stream()
                 .map(content -> toContentInfoDto(content, doneStageAndSetUuids))

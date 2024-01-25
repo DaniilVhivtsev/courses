@@ -170,6 +170,7 @@ public class CatalogMapper
         dto.setPrice(0);
         dto.setAuthorId(entity.getAuthor().getId());
         dto.setAuthorFullName(entity.getAuthor().getFullName());
+        dto.setDescription(entity.getShortDescription());
 
         Optional<User> currentUserOptional = authService.getCurrentUser();
         currentUserOptional.ifPresentOrElse(
@@ -236,7 +237,7 @@ public class CatalogMapper
         dto.setShortDescription(entity.getShortDescription());
         dto.setAuthorId(entity.getAuthor().getId());
         dto.setAuthorFullName(entity.getAuthor().getFullName());
-        dto.setAuthorShortDescription(entity.getAbout());
+        dto.setAuthorShortDescription(entity.getAuthor().getAbout());
 
         if (entity.getAuthor().getLogo() != null)
         {
@@ -389,7 +390,7 @@ public class CatalogMapper
     {
         StageInfoDto dto = MAPPER.map(stage, StageInfoDto.class);
         dto.setCompleted(doneStageAndSetUuids.contains(stage.getId().toString()));
-        dto.setTitle("Example title");
+        dto.setTitle(stage.getTitle());
 
         return dto;
     }

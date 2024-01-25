@@ -93,10 +93,11 @@ public class CourseServiceImpl implements CourseService
 
     private void updateSourceInfo(CourseEntity source, CourseEntity editedEntity)
     {
-        for (Field field : CourseEntity.class.getFields())
+        for (Field field : CourseEntity.class.getDeclaredFields())
         {
             try
             {
+                field.setAccessible(true);
                 Object fieldValue = field.get(editedEntity);
                 if (fieldValue != null)
                 {
@@ -106,6 +107,10 @@ public class CourseServiceImpl implements CourseService
             catch (IllegalAccessException e)
             {
                 e.printStackTrace();
+            }
+            finally
+            {
+                field.setAccessible(false);
             }
         }
     }

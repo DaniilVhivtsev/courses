@@ -42,6 +42,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.fitness.courses.controller.AuthController;
 import com.fitness.courses.controller.CatalogController;
 import com.fitness.courses.controller.CoachCourseController;
+import com.fitness.courses.controller.CurrentUserController;
 import com.fitness.courses.controller.StudentCourseController;
 import com.fitness.courses.http.auth.dto.RegistrationUserInfoDto;
 import com.fitness.courses.http.coach.card.model.dto.CardInfoDto;
@@ -62,11 +63,13 @@ import com.fitness.courses.http.coach.course.content.model.dto.stage.content.upd
 import com.fitness.courses.http.coach.course.content.model.dto.stage.content.update.exercise.set.UpdateExerciseDistanceSetContentDto;
 import com.fitness.courses.http.coach.course.content.model.dto.stage.content.update.exercise.set.UpdateExerciseRepeatSetContentDto;
 import com.fitness.courses.http.coach.course.content.model.dto.stage.content.update.exercise.set.UpdateExerciseTimeSetContentDto;
+import com.fitness.courses.http.coach.course.content.service.lesson.LessonService;
 import com.fitness.courses.http.coach.course.content.service.stage.CrudStageEntityService;
 import com.fitness.courses.http.coach.course.model.dto.EditCourseAuthorGeneralInfo;
 import com.fitness.courses.http.coach.course.model.dto.NewCourseDto;
 import com.fitness.courses.http.objectStorage.service.LocalStorageFileService;
 import com.fitness.courses.http.user.model.User;
+import com.fitness.courses.http.user.model.dto.EditUserGeneralInfoDto;
 import com.fitness.courses.http.user.service.UserService;
 
 import io.swagger.v3.oas.models.media.ArraySchema;
@@ -80,20 +83,28 @@ public class ExampleConfiguration
     private final CoachCourseController coachCourseController;
     private final CatalogController catalogController;
     private final StudentCourseController studentCourseController;
+    private final CurrentUserController currentUserController;
+    private final LessonService lessonService;
 
     private Long firstCardId;
     private Long secondCardId;
+    private Long thirdCardId;
+    private Long fourthCardId;
 
     public ExampleConfiguration(
             AuthController authController,
             CoachCourseController coachCourseController,
             CatalogController catalogController,
-            StudentCourseController studentCourseController)
+            StudentCourseController studentCourseController,
+            CurrentUserController currentUserController,
+            LessonService lessonService)
     {
         this.authController = authController;
         this.coachCourseController = coachCourseController;
         this.catalogController = catalogController;
         this.studentCourseController = studentCourseController;
+        this.currentUserController = currentUserController;
+        this.lessonService = lessonService;
     }
 
     @Bean
@@ -181,10 +192,10 @@ public class ExampleConfiguration
 //            CourseAuthorStageWithContentInfoDto stageInfoDto = stageMapper.toInfoDtoWithContent(stageEntityFromDb);
 //            System.out.println(stageInfoDto);*/
 
-//            if (true)
-//            {
-//                return;
-//            }
+            //            if (true)
+            //            {
+            //                return;
+            //            }
 
             if (userService.findByEmail("danya.vshivtsev@gmail.com").isPresent())
             {
@@ -210,8 +221,168 @@ public class ExampleConfiguration
             );
             SecurityContextHolder.getContext().setAuthentication(authentication);
 
-            // Create course
+            httpStatusCode = currentUserController.editAuthorCourseGeneralInfo(
+                            new EditUserGeneralInfoDto()
+                                    .setName("Вячеслав")
+                                    .setSurname("Кравцов")
+                                    .setBiography("Более 10 лет опыта")
+                                    .setAbout("Более 10 лет опыта")
+                                    .setIcon(getFile("content/forDanil/img_5.png")))
+                    .getStatusCode();
+            checkHttpStatusCode(httpStatusCode);
 
+            // Create courses
+            Long firstCourseId = (Long)coachCourseController.createCourse(
+                            new NewCourseDto()
+                                    .setTitle("Растяжка 30 дней"))
+                    .getBody();
+            httpStatusCode = coachCourseController.editAuthorCourseGeneralInfo(
+                    firstCourseId,
+                    new EditCourseAuthorGeneralInfo()
+                            .setTitle("Растяжка 30 дней")
+                            .setAbout(
+                                    "Поддержания мышц в тонусе")
+                            .setShortDescription(
+                                    "Поддержания мышц в тонусе")
+                            .setCourseFor(
+                                    "")
+                            .setRequirements("")
+                            .setLogo(getFile("content/forDanil/img.png"))
+            ).getStatusCode();
+            checkHttpStatusCode(httpStatusCode);
+
+            Long secondCourseId = (Long)coachCourseController.createCourse(
+                            new NewCourseDto()
+                                    .setTitle("Медитация"))
+                    .getBody();
+            httpStatusCode = coachCourseController.editAuthorCourseGeneralInfo(
+                    secondCourseId,
+                    new EditCourseAuthorGeneralInfo()
+                            .setTitle("Медитация")
+                            .setAbout(
+                                    "Практики от стресса")
+                            .setShortDescription(
+                                    "Практики от стресса")
+                            .setCourseFor(
+                                    "")
+                            .setRequirements("")
+                            .setLogo(getFile("content/forDanil/img_3.png"))
+            ).getStatusCode();
+            checkHttpStatusCode(httpStatusCode);
+
+            Long thirdCourseId = (Long)coachCourseController.createCourse(
+                            new NewCourseDto()
+                                    .setTitle("Кардио"))
+                    .getBody();
+            httpStatusCode = coachCourseController.editAuthorCourseGeneralInfo(
+                    thirdCourseId,
+                    new EditCourseAuthorGeneralInfo()
+                            .setTitle("Кардио")
+                            .setAbout(
+                                    "20 тренировок")
+                            .setShortDescription(
+                                    "20 тренировок")
+                            .setCourseFor(
+                                    "")
+                            .setRequirements("")
+                            .setLogo(getFile("content/forDanil/img_1.png"))
+            ).getStatusCode();
+            checkHttpStatusCode(httpStatusCode);
+
+            Long fourthCourseId = (Long)coachCourseController.createCourse(
+                            new NewCourseDto()
+                                    .setTitle("Отжимания 30 дней"))
+                    .getBody();
+            httpStatusCode = coachCourseController.editAuthorCourseGeneralInfo(
+                    fourthCourseId,
+                    new EditCourseAuthorGeneralInfo()
+                            .setTitle("Отжимания 30 дней")
+                            .setAbout(
+                                    "Программа базового курса по функциональным тренировкам предназначена для людей, "
+                                            + "которые ищут альтернативу традиционному тренажёрному залу. Упражнения "
+                                            + "с собственным весом отлично подходят для этого. Вам не нужно ничего, "
+                                            + "кроме собственного тела, вы можете выбрать любое место для тренировки "
+                                            + "и тренироваться, когда захотите и где захотите!")
+                            .setShortDescription(
+                                    "Программа базового курса по функциональным тренировкам предназначена для людей, "
+                                            + "которые ищут альтернативу традиционному тренажёрному залу. Упражнения "
+                                            + "с собственным весом отлично подходят для этого. Вам не нужно ничего, "
+                                            + "кроме собственного тела, вы можете выбрать любое место для тренировки "
+                                            + "и тренироваться, когда захотите и где захотите!")
+                            .setCourseFor(
+                                    "")
+                            .setRequirements("")
+                            .setLogo(getFile("content/forDanil/img_2.png"))
+            ).getStatusCode();
+            checkHttpStatusCode(httpStatusCode);
+
+            Long fifthCourseId = (Long)coachCourseController.createCourse(
+                            new NewCourseDto()
+                                    .setTitle("Фитнес для начинающих"))
+                    .getBody();
+            httpStatusCode = coachCourseController.editAuthorCourseGeneralInfo(
+                    fifthCourseId,
+                    new EditCourseAuthorGeneralInfo()
+                            .setTitle("Фитнес для начинающих")
+                            .setAbout(
+                                    "Двухмесячный курс для поддержания мышц тела в тонусе")
+                            .setShortDescription(
+                                    "Двухмесячный курс для поддержания мышц тела в тонусе")
+                            .setCourseFor(
+                                    "")
+                            .setRequirements("")
+                            .setLogo(getFile("content/forDanil/img_4.png"))
+            ).getStatusCode();
+            checkHttpStatusCode(httpStatusCode);
+
+            firstCardId = (Long)coachCourseController.createCard(
+                    new NewCardDto()
+                            .setTitle("Наклоны")
+                            .setDescription("Наклоны")
+                            .setInventoryDescription("")
+                            .setMuscleGroupsDescription("")
+                            .setImages(Stream.of("content/forDanil/img_6.png").map(this::getFile).toList())
+                            .setVideo(getFile("content/benchPress/video.mp4"))
+            ).getBody();
+
+            secondCardId = (Long)coachCourseController.createCard(
+                    new NewCardDto()
+                            .setTitle("Приседания")
+                            .setDescription("Приседания")
+                            .setInventoryDescription("")
+                            .setMuscleGroupsDescription("")
+                            .setImages(Stream.of("content/forDanil/img_7.png").map(this::getFile).toList())
+                            .setVideo(getFile("content/legPress/video.mp4"))
+            ).getBody();
+
+            thirdCardId = (Long)coachCourseController.createCard(
+                    new NewCardDto()
+                            .setTitle("Планка")
+                            .setDescription("Планка")
+                            .setInventoryDescription("")
+                            .setMuscleGroupsDescription("")
+                            .setImages(Stream.of("content/forDanil/img_8.png").map(this::getFile).toList())
+                            .setVideo(getFile("content/legPress/video.mp4"))
+            ).getBody();
+
+            fourthCardId = (Long)coachCourseController.createCard(
+                    new NewCardDto()
+                            .setTitle("Ходьба")
+                            .setDescription("Ходьба")
+                            .setInventoryDescription("")
+                            .setMuscleGroupsDescription("")
+                            .setImages(Stream.of("content/forDanil/img_9.png").map(this::getFile).toList())
+                            .setVideo(getFile("content/legPress/video.mp4"))
+            ).getBody();
+
+            addModule(fifthCourseId, "1");
+            //            addModule(fifthCourseId, "2");
+            //            addModule(fifthCourseId, "3");
+            //            addModule(fifthCourseId, "4");
+
+            var qwe = catalogController.getCourseInfo(fifthCourseId);
+            System.out.println();
+/*
             Long courseId = (Long)coachCourseController.createCourse(
                             new NewCourseDto()
                                     .setTitle("Новый курс от Вшивцева Даниила"))
@@ -285,11 +456,10 @@ public class ExampleConfiguration
             // Добавляем содержание
 
             addModule(courseId, "первого");
-            addModule(courseId, "второго");
-//            addModule(courseId, "третьего");
-//            var q = studentCourseController.createBidRegistrationForTheCourse(courseId);
-//            var qwe = studentCourseController.getCourseStageContent(courseId, 1L);
-
+            addModule(courseId, "второго");*/
+            //            addModule(courseId, "третьего");
+            //            var q = studentCourseController.createBidRegistrationForTheCourse(courseId);
+            //            var qwe = studentCourseController.getCourseStageContent(courseId, 1L);
 
             System.out.println("End");
         };
@@ -297,7 +467,7 @@ public class ExampleConfiguration
 
     private MultipartFile getFile(String path)
     {
-//        ClassPathResource resource = new ClassPathResource(path);
+        //        ClassPathResource resource = new ClassPathResource(path);
         InputStream inputStream = getClass().getClassLoader().getResourceAsStream(path);
 
         try
@@ -337,12 +507,224 @@ public class ExampleConfiguration
         Long firstModuleId = (Long)coachCourseController.addModuleToAuthorCourseContent(
                 courseId,
                 new NewCourseAuthorModuleDto()
+                        .setTitle("Фитнес для начинающих")
+                        .setDescription("Фитнес для начинающих")
+        ).getBody();
+
+        Long firstLessonId = (Long)coachCourseController.addLessonToAuthorCourseContent(
+                courseId,
+                firstModuleId,
+                new NewCourseAuthorLessonDto()
+                        .setTitle(
+                                "День 1")
+        ).getBody();
+        lessonService.addIcon(firstLessonId, getFile("content/forDanil/img_11.png"));
+        addStageExerciseInTheMorning(courseId, firstModuleId, firstLessonId);
+        addStageWithoutExercises(courseId, firstModuleId, firstLessonId);
+
+        Long secondLessonId = (Long)coachCourseController.addLessonToAuthorCourseContent(
+                courseId,
+                firstModuleId,
+                new NewCourseAuthorLessonDto()
+                        .setTitle(
+                                "День 2")
+        ).getBody();
+        lessonService.addIcon(secondLessonId, getFile("content/forDanil/img_12.png"));
+        addStageExerciseInTheMorning(courseId, firstModuleId, secondLessonId);
+        addStageWithoutExercises(courseId, firstModuleId, secondLessonId);
+
+        Long thirdLessonId = (Long)coachCourseController.addLessonToAuthorCourseContent(
+                courseId,
+                firstModuleId,
+                new NewCourseAuthorLessonDto()
+                        .setTitle(
+                                "День 3")
+        ).getBody();
+        lessonService.addIcon(thirdLessonId, getFile("content/forDanil/img_13.png"));
+        addStageExerciseInTheMorning(courseId, firstModuleId, thirdLessonId);
+        addStageWithoutExercises(courseId, firstModuleId, thirdLessonId);
+
+        Long fourthLessonId = (Long)coachCourseController.addLessonToAuthorCourseContent(
+                courseId,
+                firstModuleId,
+                new NewCourseAuthorLessonDto()
+                        .setTitle(
+                                "День 4")
+        ).getBody();
+        lessonService.addIcon(fourthLessonId, getFile("content/forDanil/img_14.png"));
+        addStageExerciseInTheMorning(courseId, firstModuleId, fourthLessonId);
+        addStageWithoutExercises(courseId, firstModuleId, fourthLessonId);
+
+        /*Long firstModuleId = (Long)coachCourseController.addModuleToAuthorCourseContent(
+                courseId,
+                new NewCourseAuthorModuleDto()
                         .setTitle("Название " + prefix + " модуля.")
                         .setDescription("Описание " + prefix + " модуля.")
         ).getBody();
         addLesson(courseId, firstModuleId, prefix);
         addLesson(courseId, firstModuleId, prefix);
-        addLesson(courseId, firstModuleId, prefix);
+        addLesson(courseId, firstModuleId, prefix);*/
+    }
+
+    private void addStageWithoutExercises(Long courseId, Long moduleId, Long lessonId)
+    {
+        Long secondStageId = (Long)coachCourseController
+                .addStageToAuthorCourseContent(courseId, lessonId, "Тренировка")
+                .getBody();
+
+        // IMG
+        String firstContentId = (String)coachCourseController
+                .addContentToStageToAuthorCourseContent(courseId, lessonId, secondStageId,
+                        new AddCourseAuthorStageContentInfoDto()
+                                .setType(StageContentType.IMG))
+                .getBody();
+
+        MockMultipartHttpServletRequest request = new MockMultipartHttpServletRequest();
+        MultiValueMap<String, MultipartFile> multiValueMap = new LinkedMultiValueMap<>();
+        multiValueMap.add("image", getFile("content/forDanil/img_10.png"));
+
+        UpdateImgStageContentDto updateImgStageContentDto = new UpdateImgStageContentDto();
+        updateImgStageContentDto.setUuid(firstContentId);
+        updateImgStageContentDto.setSerialNumber(0);
+        updateImgStageContentDto.setType(StageContentType.IMG);
+
+        coachCourseController.updateContentToStageToAuthorCourseContent(courseId, lessonId, secondStageId,
+                StageContentType.IMG, convertToMultiValueMap(updateImgStageContentDto),
+                getAbstractMultipartHttpServletRequest(request, multiValueMap));
+
+        // TEXT
+        String secondContentId = (String)coachCourseController
+                .addContentToStageToAuthorCourseContent(courseId, lessonId, secondStageId,
+                        new AddCourseAuthorStageContentInfoDto()
+                                .setType(StageContentType.TEXT))
+                .getBody();
+
+        request = new MockMultipartHttpServletRequest();
+        UpdateTextStageContentDto updateTextStageContentDto = new UpdateTextStageContentDto();
+        updateTextStageContentDto.setUuid(secondContentId);
+        updateTextStageContentDto.setSerialNumber(1);
+        updateTextStageContentDto.setType(StageContentType.TEXT);
+        updateTextStageContentDto.setTextContent(
+                "Утренняя физическая нагрузка до завтрака сжигает больше калорий, чем в другое время суток. Это "
+                        + "лучшее средство, чтобы снять сонливость, усталость, зарядиться позитивом и настроить свой "
+                        + "организм на самую продуктивную деятельность в течение дня.");
+
+        coachCourseController.updateContentToStageToAuthorCourseContent(courseId, lessonId, secondStageId,
+                StageContentType.TEXT, convertToMultiValueMap(updateTextStageContentDto),
+                new StandardMultipartHttpServletRequest(request));
+
+        HttpStatusCode httpStatusCode = catalogController.getCourseInfo(courseId).getStatusCode();
+        checkHttpStatusCode(httpStatusCode);
+
+    }
+
+    private void addStageExerciseInTheMorning(Long courseId, Long moduleId, Long lessonId)
+    {
+        Long firstStageId = (Long)coachCourseController
+                .addStageToAuthorCourseContent(courseId, lessonId, "Зарядка")
+                .getBody();
+
+        // IMG
+        String firstContentId = (String)coachCourseController
+                .addContentToStageToAuthorCourseContent(courseId, lessonId, firstStageId,
+                        new AddCourseAuthorStageContentInfoDto()
+                                .setType(StageContentType.IMG))
+                .getBody();
+
+        MockMultipartHttpServletRequest request = new MockMultipartHttpServletRequest();
+        MultiValueMap<String, MultipartFile> multiValueMap = new LinkedMultiValueMap<>();
+        multiValueMap.add("image", getFile("content/forDanil/img_10.png"));
+
+        UpdateImgStageContentDto updateImgStageContentDto = new UpdateImgStageContentDto();
+        updateImgStageContentDto.setUuid(firstContentId);
+        updateImgStageContentDto.setSerialNumber(0);
+        updateImgStageContentDto.setType(StageContentType.IMG);
+
+        coachCourseController.updateContentToStageToAuthorCourseContent(courseId, lessonId, firstStageId,
+                StageContentType.IMG, convertToMultiValueMap(updateImgStageContentDto),
+                getAbstractMultipartHttpServletRequest(request, multiValueMap));
+
+        // TEXT
+        String secondContentId = (String)coachCourseController
+                .addContentToStageToAuthorCourseContent(courseId, lessonId, firstStageId,
+                        new AddCourseAuthorStageContentInfoDto()
+                                .setType(StageContentType.TEXT))
+                .getBody();
+
+        request = new MockMultipartHttpServletRequest();
+        UpdateTextStageContentDto updateTextStageContentDto = new UpdateTextStageContentDto();
+        updateTextStageContentDto.setUuid(secondContentId);
+        updateTextStageContentDto.setSerialNumber(1);
+        updateTextStageContentDto.setType(StageContentType.TEXT);
+        updateTextStageContentDto.setTextContent(
+                "Утренняя физическая нагрузка до завтрака сжигает больше калорий, чем в другое время суток. Это "
+                        + "лучшее средство, чтобы снять сонливость, усталость, зарядиться позитивом и настроить свой "
+                        + "организм на самую продуктивную деятельность в течение дня.");
+
+        coachCourseController.updateContentToStageToAuthorCourseContent(courseId, lessonId, firstStageId,
+                StageContentType.TEXT, convertToMultiValueMap(updateTextStageContentDto),
+                new StandardMultipartHttpServletRequest(request));
+
+        // EXERCISES
+        String thirdContentId = (String)coachCourseController
+                .addContentToStageToAuthorCourseContent(courseId, lessonId, firstStageId,
+                        new AddCourseAuthorStageContentInfoDto()
+                                .setType(StageContentType.EXERCISES))
+                .getBody();
+        request = new MockMultipartHttpServletRequest();
+
+        UpdateExerciseRepeatSetContentDto firstTiltsRepeatSet = new UpdateExerciseRepeatSetContentDto();
+        firstTiltsRepeatSet.setCountOfKilograms(0.0F);
+        firstTiltsRepeatSet.setRepeatCount(10);
+        firstTiltsRepeatSet.setPauseAfter(LocalTime.of(0, 0, 30));
+
+        UpdateExerciseRepeatSetContentDto secondTiltsRepeatSet = new UpdateExerciseRepeatSetContentDto();
+        secondTiltsRepeatSet.setCountOfKilograms(0.0F);
+        secondTiltsRepeatSet.setRepeatCount(12);
+        secondTiltsRepeatSet.setPauseAfter(LocalTime.of(0, 0, 30));
+
+        UpdateRepeatExerciseContentDto tiltsExercise = new UpdateRepeatExerciseContentDto();
+        tiltsExercise.setCardId(firstCardId);
+        tiltsExercise.setSets(List.of(firstTiltsRepeatSet, secondTiltsRepeatSet));
+
+        UpdateExerciseTimeSetContentDto firstBarTimeSet = new UpdateExerciseTimeSetContentDto();
+        firstBarTimeSet.setCountOfKilograms(12F);
+        firstBarTimeSet.setExecutionTime(LocalTime.of(0, 1, 05));
+        firstBarTimeSet.setPauseAfter(LocalTime.of(0, 0, 30));
+
+        UpdateTimeExerciseContentDto barExercise = new UpdateTimeExerciseContentDto();
+        barExercise.setCardId(thirdCardId);
+        barExercise.setSets(List.of(firstBarTimeSet));
+
+        UpdateExerciseDistanceSetContentDto firstStepsDistanceSet = new UpdateExerciseDistanceSetContentDto();
+        firstStepsDistanceSet.setCountOfKilograms(0F);
+        firstStepsDistanceSet.setDistanceKilometers(0.2F);
+        firstStepsDistanceSet.setPauseAfter(LocalTime.of(0, 0, 20));
+
+        UpdateExerciseDistanceSetContentDto secondStepsDistanceSet = new UpdateExerciseDistanceSetContentDto();
+        secondStepsDistanceSet.setCountOfKilograms(0F);
+        secondStepsDistanceSet.setDistanceKilometers(0.5F);
+        secondStepsDistanceSet.setPauseAfter(LocalTime.of(0, 0, 15));
+
+        UpdateDistanceExerciseContentDto stepsExercise = new UpdateDistanceExerciseContentDto();
+        stepsExercise.setCardId(fourthCardId);
+        stepsExercise.setSets(List.of(firstStepsDistanceSet, secondStepsDistanceSet));
+
+        UpdateExercisesStageContentDto updateExercisesStageContentDto = new UpdateExercisesStageContentDto();
+        updateExercisesStageContentDto.setUuid(thirdContentId);
+        updateExercisesStageContentDto.setSerialNumber(2);
+        updateExercisesStageContentDto.setType(StageContentType.EXERCISES);
+        updateExercisesStageContentDto.setExercises(List.of(tiltsExercise, barExercise, stepsExercise));
+
+        coachCourseController.updateContentToStageToAuthorCourseContent(courseId, lessonId, firstStageId,
+                StageContentType.EXERCISES, convertToMultiValueMap(updateExercisesStageContentDto),
+                new StandardMultipartHttpServletRequest(request));
+
+        CourseAuthorStageWithContentInfoDto stageContent =
+                (CourseAuthorStageWithContentInfoDto)coachCourseController.getStageWithContentToAuthorCourseContent(
+                        courseId, lessonId, firstStageId).getBody();
+        System.out.println();
+
     }
 
     private void addLesson(Long courseId, Long moduleId, String prefix)
@@ -658,7 +1040,7 @@ public class ExampleConfiguration
 
         CourseAuthorStageWithContentInfoDto stageContent =
                 (CourseAuthorStageWithContentInfoDto)coachCourseController.getStageWithContentToAuthorCourseContent(
-                courseId, lessonId, stageId).getBody();
+                        courseId, lessonId, stageId).getBody();
         System.out.println();
     }
 

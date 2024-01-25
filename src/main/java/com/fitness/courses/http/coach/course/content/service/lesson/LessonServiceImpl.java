@@ -6,30 +6,38 @@ import java.util.Optional;
 
 import javax.validation.constraints.NotNull;
 
+import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.fitness.courses.global.exceptions.NotFoundException;
+import com.fitness.courses.http.attachment.model.info.MultipartFileWithExtension;
+import com.fitness.courses.http.attachment.service.AttachmentService;
 import com.fitness.courses.http.coach.course.content.model.dto.lesson.NewCourseAuthorLessonDto;
 import com.fitness.courses.http.coach.course.content.model.dto.lesson.UpdateCourseAuthorLessonDto;
 import com.fitness.courses.http.coach.course.content.model.entity.LessonEntity;
 import com.fitness.courses.http.coach.course.content.model.entity.ModuleEntity;
 import com.fitness.courses.http.coach.course.content.model.info.LessonWithStagesInfo;
 import com.fitness.courses.http.coach.course.content.service.stage.StageService;
+import com.fitness.courses.http.objectStorage.model.entity.FileExtensionEnum;
 
 @Service
 public class LessonServiceImpl implements LessonService
 {
     private final CrudLessonEntityService crudLessonEntityService;
     private final StageService stageService;
+    private final AttachmentService attachmentService;
 
     @Autowired
     public LessonServiceImpl(
             CrudLessonEntityService crudLessonEntityService,
-            StageService stageService)
+            StageService stageService,
+            AttachmentService attachmentService)
     {
         this.crudLessonEntityService = crudLessonEntityService;
         this.stageService = stageService;
+        this.attachmentService = attachmentService;
     }
 
     @Override
@@ -44,10 +52,29 @@ public class LessonServiceImpl implements LessonService
     }
 
     @Override
+    public void addIcon(Long lessonId, @NotNull MultipartFile icon)
+    {
+        LessonEntity lessonEntity = crudLessonEntityService.findById(lessonId).orElseThrow();
+        if (icon != null && !icon.isEmpty())
+        {
+            lessonEntity.setIcon(
+                    attachmentService.add(
+                            new MultipartFileWithExtension(
+                                    FileExtensionEnum.getEnum(FilenameUtils.getExtension(icon.getOriginalFilename())),
+                                    icon)
+                    )
+            );
+        }
+
+        crudLessonEntityService.save(lessonEntity);
+    }
+
+    @Override
     public void deleteAllByModule(ModuleEntity moduleEntity)
     {
         findAllByModuleAndSortAscBySerialNumber(moduleEntity)
-                .forEach(lesson -> {
+                .forEach(lesson ->
+                {
                     stageService.deleteAllByLesson(lesson);
                     crudLessonEntityService.deleteById(lesson.getId());
                 });
@@ -120,11 +147,13 @@ public class LessonServiceImpl implements LessonService
                 if (lesson != lessonEntityFromList)
                 {
                     int currentSerialNumber = lesson.getSerialNumber();
-                    if (currentSerialNumber >= newSerialNumber && currentSerialNumber < lessonEntityFromDb.getSerialNumber())
+                    if (currentSerialNumber >= newSerialNumber
+                            && currentSerialNumber < lessonEntityFromDb.getSerialNumber())
                     {
                         lesson.setSerialNumber(currentSerialNumber + 1);
                     }
-                    else if (currentSerialNumber > lessonEntityFromDb.getSerialNumber() && currentSerialNumber <= newSerialNumber)
+                    else if (currentSerialNumber > lessonEntityFromDb.getSerialNumber()
+                            && currentSerialNumber <= newSerialNumber)
                     {
                         lesson.setSerialNumber(currentSerialNumber - 1);
                     }
@@ -152,8 +181,10 @@ public class LessonServiceImpl implements LessonService
         moduleLessons.remove(lessonEntityFromList);
 
         int removedSerialNumber = lessonEntityFromList.getSerialNumber();
-        for (LessonEntity lesson : moduleLessons) {
-            if (lesson.getSerialNumber() > removedSerialNumber) {
+        for (LessonEntity lesson : moduleLessons)
+        {
+            if (lesson.getSerialNumber() > removedSerialNumber)
+            {
                 lesson.setSerialNumber(lesson.getSerialNumber() - 1);
                 crudLessonEntityService.update(lesson);
             }

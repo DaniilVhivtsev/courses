@@ -28,9 +28,10 @@ public class EditUserGeneralInfoDto
         return name;
     }
 
-    public void setName(String name)
+    public EditUserGeneralInfoDto setName(String name)
     {
         this.name = name;
+        return this;
     }
 
     public String getSurname()
@@ -38,9 +39,10 @@ public class EditUserGeneralInfoDto
         return surname;
     }
 
-    public void setSurname(String surname)
+    public EditUserGeneralInfoDto setSurname(String surname)
     {
         this.surname = surname;
+        return this;
     }
 
     public String getBiography()
@@ -48,9 +50,10 @@ public class EditUserGeneralInfoDto
         return biography;
     }
 
-    public void setBiography(String biography)
+    public EditUserGeneralInfoDto setBiography(String biography)
     {
         this.biography = biography;
+        return this;
     }
 
     public String getAbout()
@@ -58,9 +61,10 @@ public class EditUserGeneralInfoDto
         return about;
     }
 
-    public void setAbout(String about)
+    public EditUserGeneralInfoDto setAbout(String about)
     {
         this.about = about;
+        return this;
     }
 
     public MultipartFile getIcon()
@@ -68,8 +72,9 @@ public class EditUserGeneralInfoDto
         return icon;
     }
 
-    public void setIcon(MultipartFile icon)
+    public EditUserGeneralInfoDto setIcon(MultipartFile icon)
     {
         this.icon = icon;
+        return this;
     }
 }

@@ -32,14 +32,14 @@ public class CourseEntity
     @Column(nullable = false)
     private String title;
 
-    @Column(nullable = true)
+    @Column(nullable = true, length = 2048)
     private String shortDescription;
 
     @Enumerated(EnumType.STRING)
     @ElementCollection(targetClass = CourseCategoryEnum.class)
     private List<CourseCategoryEnum> categories = new ArrayList<>();
 
-    @Column(nullable = true)
+    @Column(nullable = true, length = 2048)
     private String about;
 
     @Column(nullable = true)
