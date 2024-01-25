@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.fitness.courses.http.course.dto.RecommendedCourseDto;
+import com.fitness.courses.http.coach.course.model.dto.RecommendedCourseDto;
 
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 

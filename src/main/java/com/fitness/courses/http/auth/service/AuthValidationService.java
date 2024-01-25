@@ -2,7 +2,6 @@ package com.fitness.courses.http.auth.service;
 
 import javax.validation.constraints.NotNull;
 
-import com.fitness.courses.global.exceptions.ConflictException;
 import com.fitness.courses.global.exceptions.ValidationException;
 import com.fitness.courses.http.auth.dto.LoginRequestDto;
 

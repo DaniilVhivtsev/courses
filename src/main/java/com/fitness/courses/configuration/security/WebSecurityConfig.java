@@ -88,10 +88,13 @@ public class WebSecurityConfig
                                 mvcRequestMatcher.pattern("/auth/**"),
                                 mvcRequestMatcher.pattern("/swagger-ui/**"),
                                 mvcRequestMatcher.pattern("/v3/**"),
+                                mvcRequestMatcher.pattern("/public/course/**"),
+                                mvcRequestMatcher.pattern("/coach/**"),
                                 toH2Console()).permitAll()
                         .anyRequest().authenticated())
                 .exceptionHandling(exception -> exception
-                        .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED))
+                        .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.INTERNAL_SERVER_ERROR))
+                        // TODO поменять ошибку на ошибку сервера
                         .accessDeniedHandler(new AccessDeniedHandlerImpl()))
                 .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();

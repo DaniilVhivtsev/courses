@@ -1,84 +1,88 @@
 package com.fitness.courses.http.user.dto;
 
-import java.util.Date;
-
 public class UserCurrentCourseInfo
 {
-    private Long courseId;
-    private String courseTitle;
-    private String courseDescription;
-    private Integer percentagePassed;
-    private Integer points;
-    private Date courseEndDate;
-    private AttachmentDto iconImgDto;
+    private Long id;
 
-    public Long getCourseId()
+    private String title;
+
+    private String description;
+
+    private String iconImgUrl;
+
+    private Long authorId;
+
+    private String authorFullName;
+
+    private Double percentagePassed;
+
+    public Long getId()
     {
-        return courseId;
+        return id;
     }
 
-    public void setCourseId(Long courseId)
+    public void setId(Long id)
     {
-        this.courseId = courseId;
+        this.id = id;
     }
 
-    public String getCourseTitle()
+    public String getTitle()
     {
-        return courseTitle;
+        return title;
     }
 
-    public void setCourseTitle(String courseTitle)
+    public void setTitle(String title)
     {
-        this.courseTitle = courseTitle;
+        this.title = title;
     }
 
-    public String getCourseDescription()
+    public String getDescription()
     {
-        return courseDescription;
+        return description;
     }
 
-    public void setCourseDescription(String courseDescription)
+    public void setDescription(String description)
     {
-        this.courseDescription = courseDescription;
+        this.description = description;
     }
 
-    public Integer getPercentagePassed()
+    public String getIconImgUrl()
+    {
+        return iconImgUrl;
+    }
+
+    public void setIconImgUrl(String iconImgUrl)
+    {
+        this.iconImgUrl = iconImgUrl;
+    }
+
+    public Long getAuthorId()
+    {
+        return authorId;
+    }
+
+    public void setAuthorId(Long authorId)
+    {
+        this.authorId = authorId;
+    }
+
+    public String getAuthorFullName()
+    {
+        return authorFullName;
+    }
+
+    public void setAuthorFullName(String authorFullName)
+    {
+        this.authorFullName = authorFullName;
+    }
+
+    public Double getPercentagePassed()
     {
         return percentagePassed;
     }
 
-    public void setPercentagePassed(Integer percentagePassed)
+    public void setPercentagePassed(Double percentagePassed)
     {
         this.percentagePassed = percentagePassed;
-    }
-
-    public Integer getPoints()
-    {
-        return points;
-    }
-
-    public void setPoints(Integer points)
-    {
-        this.points = points;
-    }
-
-    public Date getCourseEndDate()
-    {
-        return courseEndDate;
-    }
-
-    public void setCourseEndDate(Date courseEndDate)
-    {
-        this.courseEndDate = courseEndDate;
-    }
-
-    public AttachmentDto getIconImgDto()
-    {
-        return iconImgDto;
-    }
-
-    public void setIconImgDto(AttachmentDto iconImgDto)
-    {
-        this.iconImgDto = iconImgDto;
     }
 }

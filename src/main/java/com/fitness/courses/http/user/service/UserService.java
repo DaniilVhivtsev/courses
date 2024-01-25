@@ -10,6 +10,8 @@ public interface UserService extends UserDetailsService
 {
     Optional<User> findByEmail(String email);
 
+    User update(User user);
+
     Optional<User> findById(Long id);
 
     User save(User user);
