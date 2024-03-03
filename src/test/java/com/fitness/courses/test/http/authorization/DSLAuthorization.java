@@ -1,4 +1,4 @@
-package com.fitness.courses.http.authorization;
+package com.fitness.courses.test.http.authorization;
 
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.HttpEntity;
@@ -12,7 +12,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fitness.courses.http.auth.dto.JwtResponse;
 import com.fitness.courses.http.auth.dto.LoginRequestDto;
 import com.fitness.courses.http.auth.dto.RegistrationUserInfoDto;
-import com.fitness.courses.utils.DSLResponse;
+import com.fitness.courses.test.utils.DSLResponse;
 
 public class DSLAuthorization
 {

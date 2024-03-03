@@ -541,14 +541,25 @@ public class RestCourseServiceImpl implements RestCourseService
     private UpdateExercisesStageContentDto getUpdateExercisesStageContentDto(@NotNull Long stageId,
             @NotNull Map<String, Object> formData) throws JsonProcessingException
     {
-        List<Map<String, Object>> exercisesList = (ArrayList<Map<String, Object>>) formData.get("exercises");
+        String exerciseListJson;
+
+        if (formData.get("exercises") instanceof List)
+        {
+            List<Map<String, Object>> exercisesList = (ArrayList<Map<String, Object>>) formData.get("exercises");
+            exerciseListJson = objectMapper.writeValueAsString(exercisesList);
+        }
+        else
+        {
+            exerciseListJson = (String) formData.get("exercises");
+        }
+
 
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());
 
         // Чтение объектов из строковых представлений в списке
         List<UpdateAbstractExerciseContentDto<?>> updateAbstractExerciseContentDtoList = objectMapper.readValue(
-                objectMapper.writeValueAsString(exercisesList),
+                exerciseListJson,
                 new TypeReference<List<UpdateAbstractExerciseContentDto<?>>>() {}
         );
 

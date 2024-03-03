@@ -1,4 +1,6 @@
-package com.fitness.courses.http.example;
+package com.fitness.courses.test.http.example;
+
+import static com.fitness.courses.test.HttpConstants.HOST;
 
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.HttpEntity;
@@ -8,12 +10,10 @@ import org.springframework.http.ResponseEntity;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fitness.courses.http.auth.dto.JwtResponse;
-import com.fitness.courses.utils.DSLResponse;
+import com.fitness.courses.test.utils.DSLResponse;
 
 public class DSLExample
 {
-    private static final String HOST = "http://localhost:";
-
     private final String baseUrl;
     private final TestRestTemplate restTemplate = new TestRestTemplate();
     private final ObjectMapper objectMapper;
