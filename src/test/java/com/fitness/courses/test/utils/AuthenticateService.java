@@ -1,9 +1,9 @@
-package com.fitness.courses.utils;
+package com.fitness.courses.test.utils;
 
-import static com.fitness.courses.http.authorization.AuthorizationConstants.USER_EMAIL;
-import static com.fitness.courses.http.authorization.AuthorizationConstants.USER_FIRST_NAME;
-import static com.fitness.courses.http.authorization.AuthorizationConstants.USER_LAST_NAME;
-import static com.fitness.courses.http.authorization.AuthorizationConstants.USER_PASSWORD;
+import static com.fitness.courses.test.http.authorization.AuthorizationConstants.USER_EMAIL;
+import static com.fitness.courses.test.http.authorization.AuthorizationConstants.USER_FIRST_NAME;
+import static com.fitness.courses.test.http.authorization.AuthorizationConstants.USER_LAST_NAME;
+import static com.fitness.courses.test.http.authorization.AuthorizationConstants.USER_PASSWORD;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -12,7 +12,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fitness.courses.http.auth.dto.JwtResponse;
 import com.fitness.courses.http.auth.dto.LoginRequestDto;
 import com.fitness.courses.http.auth.dto.RegistrationUserInfoDto;
-import com.fitness.courses.http.authorization.DSLAuthorization;
+import com.fitness.courses.test.http.authorization.DSLAuthorization;
 import com.fitness.courses.http.user.model.User;
 import com.fitness.courses.http.user.service.UserService;
 

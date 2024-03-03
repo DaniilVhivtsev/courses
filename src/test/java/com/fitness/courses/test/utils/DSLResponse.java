@@ -1,4 +1,4 @@
-package com.fitness.courses.utils;
+package com.fitness.courses.test.utils;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Null;

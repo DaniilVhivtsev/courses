@@ -1,4 +1,4 @@
-package com.fitness.courses.http.authorization;
+package com.fitness.courses.test.http.authorization;
 
 public class AuthorizationConstants
 {

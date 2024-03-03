@@ -2,8 +2,10 @@ package com.fitness.courses.configuration.security;
 
 import static org.springframework.boot.autoconfigure.security.servlet.PathRequest.toH2Console;
 
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -19,6 +21,9 @@ import org.springframework.security.web.access.AccessDeniedHandlerImpl;
 import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.servlet.util.matcher.MvcRequestMatcher;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.filter.CorsFilter;
 import org.springframework.web.servlet.handler.HandlerMappingIntrospector;
 
 import com.fitness.courses.configuration.security.jwt.JwtRequestFilter;
@@ -61,7 +66,6 @@ public class WebSecurityConfig
         return userDetailsService;
     }
 
-    // TODO проверить, можно ли убрать
     @Bean
     public DaoAuthenticationProvider daoAuthenticationProvider()
     {
@@ -72,14 +76,45 @@ public class WebSecurityConfig
     }
 
     @Bean
+    public FilterRegistrationBean corsFilter()
+    {
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        CorsConfiguration corsConf = new CorsConfiguration();
+        corsConf.setAllowCredentials(Boolean.TRUE);
+        corsConf.addAllowedOriginPattern("*");
+        corsConf.addAllowedHeader(CorsConfiguration.ALL);
+        corsConf.addAllowedMethod(CorsConfiguration.ALL);
+        source.registerCorsConfiguration("/**", corsConf);
+        FilterRegistrationBean bean = new FilterRegistrationBean(new CorsFilter(source));
+        bean.setOrder(0);
+        return bean;
+    }
+
+    /*@Bean
+    public CorsFilter corsFilter() {
+        final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        CorsConfiguration config = new CorsConfiguration();
+        config.setAllowCredentials(true);
+        config.setAllowedOrigins(Collections.singletonList("*"));
+        config.setAllowedHeaders(Arrays.asList("Origin", "Content-Type", "Accept", "responseType", "Authorization"));
+        config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "OPTIONS", "DELETE", "PATCH"));
+        source.registerCorsConfiguration("/**", config);
+        return new CorsFilter(source);
+    }*/
+
+    @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity, HandlerMappingIntrospector introspector)
             throws Exception
     {
         MvcRequestMatcher.Builder mvcRequestMatcher = new MvcRequestMatcher.Builder(introspector);
 
+        CorsConfiguration corsConfig = new CorsConfiguration().applyPermitDefaultValues();
+        corsConfig.addAllowedMethod(HttpMethod.DELETE);
+        corsConfig.addAllowedMethod(HttpMethod.PUT);
+
         return httpSecurity
                 .csrf(AbstractHttpConfigurer::disable)
-                .cors(AbstractHttpConfigurer::disable)
+//                .cors(cors -> cors.configurationSource(request -> corsConfig))
                 .headers(AbstractHttpConfigurer::disable)
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
