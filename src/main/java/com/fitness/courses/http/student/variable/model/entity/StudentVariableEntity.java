@@ -3,6 +3,7 @@ package com.fitness.courses.http.student.variable.model.entity;
 import com.fitness.courses.http.coach.variable.model.entity.CourseVariableEntity;
 import com.fitness.courses.http.student.model.entity.StudentEntity;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -17,6 +18,7 @@ import jakarta.persistence.UniqueConstraint;
         name = "student_variable_entity",
         uniqueConstraints = {
                 @UniqueConstraint(
+                        name = "UK_course_student",
                         columnNames = {
                                 "course_variable_id",
                                 "student_id" }
@@ -29,6 +31,7 @@ public class StudentVariableEntity
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "value_float")
     private Float value;
 
     @ManyToOne
