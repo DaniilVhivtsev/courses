@@ -61,6 +61,8 @@ public class CourseEntity
 
     private CourseStatus status;
 
+    private String greetingTitle;
+
     public Long getId()
     {
         return id;
@@ -169,5 +171,15 @@ public class CourseEntity
     public void setStatus(CourseStatus status)
     {
         this.status = status;
+    }
+
+    public String getGreetingTitle()
+    {
+        return greetingTitle;
+    }
+
+    public void setGreetingTitle(String greetingTitle)
+    {
+        this.greetingTitle = greetingTitle;
     }
 }

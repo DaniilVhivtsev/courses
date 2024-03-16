@@ -1,15 +1,21 @@
 package com.fitness.courses.http.student.mapper;
 
+import java.time.LocalTime;
+import java.util.List;
 import java.util.Set;
 
 import javax.validation.constraints.NotNull;
 
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.dozer.DozerBeanMapper;
 import org.dozer.loader.api.BeanMappingBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import com.fathzer.soft.javaluator.DoubleEvaluator;
+import com.fathzer.soft.javaluator.StaticVariableSet;
 import com.fitness.courses.global.exceptions.BadRequestException;
 import com.fitness.courses.http.attachment.service.AttachmentService;
 import com.fitness.courses.http.coach.card.model.entity.CardEntity;
@@ -28,6 +34,7 @@ import com.fitness.courses.http.coach.course.content.model.entity.stage.content.
 import com.fitness.courses.http.coach.course.content.model.entity.stage.content.exercise.set.ExerciseDistanceSetContent;
 import com.fitness.courses.http.coach.course.content.model.entity.stage.content.exercise.set.ExerciseRepeatSetContent;
 import com.fitness.courses.http.coach.course.content.model.entity.stage.content.exercise.set.ExerciseTimeSetContent;
+import com.fitness.courses.http.coach.course.model.dto.CourseVariableTypeEnum;
 import com.fitness.courses.http.coach.course.model.entity.CourseEntity;
 import com.fitness.courses.http.student.model.dto.stage.StageContentInfoDto;
 import com.fitness.courses.http.student.model.dto.stage.content.AbstractStageContentInfoDto;
@@ -43,6 +50,7 @@ import com.fitness.courses.http.student.model.dto.stage.content.exercise.set.Abs
 import com.fitness.courses.http.student.model.dto.stage.content.exercise.set.ExerciseDistanceSetContentInfoDto;
 import com.fitness.courses.http.student.model.dto.stage.content.exercise.set.ExerciseRepeatSetContentInfoDto;
 import com.fitness.courses.http.student.model.dto.stage.content.exercise.set.ExerciseTimeSetContentInfoDto;
+import com.fitness.courses.http.student.variable.model.info.CourseVariableWithStudentValueInfo;
 import com.fitness.courses.http.user.dto.UserCurrentCourseInfo;
 
 @Service
@@ -95,21 +103,23 @@ public class StudentMapper
     }
 
     public StageContentInfoDto toStageContentInfoDto(@NotNull StageEntity stageEntity,
-            @NotNull Set<String> doneStageAndSetUuids)
+            @NotNull Set<String> doneStageAndSetUuids,
+            @NotNull List<CourseVariableWithStudentValueInfo> courseVariablesWithStudentValuesInfo)
     {
         StageContentInfoDto dto = new StageContentInfoDto();
         dto.setId(stageEntity.getId());
         dto.setTitle(stageEntity.getTitle());
         dto.setCompleted(doneStageAndSetUuids.contains(stageEntity.getId().toString()));
         dto.setStageContent(stageEntity.getStageContent().stream()
-                .map(content -> toContentInfoDto(content, doneStageAndSetUuids))
+                .map(content -> toContentInfoDto(content, doneStageAndSetUuids, courseVariablesWithStudentValuesInfo))
                 .toList());
 
         return dto;
     }
 
     private AbstractStageContentInfoDto toContentInfoDto(@NotNull AbstractStageContent content,
-            @NotNull Set<String> doneStageAndSetUuids)
+            @NotNull Set<String> doneStageAndSetUuids,
+            @NotNull List<CourseVariableWithStudentValueInfo> courseVariablesWithStudentValuesInfo)
     {
         if (content instanceof ImgStageContent imgStageContent)
         {
@@ -156,7 +166,8 @@ public class StudentMapper
             dto.setSerialNumber(exercisesStageContent.getSerialNumber());
             dto.setExercises(
                     exercisesStageContent.getExercises().stream()
-                            .map(exercise -> toExerciseContentInfoDto(exercise, doneStageAndSetUuids))
+                            .map(exercise -> toExerciseContentInfoDto(exercise, doneStageAndSetUuids,
+                                    courseVariablesWithStudentValuesInfo))
                             .toList()
             );
 
@@ -169,7 +180,8 @@ public class StudentMapper
     }
 
     private AbstractExerciseContentInfoDto<?> toExerciseContentInfoDto(
-            @NotNull AbstractExerciseContent<?> exerciseContent, @NotNull Set<String> doneStageAndSetUuids)
+            @NotNull AbstractExerciseContent<?> exerciseContent, @NotNull Set<String> doneStageAndSetUuids,
+            @NotNull List<CourseVariableWithStudentValueInfo> courseVariablesWithStudentValuesInfo)
     {
         if (exerciseContent instanceof RepeatExerciseContent repeatExerciseContent)
         {
@@ -186,7 +198,8 @@ public class StudentMapper
             }
 
             dto.setSets(repeatExerciseContent.getSets().stream()
-                    .map(set -> (ExerciseRepeatSetContentInfoDto)toExerciseSetContentInfoDto(set, doneStageAndSetUuids))
+                    .map(set -> (ExerciseRepeatSetContentInfoDto)toExerciseSetContentInfoDto(set,
+                            doneStageAndSetUuids, courseVariablesWithStudentValuesInfo))
                     .toList());
             dto.setNumberOfSets(dto.getSets().size());
             dto.setNumberOfCompletedSets(
@@ -213,7 +226,7 @@ public class StudentMapper
             }
 
             dto.setSets(timeExerciseContent.getSets().stream()
-                    .map(set -> (ExerciseTimeSetContentInfoDto)toExerciseSetContentInfoDto(set, doneStageAndSetUuids))
+                    .map(set -> (ExerciseTimeSetContentInfoDto)toExerciseSetContentInfoDto(set, doneStageAndSetUuids, courseVariablesWithStudentValuesInfo))
                     .toList());
             dto.setNumberOfSets(dto.getSets().size());
             dto.setNumberOfCompletedSets(
@@ -241,7 +254,7 @@ public class StudentMapper
 
             dto.setSets(distanceExerciseContent.getSets().stream()
                     .map(set -> (ExerciseDistanceSetContentInfoDto)toExerciseSetContentInfoDto(set,
-                            doneStageAndSetUuids))
+                            doneStageAndSetUuids, courseVariablesWithStudentValuesInfo))
                     .toList());
             dto.setNumberOfSets(dto.getSets().size());
             dto.setNumberOfCompletedSets(
@@ -259,14 +272,17 @@ public class StudentMapper
     }
 
     private AbstractExerciseSetContentInfoDto toExerciseSetContentInfoDto(
-            @NotNull AbstractExerciseSetContent exerciseSetContent, @NotNull Set<String> doneStageAndSetUuids)
+            @NotNull AbstractExerciseSetContent exerciseSetContent, @NotNull Set<String> doneStageAndSetUuids,
+            @NotNull List<CourseVariableWithStudentValueInfo> courseVariablesWithStudentValuesInfo)
     {
         if (exerciseSetContent instanceof ExerciseRepeatSetContent exerciseRepeatSetContent)
         {
             ExerciseRepeatSetContentInfoDto dto = new ExerciseRepeatSetContentInfoDto();
             dto.setUuid(exerciseRepeatSetContent.getUuid());
-            dto.setCountOfKilograms(exerciseRepeatSetContent.getCountOfKilograms());
-            dto.setRepeatCount(exerciseRepeatSetContent.getRepeatCount());
+            dto.setCountOfKilograms((Float) getSetFieldResultByVariables(exerciseRepeatSetContent.getCountOfKilograms(),
+                    CourseVariableTypeEnum.FLOAT, courseVariablesWithStudentValuesInfo));
+            dto.setRepeatCount((Integer) getSetFieldResultByVariables(exerciseRepeatSetContent.getRepeatCount(),
+                    CourseVariableTypeEnum.INTEGER, courseVariablesWithStudentValuesInfo));
             dto.setPauseAfter(exerciseRepeatSetContent.getPauseAfter());
             dto.setCompleted(doneStageAndSetUuids.contains(exerciseRepeatSetContent.getUuid()));
 
@@ -277,8 +293,10 @@ public class StudentMapper
         {
             ExerciseTimeSetContentInfoDto dto = new ExerciseTimeSetContentInfoDto();
             dto.setUuid(exerciseTimeSetContent.getUuid());
-            dto.setCountOfKilograms(exerciseTimeSetContent.getCountOfKilograms());
-            dto.setExecutionTime(exerciseTimeSetContent.getExecutionTime());
+            dto.setCountOfKilograms((Float) getSetFieldResultByVariables(exerciseTimeSetContent.getCountOfKilograms(),
+                    CourseVariableTypeEnum.FLOAT, courseVariablesWithStudentValuesInfo));
+            dto.setExecutionTime((LocalTime) getSetFieldResultByVariables(exerciseTimeSetContent.getExecutionTime(),
+                    CourseVariableTypeEnum.TIME, courseVariablesWithStudentValuesInfo));
             dto.setPauseAfter(exerciseTimeSetContent.getPauseAfter());
             dto.setCompleted(doneStageAndSetUuids.contains(exerciseTimeSetContent.getUuid()));
 
@@ -289,8 +307,10 @@ public class StudentMapper
         {
             ExerciseDistanceSetContentInfoDto dto = new ExerciseDistanceSetContentInfoDto();
             dto.setUuid(distanceSetContent.getUuid());
-            dto.setCountOfKilograms(distanceSetContent.getCountOfKilograms());
-            dto.setDistanceKilometers(distanceSetContent.getDistanceKilometers());
+            dto.setCountOfKilograms((Float) getSetFieldResultByVariables(distanceSetContent.getCountOfKilograms(),
+                    CourseVariableTypeEnum.FLOAT, courseVariablesWithStudentValuesInfo));
+            dto.setDistanceKilometers((Float) getSetFieldResultByVariables(distanceSetContent.getDistanceKilometers(),
+                    CourseVariableTypeEnum.FLOAT, courseVariablesWithStudentValuesInfo));
             dto.setPauseAfter(distanceSetContent.getPauseAfter());
             dto.setCompleted(doneStageAndSetUuids.contains(distanceSetContent.getUuid()));
 
@@ -300,5 +320,71 @@ public class StudentMapper
         final String message = "Can't map exercise set content to dto";
         LOG.error(message);
         throw new BadRequestException(message);
+    }
+
+    private Object getSetFieldResultByVariables(String expression, @NotNull CourseVariableTypeEnum fieldType,
+            @NotNull List<CourseVariableWithStudentValueInfo> courseVariablesWithStudentValuesInfo)
+    {
+        if (StringUtils.isBlank(expression))
+        {
+            return getResultByType(0.0F, fieldType);
+        }
+        if (NumberUtils.isCreatable(expression))
+        {
+            return getResultByType(Float.valueOf(expression), fieldType);
+        }
+
+        try
+        {
+            DoubleEvaluator eval = new DoubleEvaluator();
+            StaticVariableSet<Double> variables = new StaticVariableSet<Double>();
+
+            courseVariablesWithStudentValuesInfo.forEach(courseVariableWithStudentValueInfo ->
+            {
+                double studentResult;
+                if (courseVariableWithStudentValueInfo.getStudentValue() == null)
+                {
+                    studentResult = 1;
+                }
+                else
+                {
+                    studentResult = (double) courseVariableWithStudentValueInfo.getStudentValue();
+                }
+
+                variables.set(courseVariableWithStudentValueInfo.getCode(), studentResult);
+            });
+
+            Double expressionResult = eval.evaluate(expression, variables);
+            return getResultByType(expressionResult.floatValue(), fieldType);
+        }
+        catch (Exception e)
+        {
+            String message = "Error while creating result by expression: " + expression;
+            LOG.error(message, e);
+
+            return getResultByType(0.0F, fieldType);
+        }
+    }
+
+    private Object getResultByType(Float result, @NotNull CourseVariableTypeEnum fieldType)
+    {
+        return switch (fieldType)
+                {
+                    case INTEGER -> result.intValue();
+                    case FLOAT -> (float)(Math.floor(result * 1000) / 1000.0);
+                    case TIME -> {
+                        final long secondsSource = result.longValue();
+                        int hours = (int)(secondsSource / 3600);
+                        int minutes = (int)((secondsSource % 3600) / 60);
+                        int secondsd = (int)(secondsSource % 60);
+
+                        if (hours >= 24)
+                        {
+                            hours %= 24;
+                        }
+
+                        yield LocalTime.of(hours, minutes, secondsd);
+                    }
+                };
     }
 }

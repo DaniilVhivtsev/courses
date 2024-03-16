@@ -43,7 +43,16 @@ import com.fitness.courses.http.coach.course.model.dto.CourseAuthorGeneralInfoDt
 import com.fitness.courses.http.coach.course.model.dto.EditCourseAuthorGeneralInfo;
 import com.fitness.courses.http.coach.course.model.dto.ListCourseInfoDto;
 import com.fitness.courses.http.coach.course.model.dto.NewCourseDto;
+import com.fitness.courses.http.coach.course.model.dto.greeting.GreetingUpdateDto;
 import com.fitness.courses.http.coach.course.service.RestCourseService;
+import com.fitness.courses.http.coach.variable.model.dto.ExpressionDto;
+import com.fitness.courses.http.coach.variable.model.dto.ExpressionGetResultDto;
+import com.fitness.courses.http.coach.variable.model.dto.ExpressionResultDto;
+import com.fitness.courses.http.coach.variable.model.dto.ExpressionVariableDto;
+import com.fitness.courses.http.coach.variable.service.CourseVariableService;
+import com.fitness.courses.http.coach.variable.service.RestCourseVariableService;
+import com.fitness.courses.http.greeting.model.dto.GreetingContent;
+import com.fitness.courses.http.greeting.service.RestGreetingService;
 import com.fitness.courses.http.user.dto.UserGeneralInfoDto;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -70,13 +79,23 @@ public class CoachCourseController
 {
     private final RestCourseService restCourseService;
     private final RestCardService restCardService;
+    private final RestGreetingService restGreetingService;
+    private final CourseVariableService courseVariableService;
+    private final RestCourseVariableService restCourseVariableService;
 
     @Autowired
-    public CoachCourseController(RestCourseService restCourseService,
-            RestCardService restCardService)
+    public CoachCourseController(
+            RestCourseService restCourseService,
+            RestCardService restCardService,
+            RestGreetingService restGreetingService,
+            CourseVariableService courseVariableService,
+            RestCourseVariableService restCourseVariableService)
     {
         this.restCourseService = restCourseService;
         this.restCardService = restCardService;
+        this.restGreetingService = restGreetingService;
+        this.courseVariableService = courseVariableService;
+        this.restCourseVariableService = restCourseVariableService;
     }
 
     @Operation(
@@ -911,8 +930,8 @@ public class CoachCourseController
     @SecurityRequirement(name = "JWT")
     @DeleteMapping(value = "/course/author/{id}/info/content/lesson/{lessonId}/stages/{stageId}")
     public ResponseEntity<?> deleteStageToAuthorCourseContent(
-            @PathVariable Long id,
-            @Parameter(description = "Идентификатор курса.") @PathVariable Long lessonId,
+            @Parameter(description = "Идентификатор курса.") @PathVariable Long id,
+            @PathVariable Long lessonId,
             @PathVariable Long stageId)
     {
         try
@@ -1039,7 +1058,7 @@ public class CoachCourseController
             MultipartFile multipartFile = multiValueMap.containsKey("image")
                     ? multiValueMap.get("image").get(0)
                     : multiValueMap.containsKey("video") ? multiValueMap.get("video").get(0) : null;
-//            formData.remove("type");
+            //            formData.remove("type");
             restCourseService.editStageContent(id, lessonId, stageId, type, formData, multipartFile);
             return new ResponseEntity<Void>(HttpStatus.OK);
         }
@@ -1179,6 +1198,216 @@ public class CoachCourseController
         try
         {
             return new ResponseEntity<List<ListCardInfoDto>>(restCardService.getUserCards(), HttpStatus.OK);
+        }
+        catch (ResponseErrorException e)
+        {
+            return new ResponseEntity<String>(e.getMessage(), HttpStatus.valueOf(e.getHttpStatusCode()));
+        }
+    }
+
+    @Operation(
+            summary = "Get метод получения приветственного слова с переменными.",
+            description = "Get метод получения приветственного слова с переменными."
+    )
+    @ApiResponses(
+            value = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Приветственное слово с переменными успешно возвращены.",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(
+                                            implementation = GreetingContent.class
+                                    )
+                            )
+                    ),
+                    @ApiResponse(
+                            responseCode = "401",
+                            description = "Ошибка авторизации пользователя. Пользователь не авторизован или access "
+                                    + "токен просрочился."
+                    ),
+                    @ApiResponse(
+                            responseCode = "500",
+                            description = "Ошибки сервера."
+                    ),
+            }
+    )
+    @SecurityRequirement(name = "JWT")
+    @GetMapping(value = "/course/author/{id}/info/greeting")
+    public ResponseEntity<?> getGreeting(@PathVariable @Parameter(description = "Идентификатор курса.") Long id)
+    {
+        try
+        {
+            return new ResponseEntity<GreetingContent>(
+                    restGreetingService.getGreetingContent(id),
+                    HttpStatus.OK
+            );
+        }
+        catch (ResponseErrorException e)
+        {
+            return new ResponseEntity<String>(e.getMessage(), HttpStatus.valueOf(e.getHttpStatusCode()));
+        }
+    }
+
+    @Operation(
+            summary = "Post метод обновления приветственного слова с переменными.",
+            description = "Post метод обновления приветственного слова с переменными.",
+            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    content = {
+                            @Content(
+                                    mediaType = "multipart/form-data",
+                                    schema = @Schema(
+                                            implementation = GreetingUpdateDto.class
+                                    )
+                            )
+                    }
+            )
+    )
+    @ApiResponses(
+            value = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Приветственное слово с переменными успешно обновлены.",
+                            content = {}
+                    ),
+                    @ApiResponse(
+                            responseCode = "401",
+                            description = "Ошибка авторизации пользователя. Пользователь не авторизован или access "
+                                    + "токен просрочился."
+                    ),
+                    @ApiResponse(
+                            responseCode = "500",
+                            description = "Ошибки сервера."
+                    ),
+            }
+    )
+    @SecurityRequirement(name = "JWT")
+    @PutMapping(value = "/course/author/{id}/info/greeting")
+    public ResponseEntity<?> updateGreeting(
+            @PathVariable @Parameter(description = "Идентификатор курса.") Long id,
+            @RequestBody GreetingUpdateDto greetingUpdateDto)
+    {
+        try
+        {
+            restGreetingService.update(id, greetingUpdateDto);
+            return new ResponseEntity<Void>(HttpStatus.OK);
+        }
+        catch (ResponseErrorException e)
+        {
+            return new ResponseEntity<String>(e.getMessage(), HttpStatus.valueOf(e.getHttpStatusCode()));
+        }
+    }
+
+    @Operation(
+            summary = "Get метод получения переменных переданного математического выражения.",
+            description = "Get метод получения переменных переданного математического выражения (Поиск происходит по "
+                    + "переменным, которые были добавлены в курс).",
+            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    content = {
+                            @Content(
+                                    mediaType = "multipart/form-data",
+                                    schema = @Schema(
+                                            implementation = ExpressionDto.class
+                                    )
+                            )
+                    }
+            )
+    )
+    @ApiResponses(
+            value = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Список переменных успешно возвращены.",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    array = @ArraySchema(
+                                            schema = @Schema(
+                                                    implementation = ExpressionVariableDto.class
+                                            )
+                                    )
+                            )
+                    ),
+                    @ApiResponse(
+                            responseCode = "401",
+                            description = "Ошибка авторизации пользователя. Пользователь не авторизован или access "
+                                    + "токен просрочился."
+                    ),
+                    @ApiResponse(
+                            responseCode = "500",
+                            description = "Ошибки сервера."
+                    ),
+            }
+    )
+    @SecurityRequirement(name = "JWT")
+    @GetMapping(value = "/course/author/{courseId}/expression/variables")
+    public ResponseEntity<?> getExpressionVariables(
+            @PathVariable @Parameter(description = "Идентификатор курса.") Long courseId,
+            @RequestBody ExpressionDto expressionDto)
+    {
+        try
+        {
+            return new ResponseEntity<List<ExpressionVariableDto>>(
+                    restCourseVariableService.getExpressionVariables(courseId, expressionDto),
+                    HttpStatus.OK
+            );
+        }
+        catch (ResponseErrorException e)
+        {
+            return new ResponseEntity<String>(e.getMessage(), HttpStatus.valueOf(e.getHttpStatusCode()));
+        }
+    }
+
+    @Operation(
+            summary = "Get метод получения результата переданного математического выражения со значениями в "
+                    + "переменных.",
+            description = "Get метод получения результата переданного математического выражения со значениями в "
+                    + "переменных.",
+            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    content = {
+                            @Content(
+                                    mediaType = "multipart/form-data",
+                                    schema = @Schema(
+                                            implementation = ExpressionGetResultDto.class
+                                    )
+                            )
+                    }
+            )
+    )
+    @ApiResponses(
+            value = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Результат математического выражения успешно возвращен.",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(
+                                            implementation = ExpressionResultDto.class
+                                    )
+                            )
+                    ),
+                    @ApiResponse(
+                            responseCode = "401",
+                            description = "Ошибка авторизации пользователя. Пользователь не авторизован или access "
+                                    + "токен просрочился."
+                    ),
+                    @ApiResponse(
+                            responseCode = "500",
+                            description = "Ошибки сервера."
+                    ),
+            }
+    )
+    @SecurityRequirement(name = "JWT")
+    @GetMapping(value = "/course/author/{courseId}/expression/result")
+    public ResponseEntity<?> getExpressionResult(
+            @PathVariable @Parameter(description = "Идентификатор курса.") Long courseId,
+            @RequestBody ExpressionGetResultDto expressionGetResultDto)
+    {
+        try
+        {
+            return new ResponseEntity<ExpressionResultDto>(
+                    restCourseVariableService.getExpressionResult(courseId, expressionGetResultDto),
+                    HttpStatus.OK
+            );
         }
         catch (ResponseErrorException e)
         {

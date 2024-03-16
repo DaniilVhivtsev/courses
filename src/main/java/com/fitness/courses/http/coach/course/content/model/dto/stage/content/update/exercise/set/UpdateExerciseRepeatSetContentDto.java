@@ -2,14 +2,14 @@ package com.fitness.courses.http.coach.course.content.model.dto.stage.content.up
 
 public class UpdateExerciseRepeatSetContentDto extends UpdateAbstractExerciseSetContentDto
 {
-    private Integer repeatCount;
+    private String repeatCount;
 
-    public Integer getRepeatCount()
+    public String getRepeatCount()
     {
         return repeatCount;
     }
 
-    public void setRepeatCount(Integer repeatCount)
+    public void setRepeatCount(String repeatCount)
     {
         this.repeatCount = repeatCount;
     }

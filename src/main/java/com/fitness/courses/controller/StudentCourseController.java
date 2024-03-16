@@ -1,19 +1,27 @@
 package com.fitness.courses.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fitness.courses.global.exceptions.ResponseErrorException;
+import com.fitness.courses.http.greeting.model.dto.StudentGreetingContent;
+import com.fitness.courses.http.greeting.service.RestGreetingService;
 import com.fitness.courses.http.student.model.dto.stage.StageContentInfoDto;
 import com.fitness.courses.http.student.service.RestStudentCoursesService;
+import com.fitness.courses.http.student.variable.model.dto.StudentVariableUpdatedValue;
+import com.fitness.courses.http.student.variable.service.RestStudentVariableService;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -33,12 +41,18 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 public class StudentCourseController
 {
     private final RestStudentCoursesService restStudentCoursesService;
+    private final RestGreetingService restGreetingService;
+    private final RestStudentVariableService restStudentVariableService;
 
     @Autowired
     public StudentCourseController(
-            RestStudentCoursesService restStudentCoursesService)
+            RestStudentCoursesService restStudentCoursesService,
+            RestGreetingService restGreetingService,
+            RestStudentVariableService restStudentVariableService)
     {
         this.restStudentCoursesService = restStudentCoursesService;
+        this.restGreetingService = restGreetingService;
+        this.restStudentVariableService = restStudentVariableService;
     }
 
     @Operation(
@@ -191,6 +205,147 @@ public class StudentCourseController
         try
         {
             restStudentCoursesService.completeStage(courseId, stageId);
+            return new ResponseEntity<Void>(HttpStatus.OK);
+        }
+        catch (ResponseErrorException e)
+        {
+            return new ResponseEntity<String>(e.getMessage(), HttpStatus.valueOf(e.getHttpStatusCode()));
+        }
+    }
+
+    @Operation(
+            summary = "Get метод проверки, что студент заполнил все переменные.",
+            description = "Get метод проверки, что студент заполнил все переменные."
+    )
+    @ApiResponses(
+            value = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Результат проверки, что студент заполнил все переменные, успешно возвращен.",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(
+                                            implementation = Boolean.class
+                                    )
+                            )
+                    ),
+                    @ApiResponse(
+                            responseCode = "401",
+                            description = "Ошибка авторизации пользователя. Пользователь не авторизован или access "
+                                    + "токен просрочился."
+                    ),
+                    @ApiResponse(
+                            responseCode = "500",
+                            description = "Ошибки сервера."
+                    ),
+            }
+    )
+    @SecurityRequirement(name = "JWT")
+    @GetMapping(value = "/course/{courseId}/variables/need/fill")
+    public ResponseEntity<?> checkNeedToFillValuesInVariables(@PathVariable Long courseId)
+    {
+        try
+        {
+            return new ResponseEntity<Boolean>(
+                    restStudentVariableService.checkNeedToFillValuesInVariables(courseId),
+                    HttpStatus.OK
+            );
+        }
+        catch (ResponseErrorException e)
+        {
+            return new ResponseEntity<String>(e.getMessage(), HttpStatus.valueOf(e.getHttpStatusCode()));
+        }
+    }
+
+    @Operation(
+            summary = "Get метод получения приветственного слова с переменными и значениями в них (если null в value "
+                    + "значит это поле не было заполнено)",
+            description = "Get метод получения приветственного слова с переменными и значениями в них (если null в value "
+                    + "значит это поле не было заполнено)"
+    )
+    @ApiResponses(
+            value = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Приветственное слово с переменными и значениями в них (если null в value "
+                                    + "значит это поле не было заполнено) успешно возвращены.",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(
+                                            implementation = StudentGreetingContent.class
+                                    )
+                            )
+                    ),
+                    @ApiResponse(
+                            responseCode = "401",
+                            description = "Ошибка авторизации пользователя. Пользователь не авторизован или access "
+                                    + "токен просрочился."
+                    ),
+                    @ApiResponse(
+                            responseCode = "500",
+                            description = "Ошибки сервера."
+                    ),
+            }
+    )
+    @SecurityRequirement(name = "JWT")
+    @GetMapping(value = "/course/{courseId}/greeting/content")
+    public ResponseEntity<?> getGreetingContent(@PathVariable Long courseId)
+    {
+        try
+        {
+            return new ResponseEntity<StudentGreetingContent>(
+                    restGreetingService.getStudentGreetingContent(courseId),
+                    HttpStatus.OK
+            );
+        }
+        catch (ResponseErrorException e)
+        {
+            return new ResponseEntity<String>(e.getMessage(), HttpStatus.valueOf(e.getHttpStatusCode()));
+        }
+    }
+
+    @Operation(
+            summary = "Post метод обновления значений в переменных.",
+            description = "Post метод обновления значений в переменных.",
+            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    content = {
+                            @Content(
+                                    mediaType = "multipart/form-data",
+                                    array = @ArraySchema(
+                                            schema = @Schema(
+                                                    implementation = StudentVariableUpdatedValue.class
+                                            )
+                                    )
+                            )
+                    }
+            )
+    )
+    @ApiResponses(
+            value = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Значения в переменных успешно обновлены.",
+                            content = {}
+                    ),
+                    @ApiResponse(
+                            responseCode = "401",
+                            description = "Ошибка авторизации пользователя. Пользователь не авторизован или access "
+                                    + "токен просрочился."
+                    ),
+                    @ApiResponse(
+                            responseCode = "500",
+                            description = "Ошибки сервера."
+                    ),
+            }
+    )
+    @SecurityRequirement(name = "JWT")
+    @GetMapping(value = "/course/{courseId}/variables/update/values")
+    public ResponseEntity<?> updateStudentVariableValues(@PathVariable Long courseId,
+            @RequestBody List<StudentVariableUpdatedValue> studentVariableUpdatedValues)
+    {
+        try
+        {
+            restStudentVariableService.updateStudentVariableValues(courseId, studentVariableUpdatedValues);
             return new ResponseEntity<Void>(HttpStatus.OK);
         }
         catch (ResponseErrorException e)

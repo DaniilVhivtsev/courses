@@ -65,9 +65,14 @@ import com.fitness.courses.http.coach.course.content.model.dto.stage.content.upd
 import com.fitness.courses.http.coach.course.content.model.dto.stage.content.update.exercise.set.UpdateExerciseTimeSetContentDto;
 import com.fitness.courses.http.coach.course.content.service.lesson.LessonService;
 import com.fitness.courses.http.coach.course.content.service.stage.CrudStageEntityService;
+import com.fitness.courses.http.coach.course.model.dto.CourseVariableTypeEnum;
 import com.fitness.courses.http.coach.course.model.dto.EditCourseAuthorGeneralInfo;
 import com.fitness.courses.http.coach.course.model.dto.NewCourseDto;
+import com.fitness.courses.http.coach.course.model.dto.greeting.GreetingCourseVariableDto;
+import com.fitness.courses.http.coach.course.model.dto.greeting.GreetingUpdateDto;
+import com.fitness.courses.http.greeting.model.dto.StudentGreetingContent;
 import com.fitness.courses.http.objectStorage.service.LocalStorageFileService;
+import com.fitness.courses.http.student.variable.model.dto.StudentVariableUpdatedValue;
 import com.fitness.courses.http.user.model.User;
 import com.fitness.courses.http.user.model.dto.EditUserGeneralInfoDto;
 import com.fitness.courses.http.user.service.UserService;
@@ -375,99 +380,45 @@ public class ExampleConfiguration
                             .setVideo(getFile("content/legPress/video.mp4"))
             ).getBody();
 
-            addModule(fifthCourseId, "1");
-            //            addModule(fifthCourseId, "2");
-            //            addModule(fifthCourseId, "3");
-            //            addModule(fifthCourseId, "4");
+            GreetingUpdateDto greetingUpdateDto = new GreetingUpdateDto()
+                    .setTitle("Добро пожаловать на новый курс \"Фитнес для начинающих\"")
+                    .setVariableDtoList(
+                            List.of(
+                                    new GreetingCourseVariableDto()
+                                            .setTitle("Максимальное число подтягиваний")
+                                            .setCode("maxNumPullUps")
+                                            .setType(CourseVariableTypeEnum.INTEGER),
+                                    new GreetingCourseVariableDto()
+                                            .setTitle("Время (секунды) преодоления 100 метров")
+                                            .setCode("oneHundrMetTime")
+                                            .setType(CourseVariableTypeEnum.TIME),
+                                    new GreetingCourseVariableDto()
+                                            .setTitle("Максимальный вес грифа при жиме от груди")
+                                            .setCode("maxWeightBarForChestPress")
+                                            .setType(CourseVariableTypeEnum.FLOAT)
+                            )
+                    );
 
-            var qwe = catalogController.getCourseInfo(fifthCourseId);
-            System.out.println();
-/*
-            Long courseId = (Long)coachCourseController.createCourse(
-                            new NewCourseDto()
-                                    .setTitle("Новый курс от Вшивцева Даниила"))
-                    .getBody();
-
-            this.getClass().getClassLoader().getResourceAsStream("templates/VerificationEmail.html");
-            firstCardId = (Long)coachCourseController.createCard(
-                    new NewCardDto()
-                            .setTitle("Жим штанги лежа")
-                            .setDescription(
-                                    "Иcходное положение: Лежа на скамье, лопатки соединены, руки со штангой "
-                                            + "расположены на уровне грудины, хват – прямой, закрытый, шире плеч. На "
-                                            + "вдохе опускаем штангу до груди (но не кладем ее), на выдохе - "
-                                            + "возвращаем в и. п. Обратите внимание! Ягодицы плотно прижаты к скамье."
-                                            + " Руки в локтевых суставах полностью не выпрямляются (не блокируем "
-                                            + "суставы).")
-                            .setInventoryDescription("Нужна штанга и скамья.")
-                            .setMuscleGroupsDescription("Проработка мышц груди, переднего пучка дельтовидных мышц и "
-                                    + "трехглавых мышц плеча (трицепсов)")
-                            .setImages(Stream.of("content/benchPress/first.png", "content/benchPress/second.png",
-                                    "content/benchPress/third.png").map(this::getFile).toList())
-                            .setVideo(getFile("content/benchPress/video.mp4"))
-            ).getBody();
-
-            CardInfoDto firstCard = (CardInfoDto)coachCourseController.getCard(firstCardId).getBody();
-
-            secondCardId = (Long)coachCourseController.createCard(
-                    new NewCardDto()
-                            .setTitle("Жим ногами в тренажере")
-                            .setDescription(
-                                    "Иcходное положение: Сидя в тренажере, таз и лопатки плотно прижаты к опоре, ноги"
-                                            + " на ширине плеч, стопы стоят на платформе и немного развернуты в "
-                                            + "стороны, при выполнении упражнения вес тела переносим в пятки. Снимаем"
-                                            + " за специальные ручки вес с упора. На вдохе сгибаем ноги к себе до "
-                                            + "угла 90 градусов в коленных суставах, на выдохе выжимаем платформу. "
-                                            + "Обратите внимание! Не переносите вес тела на носки. При выполнении "
-                                            + "упражнения ноги в коленных суставах полностью не выпрямляются (не "
-                                            + "блокируются).")
-                            .setInventoryDescription("Тренажер для жима ног.")
-                            .setMuscleGroupsDescription("Проработки мышц бедер и больших ягодичных мышц")
-                            .setImages(Stream.of("content/legPress/first.png", "content/legPress/second.png",
-                                    "content/legPress/third.png").map(this::getFile).toList())
-                            .setVideo(getFile("content/legPress/video.mp4"))
-            ).getBody();
-
-            CardInfoDto secondCard = (CardInfoDto)coachCourseController.getCard(secondCardId).getBody();
-
-            httpStatusCode = coachCourseController.editAuthorCourseGeneralInfo(
-                    courseId,
-                    new EditCourseAuthorGeneralInfo()
-                            .setTitle("Новый курс от Вшивцева Даниила")
-                            .setAbout(
-                                    "С другой стороны начало повседневной работы по формированию позиции позволяет "
-                                            + "оценить значение соответствующий условий активизации. Идейные "
-                                            + "соображения высшего порядка, а также дальнейшее развитие различных "
-                                            + "форм деятельности позволяет оценить значение систем массового участия. ")
-                            .setShortDescription(
-                                    "С другой стороны начало повседневной работы по формированию позиции позволяет "
-                                            + "оценить значение соответствующий условий активизации.")
-                            .setCourseFor(
-                                    "По своей сути рыбатекст является альтернативой традиционному lorem ipsum, "
-                                            + "который вызывает у некторых людей недоумение при попытках прочитать "
-                                            + "рыбу текст.")
-                            .setRequirements("По своей сути рыбатекст является альтернативой традиционному.")
-                            .setLogo(getFile("content/courseLogo.png"))
-            ).getStatusCode();
+            httpStatusCode = coachCourseController.updateGreeting(fifthCourseId, greetingUpdateDto).getStatusCode();
+            studentCourseController.createBidRegistrationForTheCourse(fifthCourseId);
+            StudentGreetingContent studentGreeting =
+                    (StudentGreetingContent) studentCourseController.getGreetingContent(fifthCourseId).getBody();
             checkHttpStatusCode(httpStatusCode);
 
-            catalogController.getPopularCourses(0, 10);
+            addModule(fifthCourseId, "1");
 
-            // Добавляем содержание
+            var qwe = catalogController.getCourseInfo(fifthCourseId);
 
-            addModule(courseId, "первого");
-            addModule(courseId, "второго");*/
-            //            addModule(courseId, "третьего");
-            //            var q = studentCourseController.createBidRegistrationForTheCourse(courseId);
-            //            var qwe = studentCourseController.getCourseStageContent(courseId, 1L);
-
+            /*studentCourseController.updateStudentVariableValues(
+                    fifthCourseId, List.of(
+                            new StudentVariableUpdatedValue(studentGreeting.get)
+                    ))*/
             System.out.println("End");
         };
     }
 
     private MultipartFile getFile(String path)
     {
-        //        ClassPathResource resource = new ClassPathResource(path);
         InputStream inputStream = getClass().getClassLoader().getResourceAsStream(path);
 
         try
@@ -674,13 +625,14 @@ public class ExampleConfiguration
         request = new MockMultipartHttpServletRequest();
 
         UpdateExerciseRepeatSetContentDto firstTiltsRepeatSet = new UpdateExerciseRepeatSetContentDto();
-        firstTiltsRepeatSet.setCountOfKilograms(0.0F);
-        firstTiltsRepeatSet.setRepeatCount(10);
+        firstTiltsRepeatSet.setCountOfKilograms("0.0");
+        firstTiltsRepeatSet.setRepeatCount("10");
         firstTiltsRepeatSet.setPauseAfter(LocalTime.of(0, 0, 30));
 
+//        maxNumPullUps oneHundrMetTime maxWeightBarForChestPress
         UpdateExerciseRepeatSetContentDto secondTiltsRepeatSet = new UpdateExerciseRepeatSetContentDto();
-        secondTiltsRepeatSet.setCountOfKilograms(0.0F);
-        secondTiltsRepeatSet.setRepeatCount(12);
+        secondTiltsRepeatSet.setCountOfKilograms("0.0");
+        secondTiltsRepeatSet.setRepeatCount("12");
         secondTiltsRepeatSet.setPauseAfter(LocalTime.of(0, 0, 30));
 
         UpdateRepeatExerciseContentDto tiltsExercise = new UpdateRepeatExerciseContentDto();
@@ -688,8 +640,8 @@ public class ExampleConfiguration
         tiltsExercise.setSets(List.of(firstTiltsRepeatSet, secondTiltsRepeatSet));
 
         UpdateExerciseTimeSetContentDto firstBarTimeSet = new UpdateExerciseTimeSetContentDto();
-        firstBarTimeSet.setCountOfKilograms(12F);
-        firstBarTimeSet.setExecutionTime(LocalTime.of(0, 1, 05));
+        firstBarTimeSet.setCountOfKilograms("maxNumPullUps + maxWeightBarForChestPress / 10 - 5");
+        firstBarTimeSet.setExecutionTime("(maxNumPullUps + maxWeightBarForChestPress) * 0.813");
         firstBarTimeSet.setPauseAfter(LocalTime.of(0, 0, 30));
 
         UpdateTimeExerciseContentDto barExercise = new UpdateTimeExerciseContentDto();
@@ -697,13 +649,13 @@ public class ExampleConfiguration
         barExercise.setSets(List.of(firstBarTimeSet));
 
         UpdateExerciseDistanceSetContentDto firstStepsDistanceSet = new UpdateExerciseDistanceSetContentDto();
-        firstStepsDistanceSet.setCountOfKilograms(0F);
-        firstStepsDistanceSet.setDistanceKilometers(0.2F);
+        firstStepsDistanceSet.setCountOfKilograms("0");
+        firstStepsDistanceSet.setDistanceKilometers("oneHundrMetTime * 0.075");
         firstStepsDistanceSet.setPauseAfter(LocalTime.of(0, 0, 20));
 
         UpdateExerciseDistanceSetContentDto secondStepsDistanceSet = new UpdateExerciseDistanceSetContentDto();
-        secondStepsDistanceSet.setCountOfKilograms(0F);
-        secondStepsDistanceSet.setDistanceKilometers(0.5F);
+        secondStepsDistanceSet.setCountOfKilograms("oneHundrMetTime / 10");
+        secondStepsDistanceSet.setDistanceKilometers("(oneHundrMetTime / 10) + 0.5");
         secondStepsDistanceSet.setPauseAfter(LocalTime.of(0, 0, 15));
 
         UpdateDistanceExerciseContentDto stepsExercise = new UpdateDistanceExerciseContentDto();
@@ -775,8 +727,8 @@ public class ExampleConfiguration
         MockMultipartHttpServletRequest request = new MockMultipartHttpServletRequest();
 
         UpdateExerciseDistanceSetContentDto firstDistanceSet = new UpdateExerciseDistanceSetContentDto();
-        firstDistanceSet.setCountOfKilograms(0F);
-        firstDistanceSet.setDistanceKilometers(10.2F);
+        firstDistanceSet.setCountOfKilograms("0");
+        firstDistanceSet.setDistanceKilometers("oneHundrMetTime * 100");
         firstDistanceSet.setPauseAfter(LocalTime.of(0, 5, 10));
 
         UpdateDistanceExerciseContentDto distanceExercise = new UpdateDistanceExerciseContentDto();
@@ -900,7 +852,7 @@ public class ExampleConfiguration
 
     private void addContentWithAll(Long courseId, Long lessonId, Long stageId, String prefix)
     {
-        // IMG
+        /*// IMG
         String firstContentId = (String)coachCourseController
                 .addContentToStageToAuthorCourseContent(courseId, lessonId, stageId,
                         new AddCourseAuthorStageContentInfoDto()
@@ -1041,7 +993,7 @@ public class ExampleConfiguration
         CourseAuthorStageWithContentInfoDto stageContent =
                 (CourseAuthorStageWithContentInfoDto)coachCourseController.getStageWithContentToAuthorCourseContent(
                         courseId, lessonId, stageId).getBody();
-        System.out.println();
+        System.out.println();*/
     }
 
     public MultiValueMap<String, Object> convertToMultiValueMap(Object dto)

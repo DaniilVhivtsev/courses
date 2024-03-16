@@ -31,6 +31,8 @@ import com.fitness.courses.http.student.model.entity.StudentEntity;
 import com.fitness.courses.http.student.service.admissionToCourseBid.AdmissionToCourseBidService;
 import com.fitness.courses.http.student.service.student.StudentService;
 import com.fitness.courses.http.student.service.student.StudentValidator;
+import com.fitness.courses.http.student.variable.model.info.CourseVariableWithStudentValueInfo;
+import com.fitness.courses.http.student.variable.service.RestStudentVariableService;
 import com.fitness.courses.http.user.dto.UserCurrentCourseInfo;
 import com.fitness.courses.http.user.model.User;
 
@@ -46,6 +48,7 @@ public class RestStudentCoursesServiceImpl implements RestStudentCoursesService
     private final StageValidator stageValidator;
     private final StageService stageService;
     private final StudentMapper studentMapper;
+    private final RestStudentVariableService restStudentVariableService;
 
     @Autowired
     public RestStudentCoursesServiceImpl(
@@ -56,7 +59,8 @@ public class RestStudentCoursesServiceImpl implements RestStudentCoursesService
             StudentService studentService, CourseService courseService,
             StageValidator stageValidator,
             StageService stageService,
-            StudentMapper studentMapper)
+            StudentMapper studentMapper,
+            RestStudentVariableService restStudentVariableService)
     {
         this.authService = authService;
         this.courseValidator = courseValidator;
@@ -67,6 +71,7 @@ public class RestStudentCoursesServiceImpl implements RestStudentCoursesService
         this.stageValidator = stageValidator;
         this.stageService = stageService;
         this.studentMapper = studentMapper;
+        this.restStudentVariableService = restStudentVariableService;
     }
 
     @Override
@@ -154,9 +159,13 @@ public class RestStudentCoursesServiceImpl implements RestStudentCoursesService
         final CourseEntity course = courseService.getCourseOrThrow(courseId);
         studentValidator.validateStudentWithUserAndCourseExist(currentUser, course);
 
+        // Переменные со значениями
+        final List<CourseVariableWithStudentValueInfo> courseVariablesWithStudentValuesInfo =
+                restStudentVariableService.getCourseVariablesWithStudentValuesInfo(courseId);
         return studentMapper.toStageContentInfoDto(
                 stageService.getOrThrow(stageId),
-                new HashSet<>(studentService.getByUserAndCourseOrThrow(currentUser, course).getDoneStageAndSetUuids())
+                new HashSet<>(studentService.getByUserAndCourseOrThrow(currentUser, course).getDoneStageAndSetUuids()),
+                courseVariablesWithStudentValuesInfo
         );
     }
 

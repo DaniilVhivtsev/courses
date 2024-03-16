@@ -2,19 +2,19 @@ package com.fitness.courses.http.coach.course.content.model.dto.stage.content.ge
 
 public class ExerciseDistanceSetContentInfoDto extends AbstractExerciseSetContentInfoDto
 {
-    private Float distanceKilometers;
+    private String distanceKilometers;
 
     public ExerciseDistanceSetContentInfoDto()
     {
         super.type = ExerciseSetContentType.DISTANCE;
     }
 
-    public Float getDistanceKilometers()
+    public String getDistanceKilometers()
     {
         return distanceKilometers;
     }
 
-    public ExerciseDistanceSetContentInfoDto setDistanceKilometers(Float distanceKilometers)
+    public ExerciseDistanceSetContentInfoDto setDistanceKilometers(String distanceKilometers)
     {
         this.distanceKilometers = distanceKilometers;
         return this;

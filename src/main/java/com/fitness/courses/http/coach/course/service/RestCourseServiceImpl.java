@@ -8,6 +8,7 @@ import java.util.Map;
 
 import javax.validation.constraints.NotNull;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
@@ -611,9 +612,13 @@ public class RestCourseServiceImpl implements RestCourseService
                             set.setUuid(UUIDGenerator.nestUuidInString());
                         }
 
-                        if (set.getCountOfKilograms() == null)
+                        if (set.getCountOfKilograms() == null || StringUtils.isBlank(set.getCountOfKilograms()))
                         {
-                            set.setCountOfKilograms(0F);
+                            set.setCountOfKilograms("0");
+                        }
+                        else
+                        {
+                            // TODO добавить проверку формулы или числа
                         }
 
                         if (set.getPauseAfter() == null)
@@ -623,23 +628,35 @@ public class RestCourseServiceImpl implements RestCourseService
 
                         if (set instanceof UpdateExerciseDistanceSetContentDto setDistance)
                         {
-                            if (setDistance.getDistanceKilometers() == null)
+                            if (setDistance.getDistanceKilometers() == null || StringUtils.isBlank(setDistance.getDistanceKilometers()))
                             {
-                                setDistance.setDistanceKilometers(0F);
+                                setDistance.setDistanceKilometers("0");
+                            }
+                            else
+                            {
+                                // TODO добавить проверку формулы или числа
                             }
                         }
                         else if (set instanceof UpdateExerciseRepeatSetContentDto setRepeat)
                         {
-                            if (setRepeat.getRepeatCount() == null)
+                            if (setRepeat.getRepeatCount() == null || StringUtils.isBlank(setRepeat.getRepeatCount()))
                             {
-                                setRepeat.setRepeatCount(0);
+                                setRepeat.setRepeatCount("0");
+                            }
+                            else
+                            {
+                                // TODO добавить проверку формулы или числа
                             }
                         }
                         else if (set instanceof UpdateExerciseTimeSetContentDto setTime)
                         {
-                            if (setTime.getExecutionTime() == null)
+                            if (setTime.getExecutionTime() == null || StringUtils.isBlank(setTime.getExecutionTime()))
                             {
-                                setTime.setExecutionTime(LocalTime.of(0, 0, 0));
+                                setTime.setExecutionTime("0");
+                            }
+                            else
+                            {
+                                // TODO добавить проверку формулы или числа
                             }
                         }
 

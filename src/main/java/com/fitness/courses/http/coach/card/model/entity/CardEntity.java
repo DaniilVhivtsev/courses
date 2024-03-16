@@ -44,7 +44,7 @@ public class CardEntity
     @JoinColumn(name = "author_id", nullable = false)
     private User author;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(cascade = CascadeType.REMOVE, fetch = FetchType.EAGER)
     private List<AttachmentEntity> images = new ArrayList<>();
 
     @OneToOne(fetch = FetchType.EAGER)

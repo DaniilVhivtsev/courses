@@ -21,6 +21,7 @@ import com.fitness.courses.global.exceptions.NotFoundException;
 import com.fitness.courses.http.attachment.model.info.MultipartFileWithExtension;
 import com.fitness.courses.http.attachment.service.AttachmentService;
 import com.fitness.courses.http.auth.service.AuthService;
+import com.fitness.courses.http.coach.course.content.model.entity.stage.StageEntity;
 import com.fitness.courses.http.coach.course.content.model.info.LessonWithStagesInfo;
 import com.fitness.courses.http.coach.course.content.service.lesson.LessonService;
 import com.fitness.courses.http.coach.course.content.service.module.ModuleService;
@@ -91,6 +92,15 @@ public class CourseServiceImpl implements CourseService
         return crudCourseEntityService.update(courseEntityFromDB);
     }
 
+    @Override
+    public Set<Long> findAllStageUuidsWithVariableInCourse(Long courseId, String variableCode)
+    {
+        return getCourseStages(getCourseOrThrow(courseId)).stream()
+                .filter(stageEntity -> stageEntity.getVariablesCodes().contains(variableCode))
+                .map(StageEntity::getId)
+                .collect(Collectors.toSet());
+    }
+
     private void updateSourceInfo(CourseEntity source, CourseEntity editedEntity)
     {
         for (Field field : CourseEntity.class.getDeclaredFields())
@@ -159,15 +169,30 @@ public class CourseServiceImpl implements CourseService
         return crudCourseEntityService.findAllByKeyword(keyword, offset, limit);
     }
 
-    @Override
-    public Set<String> getCourseStagesUuids(CourseEntity course)
+    private List<StageEntity> getCourseStages(CourseEntity course)
     {
         return moduleService.findAllByCourseAndSortAscBySerialNumber(course).stream()
                 .map(lessonService::findAllLessonsWithStagesByModule)
                 .flatMap(Collection::stream)
                 .map(LessonWithStagesInfo::stages)
                 .flatMap(Collection::stream)
+                .toList();
+    }
+
+    @Override
+    public Set<String> getCourseStagesUuids(CourseEntity course)
+    {
+        return getCourseStages(course).stream()
                 .map(stage -> stage.getId().toString())
                 .collect(Collectors.toSet());
+    }
+
+    @Override
+    public void updateGreetingTitle(@NotNull Long courseId, @NotNull String title)
+    {
+        CourseEntity courseEntity = getCourseOrThrow(courseId);
+        courseEntity.setGreetingTitle(title);
+
+        crudCourseEntityService.update(courseEntity);
     }
 }

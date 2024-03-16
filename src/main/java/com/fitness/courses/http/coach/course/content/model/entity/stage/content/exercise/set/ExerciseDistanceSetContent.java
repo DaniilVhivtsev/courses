@@ -4,14 +4,14 @@ public class ExerciseDistanceSetContent extends AbstractExerciseSetContent
 {
     private static final String DISCRIMINATOR = "stage.distance.exercise.set.content";
 
-    private Float distanceKilometers;
+    private String distanceKilometers;
 
-    public Float getDistanceKilometers()
+    public String getDistanceKilometers()
     {
         return distanceKilometers;
     }
 
-    public ExerciseDistanceSetContent setDistanceKilometers(Float distanceKilometers)
+    public ExerciseDistanceSetContent setDistanceKilometers(String distanceKilometers)
     {
         this.distanceKilometers = distanceKilometers;
         return this;

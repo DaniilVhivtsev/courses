@@ -5,19 +5,19 @@ import java.time.LocalTime;
 
 public class ExerciseTimeSetContentInfoDto extends AbstractExerciseSetContentInfoDto
 {
-    private LocalTime executionTime;
+    private String executionTime;
 
     public ExerciseTimeSetContentInfoDto()
     {
         super.type = ExerciseSetContentType.TIME;
     }
 
-    public LocalTime getExecutionTime()
+    public String getExecutionTime()
     {
         return executionTime;
     }
 
-    public void setExecutionTime(LocalTime executionTime)
+    public void setExecutionTime(String executionTime)
     {
         this.executionTime = executionTime;
     }

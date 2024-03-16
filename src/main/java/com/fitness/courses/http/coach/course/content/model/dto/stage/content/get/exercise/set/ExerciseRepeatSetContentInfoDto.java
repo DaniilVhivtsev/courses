@@ -2,19 +2,19 @@ package com.fitness.courses.http.coach.course.content.model.dto.stage.content.ge
 
 public class ExerciseRepeatSetContentInfoDto extends AbstractExerciseSetContentInfoDto
 {
-    private Integer repeatCount;
+    private String repeatCount;
 
     public ExerciseRepeatSetContentInfoDto()
     {
         super.type = ExerciseSetContentType.REPEAT;
     }
 
-    public Integer getRepeatCount()
+    public String getRepeatCount()
     {
         return repeatCount;
     }
 
-    public void setRepeatCount(Integer repeatCount)
+    public void setRepeatCount(String repeatCount)
     {
         this.repeatCount = repeatCount;
     }

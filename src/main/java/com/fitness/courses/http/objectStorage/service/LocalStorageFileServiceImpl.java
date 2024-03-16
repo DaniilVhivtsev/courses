@@ -1,6 +1,8 @@
 package com.fitness.courses.http.objectStorage.service;
 
 import java.io.InputStream;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -25,6 +27,9 @@ import com.fitness.courses.http.objectStorage.utils.LocalStorageMetadataUtils;
 public class LocalStorageFileServiceImpl implements LocalStorageFileService
 {
     private static final @NotNull Logger LOG = LoggerFactory.getLogger(LocalStorageFileServiceImpl.class);
+
+    private static final @NotNull Path TMP_DIR = Paths.get(System.getProperty("java.io.tmpdir"));
+
 
     private final CrudLocalStorageFileEntityService crudLocalStorageFileEntityService;
     private final YandexBucketProvider yandexBucketProvider;
@@ -54,6 +59,49 @@ public class LocalStorageFileServiceImpl implements LocalStorageFileService
         localStorageFileEntity = crudLocalStorageFileEntityService.save(localStorageFileEntity);
 
         return localStorageFileEntity;
+    }
+
+    /*@Override
+    public LocalStorageFileEntity addFile(String bucketName, FileExtensionEnum fileExtension, InputStream inputStream)
+    {
+        *//*if (isVideoFile(fileExtension))
+        {
+            return putVideo(bucketName, fileExtension, inputStream);
+        }*//*
+
+        return putImg(bucketName, fileExtension, inputStream);
+    }*/
+
+    private LocalStorageFileEntity putVideo(String bucketName, FileExtensionEnum fileExtension, InputStream inputStream)
+    {
+        LocalStorageFileEntity localStorageFileEntity = new LocalStorageFileEntity();
+        localStorageFileEntity.setFileKey(UUIDGenerator.nestUuidInString() + ".%s".formatted(fileExtension.getValue())); //
+        // TODO check
+        localStorageFileEntity.setBucketName(bucketName);
+        localStorageFileEntity.setFileExtension(fileExtension);
+        localStorageFileEntity.setContentType(FileExtensionUtils.getContentType(fileExtension));
+
+        yandexBucketProvider.putObject(bucketName, localStorageFileEntity.getFileKey(), inputStream,
+                LocalStorageMetadataUtils.getObjectMetadata(localStorageFileEntity, inputStream));
+        localStorageFileEntity.setUrl(
+                yandexBucketProvider.getUrl(bucketName, localStorageFileEntity.getFileKey()).toExternalForm());
+        localStorageFileEntity = crudLocalStorageFileEntityService.save(localStorageFileEntity);
+
+        return localStorageFileEntity;
+    }
+
+    private LocalStorageFileEntity putImg(String bucketName, FileExtensionEnum fileExtension, InputStream inputStream)
+    {
+        return null;
+    }
+
+    private static boolean isVideoFile(FileExtensionEnum fileExtensionEnum)
+    {
+        return switch (fileExtensionEnum)
+                {
+                    case MOV, AVI, MP4  -> true;
+                    default -> false;
+                };
     }
 
     @Override

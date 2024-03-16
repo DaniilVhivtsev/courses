@@ -2,7 +2,9 @@ package com.fitness.courses.http.coach.course.content.model.entity.stage;
 
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.hibernate.annotations.Type;
 
@@ -11,7 +13,9 @@ import com.fitness.courses.http.coach.course.content.model.entity.stage.content.
 
 import io.hypersistence.utils.hibernate.type.json.JsonBinaryType;
 import io.hypersistence.utils.hibernate.type.json.JsonType;
+import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
+import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -36,6 +40,11 @@ public class StageEntity
     @ManyToOne(optional = true, fetch = FetchType.EAGER)
     @JoinColumn(name = "lesson_id", nullable = true)
     private LessonEntity lesson = null;
+
+    @ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable(name = "course_variables_codes_in_content", joinColumns = @JoinColumn(name = "stage_id"))
+    @Column(name = "variables_codes")
+    private Set<String> variablesCodes = new HashSet<>();
 
     @Type(JsonType.class)
     @Column(columnDefinition = "json")
@@ -79,6 +88,16 @@ public class StageEntity
     public void setLesson(LessonEntity lesson)
     {
         this.lesson = lesson;
+    }
+
+    public Set<String> getVariablesCodes()
+    {
+        return variablesCodes;
+    }
+
+    public void setVariablesCodes(Set<String> variablesCodes)
+    {
+        this.variablesCodes = variablesCodes;
     }
 
     public List<AbstractStageContent> getStageContent()
