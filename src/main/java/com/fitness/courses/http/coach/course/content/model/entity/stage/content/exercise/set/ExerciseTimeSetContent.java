@@ -6,14 +6,14 @@ public class ExerciseTimeSetContent extends AbstractExerciseSetContent
 {
     private static final String DISCRIMINATOR = "stage.time.exercise.set.content";
 
-    private LocalTime executionTime;
+    private String executionTime;
 
-    public LocalTime getExecutionTime()
+    public String getExecutionTime()
     {
         return executionTime;
     }
 
-    public void setExecutionTime(LocalTime executionTime)
+    public void setExecutionTime(String executionTime)
     {
         this.executionTime = executionTime;
     }

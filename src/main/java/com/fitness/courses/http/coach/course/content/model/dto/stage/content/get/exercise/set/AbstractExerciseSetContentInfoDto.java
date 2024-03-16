@@ -7,7 +7,7 @@ public abstract class AbstractExerciseSetContentInfoDto
 {
     private String uuid;
 
-    private Float countOfKilograms;
+    private String countOfKilograms;
 
     private LocalTime pauseAfter;
 
@@ -23,12 +23,12 @@ public abstract class AbstractExerciseSetContentInfoDto
         this.uuid = uuid;
     }
 
-    public Float getCountOfKilograms()
+    public String getCountOfKilograms()
     {
         return countOfKilograms;
     }
 
-    public void setCountOfKilograms(Float countOfKilograms)
+    public void setCountOfKilograms(String countOfKilograms)
     {
         this.countOfKilograms = countOfKilograms;
     }

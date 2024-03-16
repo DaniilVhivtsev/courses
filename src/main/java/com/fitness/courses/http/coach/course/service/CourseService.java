@@ -21,6 +21,8 @@ public interface CourseService
 
     CourseEntity editCourseGeneralInfo(Long courseId, CourseEntity editCourseInfo, MultipartFile logo);
 
+    Set<Long> findAllStageUuidsWithVariableInCourse(Long courseId, String variableCode);
+
     Optional<CourseEntity> getCourseOptional(@NotNull Long id);
 
     CourseEntity getCourseOrThrow(@NotNull Long id);
@@ -37,4 +39,6 @@ public interface CourseService
             @NotNull Integer limit);
 
     Set<String> getCourseStagesUuids(CourseEntity course);
+
+    void updateGreetingTitle(@NotNull Long courseId, @NotNull String title);
 }

@@ -124,7 +124,7 @@ public class WebSecurityConfig
                                 mvcRequestMatcher.pattern("/swagger-ui/**"),
                                 mvcRequestMatcher.pattern("/v3/**"),
                                 mvcRequestMatcher.pattern("/public/course/**"),
-                                mvcRequestMatcher.pattern("/coach/**"),
+//                                mvcRequestMatcher.pattern("/coach/**"),
                                 toH2Console()).permitAll()
                         .anyRequest().authenticated())
                 .exceptionHandling(exception -> exception

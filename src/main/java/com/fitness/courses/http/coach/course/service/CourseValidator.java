@@ -11,4 +11,6 @@ public interface CourseValidator
     void validateCourseExist(@NotNull Long id) throws ValidationException;
 
     void validateCurrentUserHasPermission(@NotNull Long courseId) throws ValidationException;
+
+    void validateGreetingTitle(@NotNull String greetingTitle);
 }

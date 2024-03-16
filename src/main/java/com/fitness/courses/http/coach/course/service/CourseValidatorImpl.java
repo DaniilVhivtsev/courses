@@ -64,4 +64,22 @@ public class CourseValidatorImpl implements CourseValidator
             throw new ValidationException(message);
         }
     }
+
+    @Override
+    public void validateGreetingTitle(final @NotNull String greetingTitle)
+    {
+        if (StringUtils.isBlank(greetingTitle))
+        {
+            final String message = "Course greeting title is blank";
+            LOG.error(message);
+            throw new ValidationException(message);
+        }
+
+        if (greetingTitle.split(" ").length > 10)
+        {
+            final String message = "Course greeting title must has words less or equal 10";
+            LOG.error(message);
+            throw new ValidationException(message);
+        }
+    }
 }

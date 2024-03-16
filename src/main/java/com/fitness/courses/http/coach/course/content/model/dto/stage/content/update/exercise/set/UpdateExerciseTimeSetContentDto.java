@@ -1,18 +1,15 @@
 package com.fitness.courses.http.coach.course.content.model.dto.stage.content.update.exercise.set;
 
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-
 public class UpdateExerciseTimeSetContentDto extends UpdateAbstractExerciseSetContentDto
 {
-    private LocalTime executionTime;
+    private String executionTime;
 
-    public LocalTime getExecutionTime()
+    public String getExecutionTime()
     {
         return executionTime;
     }
 
-    public void setExecutionTime(LocalTime executionTime)
+    public void setExecutionTime(String executionTime)
     {
         this.executionTime = executionTime;
     }

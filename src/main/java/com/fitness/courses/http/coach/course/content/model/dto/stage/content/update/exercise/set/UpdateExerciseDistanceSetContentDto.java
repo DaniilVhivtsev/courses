@@ -2,14 +2,14 @@ package com.fitness.courses.http.coach.course.content.model.dto.stage.content.up
 
 public class UpdateExerciseDistanceSetContentDto extends UpdateAbstractExerciseSetContentDto
 {
-    private Float distanceKilometers;
+    private String distanceKilometers;
 
-    public Float getDistanceKilometers()
+    public String getDistanceKilometers()
     {
         return distanceKilometers;
     }
 
-    public void setDistanceKilometers(Float distanceKilometers)
+    public void setDistanceKilometers(String distanceKilometers)
     {
         this.distanceKilometers = distanceKilometers;
     }
