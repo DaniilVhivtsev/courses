@@ -400,9 +400,9 @@ public class ExampleConfiguration
                     );
 
             httpStatusCode = coachCourseController.updateGreeting(fifthCourseId, greetingUpdateDto).getStatusCode();
-            studentCourseController.createBidRegistrationForTheCourse(fifthCourseId);
-            StudentGreetingContent studentGreeting =
-                    (StudentGreetingContent) studentCourseController.getGreetingContent(fifthCourseId).getBody();
+//            studentCourseController.createBidRegistrationForTheCourse(fifthCourseId);
+//            StudentGreetingContent studentGreeting =
+//                    (StudentGreetingContent) studentCourseController.getGreetingContent(fifthCourseId).getBody();
             checkHttpStatusCode(httpStatusCode);
 
             addModule(fifthCourseId, "1");
