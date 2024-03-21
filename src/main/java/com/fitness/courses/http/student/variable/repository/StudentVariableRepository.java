@@ -12,5 +12,5 @@ public interface StudentVariableRepository extends JpaRepository<StudentVariable
 {
     void removeAllByCourseVariableId(Long courseVariableId);
 
-    Optional<StudentVariableEntity> findAllByCourseVariableId(Long courseVariableId);
+    Optional<StudentVariableEntity> findAllByCourseVariableIdAndStudentId(Long courseVariableId, Long studentId);
 }

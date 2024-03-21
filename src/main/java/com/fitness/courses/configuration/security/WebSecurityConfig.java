@@ -111,6 +111,8 @@ public class WebSecurityConfig
         CorsConfiguration corsConfig = new CorsConfiguration().applyPermitDefaultValues();
         corsConfig.addAllowedMethod(HttpMethod.DELETE);
         corsConfig.addAllowedMethod(HttpMethod.PUT);
+        corsConfig.addAllowedMethod(HttpMethod.GET);
+        corsConfig.addAllowedMethod(HttpMethod.POST);
 
         return httpSecurity
                 .csrf(AbstractHttpConfigurer::disable)
@@ -124,7 +126,7 @@ public class WebSecurityConfig
                                 mvcRequestMatcher.pattern("/swagger-ui/**"),
                                 mvcRequestMatcher.pattern("/v3/**"),
                                 mvcRequestMatcher.pattern("/public/course/**"),
-//                                mvcRequestMatcher.pattern("/coach/**"),
+                                mvcRequestMatcher.pattern("/coach/**"),
                                 toH2Console()).permitAll()
                         .anyRequest().authenticated())
                 .exceptionHandling(exception -> exception

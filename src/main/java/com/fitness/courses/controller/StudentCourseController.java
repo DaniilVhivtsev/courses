@@ -339,7 +339,7 @@ public class StudentCourseController
             }
     )
     @SecurityRequirement(name = "JWT")
-    @GetMapping(value = "/course/{courseId}/variables/update/values")
+    @PostMapping(value = "/course/{courseId}/variables/update/values")
     public ResponseEntity<?> updateStudentVariableValues(@PathVariable Long courseId,
             @RequestBody List<StudentVariableUpdatedValue> studentVariableUpdatedValues)
     {

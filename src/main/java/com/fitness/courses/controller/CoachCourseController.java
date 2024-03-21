@@ -1255,7 +1255,7 @@ public class CoachCourseController
             requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
                     content = {
                             @Content(
-                                    mediaType = "multipart/form-data",
+                                    mediaType = "application/json",
                                     schema = @Schema(
                                             implementation = GreetingUpdateDto.class
                                     )
@@ -1305,7 +1305,7 @@ public class CoachCourseController
             requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
                     content = {
                             @Content(
-                                    mediaType = "multipart/form-data",
+                                    mediaType = "application/json",
                                     schema = @Schema(
                                             implementation = ExpressionDto.class
                                     )
@@ -1365,7 +1365,7 @@ public class CoachCourseController
             requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
                     content = {
                             @Content(
-                                    mediaType = "multipart/form-data",
+                                    mediaType = "application/json",
                                     schema = @Schema(
                                             implementation = ExpressionGetResultDto.class
                                     )

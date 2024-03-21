@@ -8,7 +8,7 @@ import com.fitness.courses.http.student.variable.model.entity.StudentVariableEnt
 
 public interface CrudStudentVariableService
 {
-    Optional<StudentVariableEntity> findAllByCourseVariableId(Long courseVariableId);
+    Optional<StudentVariableEntity> findAllByCourseVariableIdAndStudentId(Long courseVariableId, Long studentId);
 
     void removeAllByCourseVariableId(@NotNull Long courseVariableId);
 }

@@ -60,7 +60,8 @@ public class RestStudentVariableServiceImpl implements RestStudentVariableServic
 
         studentVariableUpdatedValues.forEach(studentVariableUpdatedValue ->
         {
-            studentVariableService.findAllByCourseVariableId(studentVariableUpdatedValue.getId())
+            studentVariableService.findAllByCourseVariableIdAndStudentId(studentVariableUpdatedValue.getId(),
+                            student.getId())
                     .ifPresentOrElse(
                             studentVariableEntity ->
                             {
@@ -107,12 +108,14 @@ public class RestStudentVariableServiceImpl implements RestStudentVariableServic
         studentValidator.validateStudentWithUserAndCourseExist(currentUser, course);
 
         final List<CourseVariableEntity> courseVariables = courseVariableService.findAllByCourseId(courseId);
+        StudentEntity student = studentService.getByUserAndCourseOrThrow(currentUser, course);
 
         return courseVariables.stream()
                 .map(courseVariable ->
                 {
                     final Optional<StudentVariableEntity> studentVariableEntityOptional =
-                            studentVariableService.findAllByCourseVariableId(courseVariable.getId());
+                            studentVariableService.findAllByCourseVariableIdAndStudentId(courseVariable.getId(),
+                                    student.getId());
 
                     final Float value = studentVariableEntityOptional.map(StudentVariableEntity::getValue).orElse(null);
 

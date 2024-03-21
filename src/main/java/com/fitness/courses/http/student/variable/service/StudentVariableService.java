@@ -12,7 +12,7 @@ public interface StudentVariableService
 
     StudentVariableEntity update(StudentVariableEntity updatedStudentVariable);
 
-    Optional<StudentVariableEntity> findAllByCourseVariableId(Long courseVariableId);
+    Optional<StudentVariableEntity> findAllByCourseVariableIdAndStudentId(Long courseVariableId, Long studentId);
 
     void removeAllByCourseVariableId(@NotNull Long courseVariableId);
 }

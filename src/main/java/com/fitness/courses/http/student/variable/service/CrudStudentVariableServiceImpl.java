@@ -22,9 +22,9 @@ public class CrudStudentVariableServiceImpl extends AbstractCrudService<StudentV
     }
 
     @Override
-    public Optional<StudentVariableEntity> findAllByCourseVariableId(Long courseVariableId)
+    public Optional<StudentVariableEntity> findAllByCourseVariableIdAndStudentId(Long courseVariableId, Long studentId)
     {
-        return repository.findAllByCourseVariableId(courseVariableId);
+        return repository.findAllByCourseVariableIdAndStudentId(courseVariableId, studentId);
     }
 
     @Override

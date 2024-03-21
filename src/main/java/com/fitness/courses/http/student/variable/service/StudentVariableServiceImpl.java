@@ -32,9 +32,9 @@ public class StudentVariableServiceImpl implements StudentVariableService
     }
 
     @Override
-    public Optional<StudentVariableEntity> findAllByCourseVariableId(Long courseVariableId)
+    public Optional<StudentVariableEntity> findAllByCourseVariableIdAndStudentId(Long courseVariableId, Long studentId)
     {
-        return crudStudentVariableService.findAllByCourseVariableId(courseVariableId);
+        return crudStudentVariableService.findAllByCourseVariableIdAndStudentId(courseVariableId, studentId);
     }
 
     @Override
