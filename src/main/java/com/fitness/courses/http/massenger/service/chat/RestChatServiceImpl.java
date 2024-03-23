@@ -102,7 +102,7 @@ public class RestChatServiceImpl implements RestChatService
                             ? null
                             : messages.get(messages.size() - 1).getTextMessage();
                     return ChatMapper.toListInfoDto(chatEntity,
-                            chatService.getRecipientOrThrow(chatEntity.getInterlocutorsIds(), currentUserId),
+                            chatService.getRecipientOrThrow(new HashSet<>(chatEntity.getInterlocutorsIds()), currentUserId),
                             lastMessageDto);
                 })
                 .toList();

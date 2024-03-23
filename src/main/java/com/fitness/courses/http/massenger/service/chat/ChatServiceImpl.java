@@ -1,5 +1,7 @@
 package com.fitness.courses.http.massenger.service.chat;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -48,7 +50,7 @@ public class ChatServiceImpl implements ChatService
     @Override
     public User getRecipient(Long chatId, Long senderId)
     {
-        Set<Long> interlocutorsIds = findChatByIdOrThrow(chatId).getInterlocutorsIds();
+        Set<Long> interlocutorsIds = new HashSet<>(findChatByIdOrThrow(chatId).getInterlocutorsIds());
         interlocutorsIds.remove(senderId);
 
         return interlocutorsIds.stream()

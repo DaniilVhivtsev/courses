@@ -1,6 +1,5 @@
 package com.fitness.courses.http.massenger.service.chat;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
@@ -26,7 +25,7 @@ public class CrudChatServiceImpl extends AbstractCrudService<ChatEntity, ChatEnt
     @Override
     public Optional<ChatEntity> findChatWithInterlocutorsIds(Set<Long> interlocutorsIds)
     {
-        return repository.findChatEntityByInterlocutorsIds(new ArrayList<>(interlocutorsIds));
+        return repository.findAll().stream().filter(chatEntity -> new HashSet<>(chatEntity.getInterlocutorsIds()).contains(interlocutorsIds)).findAny();
     }
 
     @Override
