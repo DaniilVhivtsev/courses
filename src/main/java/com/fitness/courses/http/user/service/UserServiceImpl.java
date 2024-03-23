@@ -7,6 +7,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.fitness.courses.global.exceptions.NotFoundException;
 import com.fitness.courses.http.user.model.User;
 import com.fitness.courses.http.user.repository.UserRepository;
 
@@ -46,6 +47,14 @@ public class UserServiceImpl implements UserService
     public Optional<User> findById(Long id)
     {
         return userRepository.findById(id);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public User findByIdOrThrow(Long id)
+    {
+        return userRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Can't find user with id %s".formatted(id)));
     }
 
     @Override

@@ -1299,8 +1299,8 @@ public class CoachCourseController
     }
 
     @Operation(
-            summary = "Get метод получения переменных переданного математического выражения.",
-            description = "Get метод получения переменных переданного математического выражения (Поиск происходит по "
+            summary = "Post метод получения переменных переданного математического выражения.",
+            description = "Post метод получения переменных переданного математического выражения (Поиск происходит по "
                     + "переменным, которые были добавлены в курс).",
             requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
                     content = {
@@ -1339,7 +1339,7 @@ public class CoachCourseController
             }
     )
     @SecurityRequirement(name = "JWT")
-    @GetMapping(value = "/course/author/{courseId}/expression/variables")
+    @PostMapping(value = "/course/author/{courseId}/expression/variables")
     public ResponseEntity<?> getExpressionVariables(
             @PathVariable @Parameter(description = "Идентификатор курса.") Long courseId,
             @RequestBody ExpressionDto expressionDto)
@@ -1358,9 +1358,9 @@ public class CoachCourseController
     }
 
     @Operation(
-            summary = "Get метод получения результата переданного математического выражения со значениями в "
+            summary = "Post метод получения результата переданного математического выражения со значениями в "
                     + "переменных.",
-            description = "Get метод получения результата переданного математического выражения со значениями в "
+            description = "Post метод получения результата переданного математического выражения со значениями в "
                     + "переменных.",
             requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
                     content = {
@@ -1397,7 +1397,7 @@ public class CoachCourseController
             }
     )
     @SecurityRequirement(name = "JWT")
-    @GetMapping(value = "/course/author/{courseId}/expression/result")
+    @PostMapping(value = "/course/author/{courseId}/expression/result")
     public ResponseEntity<?> getExpressionResult(
             @PathVariable @Parameter(description = "Идентификатор курса.") Long courseId,
             @RequestBody ExpressionGetResultDto expressionGetResultDto)

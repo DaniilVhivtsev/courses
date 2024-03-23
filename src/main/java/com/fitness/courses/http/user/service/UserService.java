@@ -14,5 +14,7 @@ public interface UserService extends UserDetailsService
 
     Optional<User> findById(Long id);
 
+    User findByIdOrThrow(Long id);
+
     User save(User user);
 }

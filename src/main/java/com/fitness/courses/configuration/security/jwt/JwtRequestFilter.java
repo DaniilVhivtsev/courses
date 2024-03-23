@@ -27,8 +27,8 @@ import jakarta.servlet.http.HttpServletResponse;
 @Component
 public class JwtRequestFilter extends OncePerRequestFilter
 {
-    private static final String AUTHORIZATION = "Authorization";
-    private static final String JWT_PREFIX = "Bearer ";
+    public static final String AUTHORIZATION = "Authorization";
+    public static final String JWT_PREFIX = "Bearer ";
 
     private final JwtProvider jwtProvider;
     private final UserService userService;

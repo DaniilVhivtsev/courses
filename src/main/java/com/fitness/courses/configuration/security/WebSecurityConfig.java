@@ -2,10 +2,11 @@ package com.fitness.courses.configuration.security;
 
 import static org.springframework.boot.autoconfigure.security.servlet.PathRequest.toH2Console;
 
-import org.springframework.boot.web.servlet.FilterRegistrationBean;
+import java.util.Arrays;
+import java.util.Collections;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -76,31 +77,16 @@ public class WebSecurityConfig
     }
 
     @Bean
-    public FilterRegistrationBean corsFilter()
-    {
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        CorsConfiguration corsConf = new CorsConfiguration();
-        corsConf.setAllowCredentials(Boolean.TRUE);
-        corsConf.addAllowedOriginPattern("*");
-        corsConf.addAllowedHeader(CorsConfiguration.ALL);
-        corsConf.addAllowedMethod(CorsConfiguration.ALL);
-        source.registerCorsConfiguration("/**", corsConf);
-        FilterRegistrationBean bean = new FilterRegistrationBean(new CorsFilter(source));
-        bean.setOrder(0);
-        return bean;
-    }
-
-    /*@Bean
     public CorsFilter corsFilter() {
         final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowCredentials(true);
-        config.setAllowedOrigins(Collections.singletonList("*"));
+        config.setAllowedOrigins(Collections.singletonList("http://localhost:3000"));
         config.setAllowedHeaders(Arrays.asList("Origin", "Content-Type", "Accept", "responseType", "Authorization"));
         config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "OPTIONS", "DELETE", "PATCH"));
         source.registerCorsConfiguration("/**", config);
         return new CorsFilter(source);
-    }*/
+    }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity, HandlerMappingIntrospector introspector)
@@ -108,15 +94,8 @@ public class WebSecurityConfig
     {
         MvcRequestMatcher.Builder mvcRequestMatcher = new MvcRequestMatcher.Builder(introspector);
 
-        CorsConfiguration corsConfig = new CorsConfiguration().applyPermitDefaultValues();
-        corsConfig.addAllowedMethod(HttpMethod.DELETE);
-        corsConfig.addAllowedMethod(HttpMethod.PUT);
-        corsConfig.addAllowedMethod(HttpMethod.GET);
-        corsConfig.addAllowedMethod(HttpMethod.POST);
-
         return httpSecurity
                 .csrf(AbstractHttpConfigurer::disable)
-//                .cors(cors -> cors.configurationSource(request -> corsConfig))
                 .headers(AbstractHttpConfigurer::disable)
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
@@ -127,6 +106,9 @@ public class WebSecurityConfig
                                 mvcRequestMatcher.pattern("/v3/**"),
                                 mvcRequestMatcher.pattern("/public/course/**"),
                                 mvcRequestMatcher.pattern("/coach/**"),
+                                mvcRequestMatcher.pattern("/fitness_online_web_socket/**"),
+                                mvcRequestMatcher.pattern("/fitness_online_web_socket"),
+//                                mvcRequestMatcher.pattern("/**"),
                                 toH2Console()).permitAll()
                         .anyRequest().authenticated())
                 .exceptionHandling(exception -> exception

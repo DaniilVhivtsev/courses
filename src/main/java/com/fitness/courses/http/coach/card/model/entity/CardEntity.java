@@ -31,7 +31,6 @@ public class CardEntity
     private String title;
 
     @Column(nullable = true, length = 2048)
-
     private String description;
 
     @Column(nullable = true)
