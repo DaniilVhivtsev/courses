@@ -25,7 +25,7 @@ public class CrudChatServiceImpl extends AbstractCrudService<ChatEntity, ChatEnt
     @Override
     public Optional<ChatEntity> findChatWithInterlocutorsIds(Set<Long> interlocutorsIds)
     {
-        return repository.findAll().stream().filter(chatEntity -> new HashSet<>(chatEntity.getInterlocutorsIds()).contains(interlocutorsIds)).findAny();
+        return repository.findAll().stream().filter(chatEntity -> new HashSet<>(chatEntity.getInterlocutorsIds()).containsAll(interlocutorsIds)).findAny();
     }
 
     @Override

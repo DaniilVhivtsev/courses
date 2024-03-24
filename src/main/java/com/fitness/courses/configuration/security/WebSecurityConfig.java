@@ -108,6 +108,8 @@ public class WebSecurityConfig
                                 mvcRequestMatcher.pattern("/coach/**"),
                                 mvcRequestMatcher.pattern("/fitness_online_web_socket/**"),
                                 mvcRequestMatcher.pattern("/fitness_online_web_socket"),
+                                mvcRequestMatcher.pattern("/mobile_fitness_online_web_socket/**"),
+                                mvcRequestMatcher.pattern("/mobile_fitness_online_web_socket"),
 //                                mvcRequestMatcher.pattern("/**"),
                                 toH2Console()).permitAll()
                         .anyRequest().authenticated())

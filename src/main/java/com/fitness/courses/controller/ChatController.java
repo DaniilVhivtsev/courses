@@ -29,6 +29,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 /**
@@ -78,6 +79,7 @@ public class ChatController
                     ),
             }
     )
+    @SecurityRequirement(name = "JWT")
     @GetMapping("/get/info/by/recipient/{recipientId}")
     public ResponseEntity<?> getChatByRecipientId(
             @PathVariable @Parameter(description = "Идентификатор пользователя.") Long recipientId)
@@ -125,6 +127,7 @@ public class ChatController
                     ),
             }
     )
+    @SecurityRequirement(name = "JWT")
     @GetMapping("/get/info/by/id/{chatId}")
     public ResponseEntity<?> getChatInfoById(
             @PathVariable @Parameter(description = "Идентификатор курса.") Long chatId)
@@ -170,6 +173,7 @@ public class ChatController
                     ),
             }
     )
+    @SecurityRequirement(name = "JWT")
     @GetMapping("/get/all/info/by/current/user")
     public ResponseEntity<?> getCurrentUserChatsInfo()
     {
@@ -212,6 +216,7 @@ public class ChatController
                     ),
             }
     )
+    @SecurityRequirement(name = "JWT")
     @PostMapping("/create/with/recipient/{recipientId}")
     public ResponseEntity<?> createChat(
             @PathVariable @Parameter(description = "Идентификатор пользователя.") Long recipientId

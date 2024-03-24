@@ -98,6 +98,9 @@ class ChatTest
         Assertions.assertTrue(response.getStatusCode().is2xxSuccessful());
         ChatInfoDto chat = (ChatInfoDto)response.getBody();
 
+        response = chatController.createChat(currentUser.getId());
+        Assertions.assertTrue(response.getStatusCode().is4xxClientError());
+
 
         final UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
                 currentUser,
@@ -113,6 +116,9 @@ class ChatTest
         Assertions.assertTrue(response.getStatusCode().is2xxSuccessful());
 
         response = chatController.getCurrentUserChatsInfo();
+        Assertions.assertTrue(response.getStatusCode().is2xxSuccessful());
+
+        response = chatController.getChatByRecipientId(currentUser.getId());
         Assertions.assertTrue(response.getStatusCode().is2xxSuccessful());
     }
 
